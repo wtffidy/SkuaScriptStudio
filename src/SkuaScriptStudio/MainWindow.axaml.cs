@@ -15,6 +15,8 @@ public partial class MainWindow : Window
     private readonly ScriptSnippetService _snippetService = new();
     private ScriptDocument _document = new();
     private bool _isUpdatingEditor;
+    private long _documentLoadVersion;
+    private CancellationTokenSource? _diagnosticsCancellation;
 
     public MainWindow()
     {
@@ -39,71 +41,85 @@ public partial class MainWindow : Window
 
     private async void OpenButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        IReadOnlyList<IStorageFile> files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Open Skua script",
-            AllowMultiple = false,
-            FileTypeFilter =
-            [
-                new FilePickerFileType("C# scripts") { Patterns = ["*.cs"] },
-                FilePickerFileTypes.All
-            ]
-        });
-
-        IStorageFile? file = files.FirstOrDefault();
-        if (file is null)
-            return;
+        long loadVersion = ++_documentLoadVersion;
 
         try
         {
+            IReadOnlyList<IStorageFile> files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Open Skua script",
+                AllowMultiple = false,
+                FileTypeFilter =
+                [
+                    new FilePickerFileType("C# scripts") { Patterns = ["*.cs"] },
+                    FilePickerFileTypes.All
+                ]
+            });
+
+            IStorageFile? file = files.FirstOrDefault();
+            if (file is null || loadVersion != _documentLoadVersion)
+                return;
+
             string? path = file.TryGetLocalPath();
             if (string.IsNullOrWhiteSpace(path))
                 throw new InvalidOperationException("The selected file does not have a local filesystem path.");
 
-            _document = await _fileService.OpenAsync(path);
-            SetEditorSource(_document.Source);
-            DocumentNameText.Text = _document.Name;
+            ScriptDocument document = await _fileService.OpenAsync(path);
+            if (loadVersion != _documentLoadVersion)
+                return;
+
+            _document = document;
+            SetEditorSource(document.Source);
+            DocumentNameText.Text = document.Name;
             EditorStatusText.Text = $"Opened · {path}";
             RefreshLibrary();
             SelectTab(1);
         }
         catch (Exception exception)
         {
-            await ShowErrorAsync("Unable to open script", exception.Message);
+            if (loadVersion == _documentLoadVersion)
+                await ShowErrorAsync("Unable to open script", exception.Message);
         }
     }
 
     private async void SaveButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        _document.Source = EditorTextBox.Text ?? string.Empty;
-
-        string? path = _document.FilePath;
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            IStorageFile? file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-            {
-                Title = "Save Skua script",
-                SuggestedFileName = _document.Name,
-                DefaultExtension = "cs",
-                FileTypeChoices = [new FilePickerFileType("C# scripts") { Patterns = ["*.cs"] }]
-            });
-
-            path = file?.TryGetLocalPath();
-        }
-
-        if (string.IsNullOrWhiteSpace(path))
-            return;
+        ScriptDocument document = _document;
+        document.Source = EditorTextBox.Text ?? string.Empty;
 
         try
         {
-            await _fileService.SaveAsync(_document, path);
-            DocumentNameText.Text = _document.Name;
-            EditorStatusText.Text = $"Saved · {path}";
+            string? path = document.FilePath;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                IStorageFile? file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                {
+                    Title = "Save Skua script",
+                    SuggestedFileName = document.Name,
+                    DefaultExtension = "cs",
+                    FileTypeChoices = [new FilePickerFileType("C# scripts") { Patterns = ["*.cs"] }]
+                });
+
+                path = file?.TryGetLocalPath();
+            }
+
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            await _fileService.SaveAsync(document, path);
+            if (!ReferenceEquals(_document, document))
+                return;
+
+            DocumentNameText.Text = document.Name + (document.IsDirty ? " *" : string.Empty);
+            EditorStatusText.Text = document.IsDirty
+                ? $"Saved snapshot · newer edits remain unsaved · {path}"
+                : $"Saved · {path}";
             RefreshLibrary();
         }
         catch (Exception exception)
         {
-            await ShowErrorAsync("Unable to save script", exception.Message);
+            if (ReferenceEquals(_document, document))
+                await ShowErrorAsync("Unable to save script", exception.Message);
         }
     }
 
@@ -118,6 +134,7 @@ public partial class MainWindow : Window
         try
         {
             string generated = _builderService.GenerateHuntMonster(map, monster, item, quantity, classType);
+            ++_documentLoadVersion;
             _document = new ScriptDocument
             {
                 Name = "GeneratedHuntMonster.cs",
@@ -139,24 +156,28 @@ public partial class MainWindow : Window
 
     private async void ImportToLibraryButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        IReadOnlyList<IStorageFile> files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Import scripts into library",
-            AllowMultiple = true,
-            FileTypeFilter = [new FilePickerFileType("C# scripts") { Patterns = ["*.cs"] }]
-        });
-
         try
         {
+            IReadOnlyList<IStorageFile> files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Import scripts into library",
+                AllowMultiple = true,
+                FileTypeFilter = [new FilePickerFileType("C# scripts") { Patterns = ["*.cs"] }]
+            });
+
+            int importedCount = 0;
             foreach (IStorageFile file in files)
             {
                 string? path = file.TryGetLocalPath();
-                if (!string.IsNullOrWhiteSpace(path))
-                    await _libraryService.ImportAsync(path);
+                if (string.IsNullOrWhiteSpace(path))
+                    continue;
+
+                await _libraryService.ImportAsync(path);
+                importedCount++;
             }
 
             RefreshLibrary();
-            EditorStatusText.Text = $"Library updated · {files.Count} file(s) imported";
+            EditorStatusText.Text = $"Library updated · {importedCount} file(s) imported";
         }
         catch (Exception exception)
         {
@@ -186,17 +207,23 @@ public partial class MainWindow : Window
         if (LibraryList.SelectedItem is not ScriptLibraryEntry entry)
             return;
 
+        long loadVersion = ++_documentLoadVersion;
         try
         {
-            _document = await _fileService.OpenAsync(entry.FilePath);
-            SetEditorSource(_document.Source);
-            DocumentNameText.Text = _document.Name;
+            ScriptDocument document = await _fileService.OpenAsync(entry.FilePath);
+            if (loadVersion != _documentLoadVersion)
+                return;
+
+            _document = document;
+            SetEditorSource(document.Source);
+            DocumentNameText.Text = document.Name;
             EditorStatusText.Text = $"Opened from library · {entry.FilePath}";
             SelectTab(1);
         }
         catch (Exception exception)
         {
-            await ShowErrorAsync("Unable to open library script", exception.Message);
+            if (loadVersion == _documentLoadVersion)
+                await ShowErrorAsync("Unable to open library script", exception.Message);
         }
     }
 
@@ -266,12 +293,14 @@ public partial class MainWindow : Window
 
         _document.Source = EditorTextBox.Text ?? string.Empty;
         _document.IsDirty = true;
+        InvalidateDiagnostics();
         DocumentNameText.Text = _document.Name + " *";
         EditorStatusText.Text = "Unsaved changes";
     }
 
     private void SetEditorSource(string source)
     {
+        InvalidateDiagnostics();
         _isUpdatingEditor = true;
         try
         {
@@ -283,14 +312,49 @@ public partial class MainWindow : Window
         }
     }
 
-    private void AnalyzeButton_OnClick(object? sender, RoutedEventArgs e)
+    private async void AnalyzeButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        IReadOnlyList<ScriptDiagnostic> diagnostics = _diagnosticsService.Analyze(EditorTextBox.Text ?? string.Empty);
-        DiagnosticsList.ItemsSource = diagnostics;
-        DiagnosticsCountText.Text = diagnostics.Count == 0
-            ? "NO SYNTAX ISSUES FOUND"
-            : $"{diagnostics.Count} ISSUE(S) FOUND";
+        _diagnosticsCancellation?.Cancel();
+        CancellationTokenSource cancellation = new();
+        _diagnosticsCancellation = cancellation;
+        string source = EditorTextBox.Text ?? string.Empty;
+        DiagnosticsCountText.Text = "ANALYZING...";
         SelectTab(4);
+
+        try
+        {
+            IReadOnlyList<ScriptDiagnostic> diagnostics = await _diagnosticsService.AnalyzeAsync(source, cancellation.Token);
+            if (cancellation.IsCancellationRequested || !ReferenceEquals(_diagnosticsCancellation, cancellation))
+                return;
+
+            DiagnosticsList.ItemsSource = diagnostics;
+            DiagnosticsCountText.Text = diagnostics.Count == 0
+                ? "NO SYNTAX ISSUES FOUND"
+                : $"{diagnostics.Count} ISSUE(S) FOUND";
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+        }
+        catch (Exception exception)
+        {
+            if (!cancellation.IsCancellationRequested)
+                await ShowErrorAsync("Unable to analyze script", exception.Message);
+        }
+        finally
+        {
+            if (ReferenceEquals(_diagnosticsCancellation, cancellation))
+                _diagnosticsCancellation = null;
+
+            cancellation.Dispose();
+        }
+    }
+
+    private void InvalidateDiagnostics()
+    {
+        _diagnosticsCancellation?.Cancel();
+        _diagnosticsCancellation = null;
+        DiagnosticsList.ItemsSource = null;
+        DiagnosticsCountText.Text = "SCRIPT CHANGED · RUN ANALYSIS AGAIN";
     }
 
     private void DiagnosticsList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
