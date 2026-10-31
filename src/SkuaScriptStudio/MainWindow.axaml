@@ -191,7 +191,7 @@
           <TabItem Header="Snippets">
             <Grid ColumnDefinitions="280,*" ColumnSpacing="18" Margin="4,18">
               <Grid Grid.Column="0" RowDefinitions="Auto,Auto,Auto,Auto,*">
-                <TextBlock Text="Code Snippets" FontSize="24" FontWeight="Bold"/>
+                <Grid><TextBlock Text="Code Snippets" FontSize="24" FontWeight="Bold"/><TextBlock Name="SnippetCountText" Text="0 SNIPPETS" FontSize="9" Foreground="#8290A5" HorizontalAlignment="Right" VerticalAlignment="Bottom"/></Grid>
                 <TextBlock Grid.Row="1" Text="CORE LIBRARY" FontSize="10" Foreground="#8290A5" Margin="0,8,0,4"/>
                 <ComboBox Name="SnippetCoreFilter" Grid.Row="2" SelectionChanged="SnippetFilter_OnSelectionChanged"/>
                 <ComboBox Name="SnippetCategoryFilter" Grid.Row="3" Margin="0,8,0,8" SelectionChanged="SnippetFilter_OnSelectionChanged"/>
