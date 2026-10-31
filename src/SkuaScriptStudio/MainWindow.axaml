@@ -173,13 +173,17 @@
           </TabItem>
 
           <TabItem Header="Diagnostics">
-            <StackPanel Spacing="12" Margin="4,18">
-              <TextBlock Text="Diagnostics" FontSize="26" FontWeight="Bold"/>
-              <TextBlock Text="Roslyn analysis and Skua-specific validation are not wired up yet." Foreground="#94A2B7"/>
-              <Border Background="#1A2230" CornerRadius="10" Padding="16">
-                <TextBlock Text="Planned: compiler diagnostics · nullable warnings · missing imports · invalid API usage · loop safety checks" TextWrapping="Wrap" Foreground="#AAB6C8"/>
-              </Border>
-            </StackPanel>
+            <Grid RowDefinitions="Auto,Auto,*" Margin="4,18">
+              <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+                <StackPanel Spacing="5">
+                  <TextBlock Text="Diagnostics" FontSize="26" FontWeight="Bold"/>
+                  <TextBlock Name="DiagnosticsCountText" Text="RUN ANALYSIS TO CHECK THE CURRENT SCRIPT" Foreground="#8290A5" FontSize="10"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="Analyze current script" Background="#6957D9" VerticalAlignment="Center" Click="AnalyzeButton_OnClick"/>
+              </Grid>
+              <TextBlock Grid.Row="1" Text="Roslyn C# parser diagnostics · syntax errors and warnings with line and column locations" Foreground="#94A2B7" Margin="0,0,0,12"/>
+              <ListBox Name="DiagnosticsList" Grid.Row="2" Background="#1A2230"/>
+            </Grid>
           </TabItem>
 
           <TabItem Header="Snippets">
