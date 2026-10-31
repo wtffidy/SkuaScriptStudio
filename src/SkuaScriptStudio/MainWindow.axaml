@@ -11,8 +11,8 @@
             <TextBlock Text="S" FontSize="21" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Border>
           <StackPanel Spacing="0">
-            <TextBlock Text="SKUA SCRIPT STUDIO" FontWeight="Bold" FontSize="14" LetterSpacing="1.4"/>
-            <TextBlock Text="SCRIPT DEVELOPMENT WORKSPACE" FontSize="9" Foreground="#8290A5" LetterSpacing="1.1"/>
+            <TextBlock Text="SKUA SCRIPT STUDIO" FontWeight="Bold" FontSize="14"/>
+            <TextBlock Text="SCRIPT DEVELOPMENT WORKSPACE" FontSize="9" Foreground="#8290A5"/>
           </StackPanel>
         </StackPanel>
         <TextBlock Grid.Column="1" Text="LOCAL WORKSPACE  •  .NET 10" Foreground="#8290A5" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
