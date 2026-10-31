@@ -68,7 +68,7 @@ public sealed class ScriptLibraryService
                 await using (destination)
                 {
                     source.Position = 0;
-                    await source.CopyToAsync(destination, cancellationToken);
+                    await source.CopyToAsync(destination, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch
