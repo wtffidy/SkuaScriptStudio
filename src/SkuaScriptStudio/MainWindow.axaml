@@ -20,6 +20,7 @@
         <TextBlock Grid.Column="1" Text="LOCAL WORKSPACE  •  .NET 10" Foreground="#8290A5" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
           <Button Name="OpenButton" Content="Open" Click="OpenButton_OnClick"/>
+          <Button Name="UpdateButton" Content="Check for updates" Click="UpdateButton_OnClick"/>
           <Button Name="SaveButton" Content="Save" Click="SaveButton_OnClick" Background="#6957D9"/>
         </StackPanel>
       </Grid>
