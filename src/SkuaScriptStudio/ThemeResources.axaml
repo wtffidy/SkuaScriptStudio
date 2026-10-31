@@ -1,0 +1,18 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Semantic palette: swap these values to retheme the entire workspace. -->
+  <SolidColorBrush x:Key="AppBackgroundBrush" Color="#111018" />
+  <SolidColorBrush x:Key="SurfaceBrush" Color="#1B1824" />
+  <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="#24202F" />
+  <SolidColorBrush x:Key="SurfaceInsetBrush" Color="#17141F" />
+  <SolidColorBrush x:Key="EditorBackgroundBrush" Color="#12111A" />
+  <SolidColorBrush x:Key="BorderBrush" Color="#393044" />
+  <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F1ECF5" />
+  <SolidColorBrush x:Key="TextSecondaryBrush" Color="#BDB2C9" />
+  <SolidColorBrush x:Key="TextMutedBrush" Color="#988BA6" />
+  <SolidColorBrush x:Key="TextSubtleBrush" Color="#796E87" />
+  <SolidColorBrush x:Key="EditorTextBrush" Color="#E5DDED" />
+  <SolidColorBrush x:Key="AccentBrush" Color="#A66BDB" />
+  <SolidColorBrush x:Key="AccentTextBrush" Color="#D6B4F4" />
+  <SolidColorBrush x:Key="AccentHoverBrush" Color="#B77CE8" />
+  <SolidColorBrush x:Key="PotatoGoldBrush" Color="#D7A85D" />
+</ResourceDictionary>
