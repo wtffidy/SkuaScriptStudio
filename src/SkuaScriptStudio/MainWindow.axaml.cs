@@ -535,14 +535,22 @@ public partial class MainWindow : Window
             return;
 
         string source = EditorTextBox.Text ?? string.Empty;
+        int originalCaretIndex = Math.Clamp(EditorTextBox.CaretIndex, 0, source.Length);
         string sourceWithIncludes = AddRequiredIncludes(source, snippet.RequiredIncludes);
-        string updatedSource = string.IsNullOrWhiteSpace(sourceWithIncludes)
-            ? snippet.Code
-            : $"{sourceWithIncludes.TrimEnd()}{Environment.NewLine}{Environment.NewLine}{snippet.Code}";
+        int includeLength = sourceWithIncludes.Length - source.Length;
+        int insertionIndex = Math.Clamp(originalCaretIndex + includeLength, 0, sourceWithIncludes.Length);
+        string before = sourceWithIncludes[..insertionIndex];
+        string after = sourceWithIncludes[insertionIndex..];
+        string separatorBefore = before.Length > 0 && !before.EndsWith(Environment.NewLine, StringComparison.Ordinal) ? Environment.NewLine : string.Empty;
+        string separatorAfter = after.Length > 0 && !after.StartsWith(Environment.NewLine, StringComparison.Ordinal) ? Environment.NewLine : string.Empty;
+        string insertedCode = $"{separatorBefore}{snippet.Code}{separatorAfter}";
+        string updatedSource = $"{before}{insertedCode}{after}";
+        int newCaretIndex = insertionIndex + insertedCode.Length;
 
         _document.Source = updatedSource;
         _document.IsDirty = true;
         SetEditorSource(updatedSource);
+        EditorTextBox.CaretIndex = Math.Min(newCaretIndex, updatedSource.Length);
         DocumentNameText.Text = _document.Name + " *";
         EditorStatusText.Text = $"Inserted {snippet.Core} snippet · {snippet.Name}";
         SelectTab(1);
