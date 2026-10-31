@@ -18,6 +18,7 @@ public partial class MainWindow : Window
     private bool _isUpdatingEditor;
     private long _documentLoadVersion;
     private long _documentEditVersion;
+    private CancellationTokenSource? _documentLoadCancellation;
     private CancellationTokenSource? _diagnosticsCancellation;
     private CancellationTokenSource? _libraryRefreshCancellation;
     private ScriptLibraryEntry[] _libraryEntries = [];
@@ -70,6 +71,9 @@ public partial class MainWindow : Window
 
     private async void OpenButton_OnClick(object? sender, RoutedEventArgs e)
     {
+        _documentLoadCancellation?.Cancel();
+        using CancellationTokenSource cancellation = new();
+        _documentLoadCancellation = cancellation;
         long loadVersion = ++_documentLoadVersion;
 
         try
@@ -94,7 +98,7 @@ public partial class MainWindow : Window
             if (string.IsNullOrWhiteSpace(path))
                 throw new InvalidOperationException("The selected file does not have a local filesystem path.");
 
-            ScriptDocument document = await _fileService.OpenAsync(path);
+            ScriptDocument document = await _fileService.OpenAsync(path, cancellation.Token);
             if (loadVersion != _documentLoadVersion || editVersion != _documentEditVersion)
                 return;
 
@@ -105,10 +109,18 @@ public partial class MainWindow : Window
             RefreshLibrary();
             SelectTab(1);
         }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+        }
         catch (Exception exception)
         {
             if (loadVersion == _documentLoadVersion)
                 await ShowErrorAsync("Unable to open script", exception.Message);
+        }
+        finally
+        {
+            if (ReferenceEquals(_documentLoadCancellation, cancellation))
+                _documentLoadCancellation = null;
         }
     }
 
@@ -164,6 +176,8 @@ public partial class MainWindow : Window
     {
         if (_allowClose || !_document.IsDirty)
         {
+            ++_documentLoadVersion;
+            _documentLoadCancellation?.Cancel();
             _libraryRefreshCancellation?.Cancel();
             _diagnosticsCancellation?.Cancel();
             return;
@@ -375,14 +389,18 @@ public partial class MainWindow : Window
         if (LibraryList.SelectedItem is not ScriptLibraryEntry entry)
             return;
 
+        _documentLoadCancellation?.Cancel();
+        using CancellationTokenSource cancellation = new();
+        _documentLoadCancellation = cancellation;
         long loadVersion = ++_documentLoadVersion;
-        if (!await ConfirmDocumentReplacementAsync())
-            return;
 
-        long editVersion = _documentEditVersion;
         try
         {
-            ScriptDocument document = await _fileService.OpenAsync(entry.FilePath);
+            if (!await ConfirmDocumentReplacementAsync() || cancellation.IsCancellationRequested || loadVersion != _documentLoadVersion)
+                return;
+
+            long editVersion = _documentEditVersion;
+            ScriptDocument document = await _fileService.OpenAsync(entry.FilePath, cancellation.Token);
             if (loadVersion != _documentLoadVersion || editVersion != _documentEditVersion)
                 return;
 
@@ -392,10 +410,18 @@ public partial class MainWindow : Window
             EditorStatusText.Text = $"Opened from library · {entry.FilePath}";
             SelectTab(1);
         }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+        }
         catch (Exception exception)
         {
             if (loadVersion == _documentLoadVersion)
                 await ShowErrorAsync("Unable to open library script", exception.Message);
+        }
+        finally
+        {
+            if (ReferenceEquals(_documentLoadCancellation, cancellation))
+                _documentLoadCancellation = null;
         }
     }
 
