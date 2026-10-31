@@ -2,7 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="SkuaScriptStudio.MainWindow"
         Width="1440" Height="900" MinWidth="1100" MinHeight="700"
-        Title="Skua Script Studio">
+        Title="Skua Script Studio"
+        Closing="MainWindow_OnClosing">
   <Grid RowDefinitions="68,*">
     <Border Grid.Row="0" Background="#151B25" BorderBrush="#283344" BorderThickness="0,0,0,1" Padding="22,0">
       <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
