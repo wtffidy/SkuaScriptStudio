@@ -17,13 +17,16 @@ public partial class MainWindow : Window
     private bool _isUpdatingEditor;
     private long _documentLoadVersion;
     private CancellationTokenSource? _diagnosticsCancellation;
+    private CancellationTokenSource? _libraryRefreshCancellation;
+    private ScriptLibraryEntry[] _libraryEntries = [];
+    private long _libraryRefreshVersion;
 
     public MainWindow()
     {
         InitializeComponent();
         SetEditorSource(_document.Source);
         RefreshSnippets();
-        RefreshLibrary();
+        _ = LoadLibraryAsync();
     }
 
     private void HomeNav_OnClick(object? sender, RoutedEventArgs e) => SelectTab(0);
@@ -176,7 +179,7 @@ public partial class MainWindow : Window
                 importedCount++;
             }
 
-            RefreshLibrary();
+            await LoadLibraryAsync();
             EditorStatusText.Text = $"Library updated · {importedCount} file(s) imported";
         }
         catch (Exception exception)
@@ -187,17 +190,47 @@ public partial class MainWindow : Window
 
     private void RefreshLibrary()
     {
-        if (LibraryList is null)
-            return;
-
         string filter = LibrarySearchInput?.Text?.Trim() ?? string.Empty;
-        IEnumerable<ScriptLibraryEntry> entries = _libraryService.GetEntries();
+        IEnumerable<ScriptLibraryEntry> entries = _libraryEntries;
 
         if (!string.IsNullOrWhiteSpace(filter))
             entries = entries.Where(entry => entry.Name.Contains(filter, StringComparison.OrdinalIgnoreCase));
 
         LibraryList.ItemsSource = entries.ToArray();
-        LibraryCountText.Text = $"{LibraryList.Items.Count} SCRIPT(S)";
+        LibraryCountText.Text = $"{LibraryList.Items.Count} / {_libraryEntries.Length} SCRIPT(S)";
+    }
+
+    private async Task LoadLibraryAsync()
+    {
+        _libraryRefreshCancellation?.Cancel();
+        CancellationTokenSource cancellation = new();
+        _libraryRefreshCancellation = cancellation;
+        long refreshVersion = ++_libraryRefreshVersion;
+
+        try
+        {
+            IReadOnlyList<ScriptLibraryEntry> entries = await _libraryService.GetEntriesAsync(cancellation.Token);
+            if (cancellation.IsCancellationRequested || refreshVersion != _libraryRefreshVersion)
+                return;
+
+            _libraryEntries = entries.ToArray();
+            RefreshLibrary();
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+        }
+        catch (Exception exception)
+        {
+            if (!cancellation.IsCancellationRequested)
+                await ShowErrorAsync("Unable to load script library", exception.Message);
+        }
+        finally
+        {
+            if (ReferenceEquals(_libraryRefreshCancellation, cancellation))
+                _libraryRefreshCancellation = null;
+
+            cancellation.Dispose();
+        }
     }
 
     private void LibrarySearchInput_OnTextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e) => RefreshLibrary();
@@ -234,8 +267,8 @@ public partial class MainWindow : Window
 
         try
         {
-            _libraryService.Remove(entry.FilePath);
-            RefreshLibrary();
+            await Task.Run(() => _libraryService.Remove(entry.FilePath));
+            await LoadLibraryAsync();
         }
         catch (Exception exception)
         {
