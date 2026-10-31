@@ -286,6 +286,7 @@ public partial class MainWindow : Window
         try
         {
             string generated = _builderService.GenerateHuntMonster(map, monster, item, quantity, classType);
+            _documentLoadCancellation?.Cancel();
             ++_documentLoadVersion;
             _document = new ScriptDocument
             {
