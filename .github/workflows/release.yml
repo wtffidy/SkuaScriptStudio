@@ -47,7 +47,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-x64
-          path: SkuaScriptStudio-win-x64.zip
+          path: |
+            SkuaScriptStudio.exe
+            SkuaScriptStudio-win-x64.zip
           if-no-files-found: error
           retention-days: 7
 
@@ -72,7 +74,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linux-x64
-          path: SkuaScriptStudio-linux-x64.tar.gz
+          path: |
+            SkuaScriptStudio
+            SkuaScriptStudio-linux-x64.tar.gz
           if-no-files-found: error
           retention-days: 7
 
