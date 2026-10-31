@@ -1,4 +1,4 @@
-name: Build
+name: Build and Test
 
 on:
   push:
@@ -15,8 +15,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build (${{ matrix.os }})
+  build-and-test:
+    name: Build and test (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix:
@@ -37,3 +37,6 @@ jobs:
 
       - name: Build
         run: dotnet build SkuaScriptStudio.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test SkuaScriptStudio.sln --configuration Release --no-build --logger "console;verbosity=normal"
