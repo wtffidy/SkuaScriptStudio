@@ -200,7 +200,7 @@ public partial class MainWindow : Window
         UnsavedChangesChoice choice = await ShowUnsavedChangesDialogAsync();
         return choice switch
         {
-            UnsavedChangesChoice.Save => await SaveDocumentAsync(_document),
+            UnsavedChangesChoice.Save => await SaveDocumentAsync(_document, refreshLibrary: false),
             UnsavedChangesChoice.Discard => true,
             _ => false
         };
