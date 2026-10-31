@@ -3,6 +3,7 @@
         x:Class="SkuaScriptStudio.MainWindow"
         Width="1440" Height="900" MinWidth="1100" MinHeight="700"
         Title="Skua Script Studio"
+        Icon="/Assets/skua-script-studio.ico"
         Closing="MainWindow_OnClosing"
         KeyDown="MainWindow_OnKeyDown">
   <Grid RowDefinitions="68,*">
