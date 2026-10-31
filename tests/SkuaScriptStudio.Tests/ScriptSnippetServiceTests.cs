@@ -1,3 +1,4 @@
+using SkuaScriptStudio.Models;
 using SkuaScriptStudio.Services;
 using Xunit;
 
@@ -10,7 +11,7 @@ public sealed class ScriptSnippetServiceTests
     [Fact]
     public void GetSnippets_ReturnsBuiltInSkuaPatterns()
     {
-        IReadOnlyList<Models.ScriptSnippet> snippets = _service.GetSnippets();
+        IReadOnlyList<ScriptSnippet> snippets = _service.GetSnippets();
 
         Assert.Contains(snippets, snippet => snippet.Name == "Hunt monster");
         Assert.Contains(snippets, snippet => snippet.Name == "Equip class");
