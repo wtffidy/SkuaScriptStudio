@@ -1,3 +1,4 @@
+using SkuaScriptStudio.Models;
 using SkuaScriptStudio.Services;
 using Xunit;
 
