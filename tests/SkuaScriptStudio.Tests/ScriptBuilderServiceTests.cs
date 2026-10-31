@@ -26,6 +26,16 @@ public sealed class ScriptBuilderServiceTests
     }
 
     [Fact]
+    public void GenerateHuntMonster_EscapesControlCharacters()
+    {
+        string result = _service.GenerateHuntMonster("map\nname", "monster\tname", "item\r\nname", 1, "Farm");
+
+        Assert.Contains("\"map\\nname\"", result);
+        Assert.Contains("\"monster\\tname\"", result);
+        Assert.Contains("\"item\\r\\nname\"", result);
+    }
+
+    [Fact]
     public void GenerateHuntMonster_ClampsQuantityToOne()
     {
         string result = _service.GenerateHuntMonster("map", "monster", "item", 0, "Farm");
