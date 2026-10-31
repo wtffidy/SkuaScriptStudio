@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using SkuaScriptStudio.Models;
 using SkuaScriptStudio.Services;
@@ -29,6 +30,28 @@ public partial class MainWindow : Window
         SetEditorSource(_document.Source);
         RefreshSnippets();
         _ = LoadLibraryAsync();
+    }
+
+    private void MainWindow_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (!e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            return;
+
+        switch (e.Key)
+        {
+            case Key.S:
+                SaveButton_OnClick(this, new RoutedEventArgs());
+                e.Handled = true;
+                break;
+            case Key.O:
+                OpenButton_OnClick(this, new RoutedEventArgs());
+                e.Handled = true;
+                break;
+            case Key.F5:
+                AnalyzeButton_OnClick(this, new RoutedEventArgs());
+                e.Handled = true;
+                break;
+        }
     }
 
     private void HomeNav_OnClick(object? sender, RoutedEventArgs e) => SelectTab(0);
