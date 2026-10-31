@@ -27,6 +27,9 @@ public sealed class ScriptLibraryService
         if (!File.Exists(sourcePath))
             throw new FileNotFoundException("The selected script could not be found.", sourcePath);
 
+        if (!string.Equals(Path.GetExtension(sourcePath), ".cs", StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException("Only C# script files (.cs) can be imported.", nameof(sourcePath));
+
         Directory.CreateDirectory(_libraryDirectory);
 
         string fileName = Path.GetFileName(sourcePath);
@@ -60,10 +63,28 @@ public sealed class ScriptLibraryService
                 continue;
             }
 
-            await using (destination)
+            try
             {
-                source.Position = 0;
-                await source.CopyToAsync(destination, cancellationToken);
+                await using (destination)
+                {
+                    source.Position = 0;
+                    await source.CopyToAsync(destination, cancellationToken);
+                }
+            }
+            catch
+            {
+                try
+                {
+                    File.Delete(destinationPath);
+                }
+                catch (IOException)
+                {
+                }
+                catch (UnauthorizedAccessException)
+                {
+                }
+
+                throw;
             }
 
             return CreateEntry(destinationPath);
