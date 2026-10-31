@@ -16,7 +16,6 @@ public sealed class ScriptSnippetService
     [
         // CoreBots: shared runtime, inventory, quests, combat, movement and logging.
         Create("CoreBots script scaffold", "Standard script class, CoreBots instance and setup/shutdown lifecycle.", """
-            //cs_include Scripts/CoreBots.cs
             using Skua.Core.Interfaces;
 
             public class MyScript
@@ -66,7 +65,7 @@ public sealed class ScriptSnippetService
         Create("Skip completed quest", "Skip work when a quest has already been completed.", "if (Core.isCompletedBefore(12345))\n    return;", "CoreBots", "Quests", CoreBotsIncludes),
 
         // CoreFarms: gold, experience, reputation and item farming helpers.
-        Create("CoreFarms instance", "Declare the shared CoreFarms helper.", "private static CoreFarms Farm { get; } = new();", "CoreFarms", "Setup", CoreFarmsIncludes),
+        Create("CoreFarms instance", "Declare the shared CoreFarms helper.", "CoreFarms Farm = new();", "CoreFarms", "Setup", CoreFarmsIncludes),
         Create("Farm gold", "Run the standard CoreFarms gold routine.", "Farm.Gold();", "CoreFarms", "Gold", CoreFarmsIncludes),
         Create("Farm Honor Hall gold", "Use the Honor Hall gold farming routine.", "Farm.HonorHall(100000000);", "CoreFarms", "Gold", CoreFarmsIncludes),
         Create("Farm Love Potion gold", "Use the Love Potion gold farming routine.", "Farm.LovePotion(100000000);", "CoreFarms", "Gold", CoreFarmsIncludes),
@@ -97,7 +96,7 @@ public sealed class ScriptSnippetService
         Create("Farm Battle Under B", "Farm an item using the Battle Under B routine.", "Farm.BattleUnderB(\"Undead Energy\", 100);", "CoreFarms", "Items", CoreFarmsIncludes),
 
         // CoreDailies: daily quest, reward and item routines.
-        Create("CoreDailies instance", "Declare the shared CoreDailies helper.", "private static CoreDailies Daily { get; } = new();", "CoreDailies", "Setup", CoreDailiesIncludes),
+        Create("CoreDailies instance", "Declare the shared CoreDailies helper.", "CoreDailies Daily = new();", "CoreDailies", "Setup", CoreDailiesIncludes),
         Create("Run daily routine", "Run a daily quest with a map, monster and item target.", "Daily.DailyRoutine(12345, \"map\", \"monster\", \"item\", 1);", "CoreDailies", "Daily quests", CoreDailiesIncludes),
         Create("Check daily completion", "Check a daily quest and optionally unbank required items.", "Daily.CheckDailyv2(12345, true, true, \"Item Name\");", "CoreDailies", "Daily quests", CoreDailiesIncludes),
         Create("Complete NSoD daily", "Run the Necrotic Sword of Doom daily routine.", "Daily.NSoDDaily();", "CoreDailies", "Daily quests", CoreDailiesIncludes),
@@ -127,7 +126,7 @@ public sealed class ScriptSnippetService
         Create("Collect Dage's Scroll Fragment", "Collect Dage's Scroll Fragment and optionally bank it.", "Daily.DagesScrollFragment(ToBank: false);", "CoreDailies", "Daily items", CoreDailiesIncludes),
 
         // CoreAdvanced: boost-aware farming, ultra combat, merges and enhancements.
-        Create("CoreAdvanced instance", "Declare the shared CoreAdvanced helper.", "private static CoreAdvanced Adv { get; } = new();", "CoreAdvanced", "Setup", CoreAdvancedIncludes),
+        Create("CoreAdvanced instance", "Declare the shared CoreAdvanced helper.", "CoreAdvanced Adv = new();", "CoreAdvanced", "Setup", CoreAdvancedIncludes),
         Create("Boosted monster hunt", "Hunt a monster while using the CoreAdvanced boost-aware routine.", "Adv.BoostHuntMonster(\"map\", \"monster\", \"item\", 1);", "CoreAdvanced", "Combat", CoreAdvancedIncludes),
         Create("Boosted monster kill", "Kill a monster at a specific cell while using boost-aware farming.", "Adv.BoostKillMonster(\"map\", \"Enter\", \"Spawn\", \"monster\", \"item\", 1);", "CoreAdvanced", "Combat", CoreAdvancedIncludes),
         Create("Kill ultra boss", "Use the ultra boss helper with a specific map, cell, pad and monster.", "Adv.KillUltra(\"map\", \"Boss\", \"Left\", \"Ultra Boss\", \"item\", 1);", "CoreAdvanced", "Combat", CoreAdvancedIncludes),
