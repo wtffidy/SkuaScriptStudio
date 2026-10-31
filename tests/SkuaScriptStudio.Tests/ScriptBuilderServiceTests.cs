@@ -1,4 +1,5 @@
 using SkuaScriptStudio.Services;
+using Xunit;
 
 namespace SkuaScriptStudio.Tests;
 
