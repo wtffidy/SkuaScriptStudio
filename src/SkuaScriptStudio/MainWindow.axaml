@@ -83,7 +83,7 @@
                   <StackPanel Spacing="8">
                     <TextBlock Text="GETTING STARTED" FontSize="11" FontWeight="Bold" Foreground="#A99BFF"/>
                     <TextBlock Text="This is the foundation build." FontSize="18" FontWeight="SemiBold"/>
-                    <TextBlock Text="The editor can open and save C# files, and the first builder component can generate a HuntMonster call. Roslyn-powered intelligence, richer visual components, and the full script library are planned next." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                    <TextBlock Text="The editor can open and save C# files, the local library can import, search, open and remove script copies, and the first builder generates a HuntMonster call. Roslyn-powered intelligence and richer visual components are next." Foreground="#94A2B7" TextWrapping="Wrap"/>
                   </StackPanel>
                 </Border>
               </StackPanel>
