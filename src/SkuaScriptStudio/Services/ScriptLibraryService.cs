@@ -32,7 +32,9 @@ public sealed class ScriptLibraryService
         string fileName = Path.GetFileName(sourcePath);
         string destinationPath = Path.Combine(_libraryDirectory, fileName);
 
-        if (string.Equals(Path.GetFullPath(sourcePath), Path.GetFullPath(destinationPath), StringComparison.OrdinalIgnoreCase))
+        StringComparison pathComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+        if (string.Equals(Path.GetFullPath(sourcePath), Path.GetFullPath(destinationPath), pathComparison))
             return CreateEntry(destinationPath);
 
         if (File.Exists(destinationPath))
@@ -77,9 +79,11 @@ public sealed class ScriptLibraryService
         ArgumentException.ThrowIfNullOrWhiteSpace(filePath);
 
         string fullPath = Path.GetFullPath(filePath);
-        string fullLibraryPath = Path.GetFullPath(_libraryDirectory) + Path.DirectorySeparatorChar;
+        string fullLibraryPath = Path.GetFullPath(_libraryDirectory);
+        string relativePath = Path.GetRelativePath(fullLibraryPath, fullPath);
+        StringComparison pathComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        if (!fullPath.StartsWith(fullLibraryPath, StringComparison.OrdinalIgnoreCase))
+        if (relativePath == "." || relativePath == ".." || relativePath.StartsWith($"..{Path.DirectorySeparatorChar}", pathComparison) || Path.IsPathRooted(relativePath))
             throw new InvalidOperationException("Only scripts inside the local library can be removed.");
 
         if (File.Exists(fullPath))
