@@ -102,7 +102,7 @@
                   <Button Content="Save file" Background="#6957D9" Click="SaveButton_OnClick"/>
                 </StackPanel>
               </Grid>
-              <TextBox Name="EditorTextBox" Grid.Row="1" Classes="editor" AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Watermark="// Your Skua C# script goes here..."/>
+              <TextBox Name="EditorTextBox" Grid.Row="1" Classes="editor" AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Watermark="// Your Skua C# script goes here..."/>
               <Border Grid.Row="2" Background="#171E29" CornerRadius="6" Padding="10" Margin="0,10,0,0">
                 <TextBlock Name="EditorStatusText" Text="Ready · Local editing" FontSize="11" Foreground="#94A2B7"/>
               </Border>
