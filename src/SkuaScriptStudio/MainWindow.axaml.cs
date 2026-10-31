@@ -32,6 +32,10 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        SnippetCoreFilter.ItemsSource = _snippetService.GetCores();
+        SnippetCoreFilter.SelectedIndex = 0;
+        SnippetCategoryFilter.ItemsSource = _snippetService.GetCategories();
+        SnippetCategoryFilter.SelectedIndex = 0;
         SetEditorSource(_document.Source);
         RefreshSnippets();
         _ = LoadLibraryAsync();
@@ -484,17 +488,35 @@ public partial class MainWindow : Window
 
     private void SnippetSearchInput_OnTextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e) => RefreshSnippets();
 
+    private void SnippetFilter_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => RefreshSnippets();
+
     private void RefreshSnippets()
     {
+        if (SnippetsList is null)
+            return;
+
         string filter = SnippetSearchInput?.Text?.Trim() ?? string.Empty;
+        string core = SnippetCoreFilter?.SelectedItem?.ToString() ?? "All cores";
+        string category = SnippetCategoryFilter?.SelectedItem?.ToString() ?? "All categories";
         IEnumerable<ScriptSnippet> snippets = _snippetService.GetSnippets();
+
+        if (!string.Equals(core, "All cores", StringComparison.OrdinalIgnoreCase))
+            snippets = snippets.Where(snippet => string.Equals(snippet.Core, core, StringComparison.OrdinalIgnoreCase));
+
+        if (!string.Equals(category, "All categories", StringComparison.OrdinalIgnoreCase))
+            snippets = snippets.Where(snippet => string.Equals(snippet.Category, category, StringComparison.OrdinalIgnoreCase));
 
         if (!string.IsNullOrWhiteSpace(filter))
             snippets = snippets.Where(snippet =>
                 snippet.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
-                snippet.Description.Contains(filter, StringComparison.OrdinalIgnoreCase));
+                snippet.Description.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+                snippet.Code.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+                snippet.Core.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+                snippet.Category.Contains(filter, StringComparison.OrdinalIgnoreCase));
 
-        SnippetsList.ItemsSource = snippets.ToArray();
+        ScriptSnippet[] results = snippets.ToArray();
+        SnippetsList.ItemsSource = results;
+        SnippetCountText.Text = $"{results.Length} / {_snippetService.GetSnippets().Count} SNIPPETS";
     }
 
     private void SnippetsList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -502,7 +524,8 @@ public partial class MainWindow : Window
         if (SnippetsList.SelectedItem is not ScriptSnippet snippet)
             return;
 
-        SnippetDescriptionText.Text = snippet.Description;
+        string includes = string.Join(", ", snippet.RequiredIncludes);
+        SnippetDescriptionText.Text = $"{snippet.Core} · {snippet.Category}{Environment.NewLine}{snippet.Description}{Environment.NewLine}Required includes: {includes}";
         SnippetPreviewText.Text = snippet.Code;
     }
 
@@ -512,16 +535,42 @@ public partial class MainWindow : Window
             return;
 
         string source = EditorTextBox.Text ?? string.Empty;
-        string updatedSource = string.IsNullOrWhiteSpace(source)
+        string sourceWithIncludes = AddRequiredIncludes(source, snippet.RequiredIncludes);
+        string updatedSource = string.IsNullOrWhiteSpace(sourceWithIncludes)
             ? snippet.Code
-            : $"{source.TrimEnd()}{Environment.NewLine}{Environment.NewLine}{snippet.Code}";
+            : $"{sourceWithIncludes.TrimEnd()}{Environment.NewLine}{Environment.NewLine}{snippet.Code}";
 
         _document.Source = updatedSource;
         _document.IsDirty = true;
         SetEditorSource(updatedSource);
         DocumentNameText.Text = _document.Name + " *";
-        EditorStatusText.Text = $"Inserted snippet · {snippet.Name}";
+        EditorStatusText.Text = $"Inserted {snippet.Core} snippet · {snippet.Name}";
         SelectTab(1);
+    }
+
+    private static string AddRequiredIncludes(string source, IReadOnlyList<string> includes)
+    {
+        List<string> missingIncludes = includes
+            .Select(include => $"//cs_include {include}")
+            .Where(directive => !source.Split(['\\r', '\\n'], StringSplitOptions.RemoveEmptyEntries)
+                .Any(line => string.Equals(line.Trim(), directive, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        if (missingIncludes.Count == 0)
+            return source;
+
+        int insertionIndex = 0;
+        string trimmedSource = source.TrimStart();
+        if (trimmedSource.StartsWith("/*", StringComparison.Ordinal))
+        {
+            int metadataEnd = source.IndexOf("*/", StringComparison.Ordinal);
+            if (metadataEnd >= 0 && metadataEnd < 1000)
+                insertionIndex = metadataEnd + 2;
+        }
+
+        string prefix = insertionIndex > 0 ? Environment.NewLine : string.Empty;
+        string directives = string.Join(Environment.NewLine, missingIncludes);
+        return source.Insert(insertionIndex, $"{prefix}{directives}{Environment.NewLine}");
     }
 
     private void EditorTextBox_OnTextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
