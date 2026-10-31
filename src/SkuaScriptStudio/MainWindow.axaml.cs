@@ -20,7 +20,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         SetEditorSource(_document.Source);
-        SnippetsList.ItemsSource = _snippetService.GetSnippets();
+        RefreshSnippets();
         RefreshLibrary();
     }
 
@@ -216,6 +216,21 @@ public partial class MainWindow : Window
         }
     }
 
+
+    private void SnippetSearchInput_OnTextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e) => RefreshSnippets();
+
+    private void RefreshSnippets()
+    {
+        string filter = SnippetSearchInput?.Text?.Trim() ?? string.Empty;
+        IEnumerable<ScriptSnippet> snippets = _snippetService.GetSnippets();
+
+        if (!string.IsNullOrWhiteSpace(filter))
+            snippets = snippets.Where(snippet =>
+                snippet.Name.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+                snippet.Description.Contains(filter, StringComparison.OrdinalIgnoreCase));
+
+        SnippetsList.ItemsSource = snippets.ToArray();
+    }
 
     private void SnippetsList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
