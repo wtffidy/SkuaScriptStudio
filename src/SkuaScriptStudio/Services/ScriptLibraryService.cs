@@ -49,17 +49,24 @@ public sealed class ScriptLibraryService
                 _libraryDirectory,
                 suffix == 1 ? fileName : $"{name} ({suffix}){extension}");
 
+            FileStream destination;
             try
             {
-                await using FileStream destination = new(destinationPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 81920, FileOptions.Asynchronous | FileOptions.SequentialScan);
-                await source.CopyToAsync(destination, cancellationToken);
-                return CreateEntry(destinationPath);
+                destination = new FileStream(destinationPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 81920, FileOptions.Asynchronous | FileOptions.SequentialScan);
             }
             catch (IOException) when (File.Exists(destinationPath))
             {
                 suffix++;
-                source.Position = 0;
+                continue;
             }
+
+            await using (destination)
+            {
+                source.Position = 0;
+                await source.CopyToAsync(destination, cancellationToken);
+            }
+
+            return CreateEntry(destinationPath);
         }
     }
 
