@@ -48,7 +48,7 @@ Releases are created manually from GitHub Actions:
 
 1. Open **[Release Skua Script Studio](https://github.com/wtffidy/SkuaScriptStudio/actions/workflows/release.yml)**.
 2. Select **Run workflow**.
-3. Enter the version without a `v` prefix (for example, `0.1.1`). Versions must increase for the in-app updater to detect them.
+3. Enter the version without a `v` prefix (for example, `1.0.1`). Use an incrementing version for each release (for example, 1.0.1, then 1.0.2).
 4. Optionally mark the release as a prerelease and provide release notes.
 5. Run the workflow. It builds Windows x64 and Linux x64 packages, then publishes both ZIP/TAR.GZ files to a versioned GitHub Release.
 
