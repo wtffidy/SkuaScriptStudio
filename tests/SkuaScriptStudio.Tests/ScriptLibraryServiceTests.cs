@@ -29,10 +29,11 @@ public sealed class ScriptLibraryServiceTests
 
             Assert.Equal(2, entries.Select(entry => entry.Name).Distinct(StringComparer.Ordinal).Count());
             Assert.Equal(2, service.GetEntries().Count);
-            Assert.Contains("first", await File.ReadAllTextAsync(entries[0].FilePath)) ||
-                Assert.Contains("second", await File.ReadAllTextAsync(entries[0].FilePath));
-            Assert.Contains("first", await File.ReadAllTextAsync(entries[1].FilePath)) ||
-                Assert.Contains("second", await File.ReadAllTextAsync(entries[1].FilePath));
+            string firstContent = await File.ReadAllTextAsync(entries[0].FilePath);
+            string secondContent = await File.ReadAllTextAsync(entries[1].FilePath);
+            Assert.NotEqual(firstContent, secondContent);
+            Assert.Contains(new[] { "first", "second" }, content => content == firstContent);
+            Assert.Contains(new[] { "first", "second" }, content => content == secondContent);
         }
         finally
         {
