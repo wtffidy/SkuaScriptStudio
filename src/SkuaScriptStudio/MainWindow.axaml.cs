@@ -21,9 +21,12 @@ public partial class MainWindow : Window
     private CancellationTokenSource? _documentLoadCancellation;
     private CancellationTokenSource? _diagnosticsCancellation;
     private CancellationTokenSource? _libraryRefreshCancellation;
+    private CancellationTokenSource? _libraryImportCancellation;
+    private CancellationTokenSource? _libraryRemoveCancellation;
     private ScriptLibraryEntry[] _libraryEntries = [];
     private long _libraryRefreshVersion;
     private bool _allowClose;
+    private bool _isClosing;
     private bool _isConfirmingClose;
 
     public MainWindow()
@@ -151,7 +154,7 @@ public partial class MainWindow : Window
                 return false;
 
             await _fileService.SaveAsync(document, path);
-            if (!ReferenceEquals(_document, document))
+            if (_isClosing || !ReferenceEquals(_document, document))
                 return !document.IsDirty;
 
             DocumentNameText.Text = document.Name + (document.IsDirty ? " *" : string.Empty);
@@ -177,8 +180,11 @@ public partial class MainWindow : Window
         if (_allowClose || !_document.IsDirty)
         {
             ++_documentLoadVersion;
+            _isClosing = true;
             _documentLoadCancellation?.Cancel();
             _libraryRefreshCancellation?.Cancel();
+            _libraryImportCancellation?.Cancel();
+            _libraryRemoveCancellation?.Cancel();
             _diagnosticsCancellation?.Cancel();
             return;
         }
@@ -310,6 +316,10 @@ public partial class MainWindow : Window
 
     private async void ImportToLibraryButton_OnClick(object? sender, RoutedEventArgs e)
     {
+        _libraryImportCancellation?.Cancel();
+        using CancellationTokenSource cancellation = new();
+        _libraryImportCancellation = cancellation;
+
         try
         {
             IReadOnlyList<IStorageFile> files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -322,20 +332,34 @@ public partial class MainWindow : Window
             int importedCount = 0;
             foreach (IStorageFile file in files)
             {
+                cancellation.Token.ThrowIfCancellationRequested();
                 string? path = file.TryGetLocalPath();
                 if (string.IsNullOrWhiteSpace(path))
                     continue;
 
-                await _libraryService.ImportAsync(path);
+                await _libraryService.ImportAsync(path, cancellation.Token);
                 importedCount++;
             }
 
+            if (_isClosing || cancellation.IsCancellationRequested)
+                return;
+
             await LoadLibraryAsync();
-            EditorStatusText.Text = $"Library updated · {importedCount} file(s) imported";
+            if (!_isClosing)
+                EditorStatusText.Text = $"Library updated · {importedCount} file(s) imported";
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
         }
         catch (Exception exception)
         {
-            await ShowErrorAsync("Unable to import scripts", exception.Message);
+            if (!_isClosing)
+                await ShowErrorAsync("Unable to import scripts", exception.Message);
+        }
+        finally
+        {
+            if (ReferenceEquals(_libraryImportCancellation, cancellation))
+                _libraryImportCancellation = null;
         }
     }
 
@@ -361,7 +385,7 @@ public partial class MainWindow : Window
         try
         {
             IReadOnlyList<ScriptLibraryEntry> entries = await _libraryService.GetEntriesAsync(cancellation.Token);
-            if (cancellation.IsCancellationRequested || refreshVersion != _libraryRefreshVersion)
+            if (_isClosing || cancellation.IsCancellationRequested || refreshVersion != _libraryRefreshVersion)
                 return;
 
             _libraryEntries = entries.ToArray();
@@ -432,14 +456,28 @@ public partial class MainWindow : Window
         if (LibraryList.SelectedItem is not ScriptLibraryEntry entry)
             return;
 
+        _libraryRemoveCancellation?.Cancel();
+        using CancellationTokenSource cancellation = new();
+        _libraryRemoveCancellation = cancellation;
+
         try
         {
-            await Task.Run(() => _libraryService.Remove(entry.FilePath));
-            await LoadLibraryAsync();
+            await Task.Run(() => _libraryService.Remove(entry.FilePath), cancellation.Token);
+            if (!_isClosing && !cancellation.IsCancellationRequested)
+                await LoadLibraryAsync();
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
         }
         catch (Exception exception)
         {
-            await ShowErrorAsync("Unable to remove library script", exception.Message);
+            if (!_isClosing)
+                await ShowErrorAsync("Unable to remove library script", exception.Message);
+        }
+        finally
+        {
+            if (ReferenceEquals(_libraryRemoveCancellation, cancellation))
+                _libraryRemoveCancellation = null;
         }
     }
 
