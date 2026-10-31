@@ -1,0 +1,68 @@
+name: Publish Desktop Builds
+
+on:
+  push:
+    branches:
+      - main
+      - mobile
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-windows:
+    name: Publish Windows x64
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Publish
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/win-x64
+
+      - name: Package
+        run: Compress-Archive -Path artifacts/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: SkuaScriptStudio-win-x64
+          path: SkuaScriptStudio-win-x64.zip
+          if-no-files-found: error
+          retention-days: 14
+
+  publish-linux:
+    name: Publish Linux x64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Publish
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime linux-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/linux-x64
+
+      - name: Package
+        run: tar -czf SkuaScriptStudio-linux-x64.tar.gz -C artifacts/linux-x64 .
+
+      - name: Upload Linux build
+        uses: actions/upload-artifact@v4
+        with:
+          name: SkuaScriptStudio-linux-x64
+          path: SkuaScriptStudio-linux-x64.tar.gz
+          if-no-files-found: error
+          retention-days: 14
