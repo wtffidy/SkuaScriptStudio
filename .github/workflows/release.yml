@@ -1,0 +1,97 @@
+name: Release Skua Script Studio
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version without the v prefix (for example 0.1.1)"
+        required: true
+        type: string
+      prerelease:
+        description: "Mark this release as a prerelease"
+        required: true
+        default: false
+        type: boolean
+      release_notes:
+        description: "Release notes (Markdown)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-skua-script-studio
+  cancel-in-progress: false
+
+jobs:
+  publish-windows:
+    name: Publish Windows x64
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish
+        shell: pwsh
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/win-x64
+      - name: Package
+        run: Compress-Archive -Path artifacts/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: SkuaScriptStudio-win-x64.zip
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-linux:
+    name: Publish Linux x64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime linux-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/linux-x64
+      - name: Package
+        run: tar -czf SkuaScriptStudio-linux-x64.tar.gz -C artifacts/linux-x64 .
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-x64
+          path: SkuaScriptStudio-linux-x64.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  create-release:
+    name: Create GitHub Release
+    needs: [publish-windows, publish-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Windows build
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-x64
+      - name: Download Linux build
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-x64
+      - name: Create release and upload installers
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          name: Skua Script Studio v${{ inputs.version }}
+          body: ${{ inputs.release_notes }}
+          generate_release_notes: ${{ inputs.release_notes == '' }}
+          prerelease: ${{ inputs.prerelease }}
+          fail_on_unmatched_files: true
+          files: |
+            SkuaScriptStudio-win-x64.zip
+            SkuaScriptStudio-linux-x64.tar.gz
