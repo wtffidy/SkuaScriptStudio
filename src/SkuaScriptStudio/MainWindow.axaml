@@ -7,43 +7,43 @@
         Closing="MainWindow_OnClosing"
         KeyDown="MainWindow_OnKeyDown">
   <Grid RowDefinitions="68,*">
-    <Border Grid.Row="0" Background="#151B25" BorderBrush="#283344" BorderThickness="0,0,0,1" Padding="22,0">
+    <Border Grid.Row="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="22,0">
       <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
         <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-          <Border Width="34" Height="34" CornerRadius="9" Background="#6957D9">
+          <Border Width="34" Height="34" CornerRadius="9" Background="{DynamicResource AccentBrush}">
             <TextBlock Text="S" FontSize="21" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Border>
           <StackPanel Spacing="0">
             <TextBlock Text="SKUA SCRIPT STUDIO" FontWeight="Bold" FontSize="14"/>
-            <TextBlock Text="SCRIPT DEVELOPMENT WORKSPACE" FontSize="9" Foreground="#8290A5"/>
+            <TextBlock Text="SCRIPT DEVELOPMENT WORKSPACE" FontSize="9" Foreground="{DynamicResource TextMutedBrush}"/>
           </StackPanel>
         </StackPanel>
-        <TextBlock Grid.Column="1" Text="LOCAL WORKSPACE  •  .NET 10" Foreground="#8290A5" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Text="LOCAL WORKSPACE  •  .NET 10" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
           <Button Name="OpenButton" Content="Open" Click="OpenButton_OnClick"/>
           <Button Name="UpdateButton" Content="Check for updates" Click="UpdateButton_OnClick"/>
-          <Button Name="SaveButton" Content="Save" Click="SaveButton_OnClick" Background="#6957D9"/>
+          <Button Name="SaveButton" Content="Save" Click="SaveButton_OnClick" Background="{DynamicResource AccentBrush}"/>
         </StackPanel>
       </Grid>
     </Border>
 
     <Grid Grid.Row="1" ColumnDefinitions="220,*">
-      <Border Grid.Column="0" Background="#151B25" BorderBrush="#283344" BorderThickness="0,0,1,0" Padding="14">
+      <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0" Padding="14">
         <DockPanel LastChildFill="True">
           <StackPanel DockPanel.Dock="Top" Spacing="5">
-            <TextBlock Text="WORKSPACE" Foreground="#718097" FontSize="10" FontWeight="Bold" Margin="10,8,0,8"/>
+            <TextBlock Text="WORKSPACE" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" FontWeight="Bold" Margin="10,8,0,8"/>
             <Button Classes="nav" Content="⌂   Home" Click="HomeNav_OnClick"/>
             <Button Classes="nav" Content="⌨   Editor" Click="EditorNav_OnClick"/>
             <Button Classes="nav" Content="✣   Visual Builder" Click="BuilderNav_OnClick"/>
             <Button Classes="nav" Content="▤   Script Library" Click="LibraryNav_OnClick"/>
             <Button Classes="nav" Content="⌁   Diagnostics" Click="DiagnosticsNav_OnClick"/>
-            <TextBlock Text="TOOLS" Foreground="#718097" FontSize="10" FontWeight="Bold" Margin="10,24,0,8"/>
+            <TextBlock Text="TOOLS" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" FontWeight="Bold" Margin="10,24,0,8"/>
             <Button Classes="nav" Content="◇   Snippets" Click="SnippetsNav_OnClick"/>
           </StackPanel>
           <StackPanel DockPanel.Dock="Bottom" Spacing="5">
-            <Border Height="1" Background="#283344" Margin="0,10"/>
-            <TextBlock Text="SKUA SCRIPT STUDIO" Foreground="#718097" FontSize="10" Margin="10,5,0,0"/>
-            <TextBlock Text="Foundation build · 0.1.0" Foreground="#718097" FontSize="10" Margin="10,0,0,5"/>
+            <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,10"/>
+            <TextBlock Text="SKUA SCRIPT STUDIO" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" Margin="10,5,0,0"/>
+            <TextBlock Text="Foundation build · 0.1.0" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" Margin="10,0,0,5"/>
           </StackPanel>
         </DockPanel>
       </Border>
@@ -55,39 +55,39 @@
               <StackPanel Spacing="20" Margin="4,18">
                 <StackPanel Spacing="6">
                   <TextBlock Text="Build something great." FontSize="30" FontWeight="Bold"/>
-                  <TextBlock Text="A focused workspace for creating and managing Skua scripts." Foreground="#94A2B7" FontSize="14"/>
+                  <TextBlock Text="A focused workspace for creating and managing Skua scripts." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="14"/>
                 </StackPanel>
                 <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
-                  <Border Background="#1A2230" CornerRadius="12" Padding="18">
+                  <Border Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="18">
                     <StackPanel Spacing="8">
-                      <TextBlock Text="01  EDITOR" Foreground="#A99BFF" FontSize="10" FontWeight="Bold"/>
+                      <TextBlock Text="01  EDITOR" Foreground="{DynamicResource AccentTextBrush}" FontSize="10" FontWeight="Bold"/>
                       <TextBlock Text="Write real C#" FontSize="19" FontWeight="SemiBold"/>
-                      <TextBlock Text="Open, edit and save your scripts in one workspace." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                      <TextBlock Text="Open, edit and save your scripts in one workspace." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                       <Button Content="Open editor →" HorizontalAlignment="Left" Click="EditorNav_OnClick"/>
                     </StackPanel>
                   </Border>
-                  <Border Grid.Column="1" Background="#1A2230" CornerRadius="12" Padding="18">
+                  <Border Grid.Column="1" Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="18">
                     <StackPanel Spacing="8">
-                      <TextBlock Text="02  BUILDER" Foreground="#A99BFF" FontSize="10" FontWeight="Bold"/>
+                      <TextBlock Text="02  BUILDER" Foreground="{DynamicResource AccentTextBrush}" FontSize="10" FontWeight="Bold"/>
                       <TextBlock Text="Start from blocks" FontSize="19" FontWeight="SemiBold"/>
-                      <TextBlock Text="Configure common Skua actions and generate editable C#." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                      <TextBlock Text="Configure common Skua actions and generate editable C#." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                       <Button Content="Open builder →" HorizontalAlignment="Left" Click="BuilderNav_OnClick"/>
                     </StackPanel>
                   </Border>
-                  <Border Grid.Column="2" Background="#1A2230" CornerRadius="12" Padding="18">
+                  <Border Grid.Column="2" Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="18">
                     <StackPanel Spacing="8">
-                      <TextBlock Text="03  LIBRARY" Foreground="#A99BFF" FontSize="10" FontWeight="Bold"/>
+                      <TextBlock Text="03  LIBRARY" Foreground="{DynamicResource AccentTextBrush}" FontSize="10" FontWeight="Bold"/>
                       <TextBlock Text="Keep it organized" FontSize="19" FontWeight="SemiBold"/>
-                      <TextBlock Text="Build a reusable local collection of scripts and templates." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                      <TextBlock Text="Build a reusable local collection of scripts and templates." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                       <Button Content="Open library →" HorizontalAlignment="Left" Click="LibraryNav_OnClick"/>
                     </StackPanel>
                   </Border>
                 </Grid>
-                <Border Background="#171E29" BorderBrush="#293445" BorderThickness="1" CornerRadius="12" Padding="20">
+                <Border Background="{DynamicResource SurfaceInsetBrush}" BorderBrush="#293445" BorderThickness="1" CornerRadius="12" Padding="20">
                   <StackPanel Spacing="8">
-                    <TextBlock Text="GETTING STARTED" FontSize="11" FontWeight="Bold" Foreground="#A99BFF"/>
+                    <TextBlock Text="GETTING STARTED" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentTextBrush}"/>
                     <TextBlock Text="This is the foundation build." FontSize="18" FontWeight="SemiBold"/>
-                    <TextBlock Text="The editor can open and save C# files, the local library can import, search, open and remove script copies, and the first builder generates a HuntMonster call. Roslyn-powered intelligence and richer visual components are next." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                    <TextBlock Text="The editor can open and save C# files, the local library can import, search, open and remove script copies, and the first builder generates a HuntMonster call. Roslyn-powered intelligence and richer visual components are next." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                   </StackPanel>
                 </Border>
               </StackPanel>
@@ -99,16 +99,16 @@
               <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
                 <StackPanel Spacing="3">
                   <TextBlock Name="DocumentNameText" Text="Untitled.cs" FontSize="20" FontWeight="SemiBold"/>
-                  <TextBlock Text="C# SOURCE" FontSize="10" Foreground="#8290A5"/>
+                  <TextBlock Text="C# SOURCE" FontSize="10" Foreground="{DynamicResource TextMutedBrush}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
                   <Button Content="Open file" Click="OpenButton_OnClick"/>
-                  <Button Content="Save file" Background="#6957D9" Click="SaveButton_OnClick"/>
+                  <Button Content="Save file" Background="{DynamicResource AccentBrush}" Click="SaveButton_OnClick"/>
                 </StackPanel>
               </Grid>
               <TextBox Name="EditorTextBox" Grid.Row="1" Classes="editor" TextChanged="EditorTextBox_OnTextChanged" AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" Watermark="// Your Skua C# script goes here..."/>
-              <Border Grid.Row="2" Background="#171E29" CornerRadius="6" Padding="10" Margin="0,10,0,0">
-                <TextBlock Name="EditorStatusText" Text="Ready · Local editing" FontSize="11" Foreground="#94A2B7"/>
+              <Border Grid.Row="2" Background="{DynamicResource SurfaceInsetBrush}" CornerRadius="6" Padding="10" Margin="0,10,0,0">
+                <TextBlock Name="EditorStatusText" Text="Ready · Local editing" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
               </Border>
             </Grid>
           </TabItem>
@@ -118,29 +118,29 @@
               <StackPanel Spacing="18" Margin="4,18" MaxWidth="850" HorizontalAlignment="Left">
                 <StackPanel Spacing="5">
                   <TextBlock Text="Hunt Monster" FontSize="26" FontWeight="Bold"/>
-                  <TextBlock Text="Configure a common farming action. Generated code is inserted into the editor for further editing." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                  <TextBlock Text="Configure a common farming action. Generated code is inserted into the editor for further editing." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                 </StackPanel>
-                <Border Background="#1A2230" CornerRadius="12" Padding="20">
+                <Border Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="20">
                   <StackPanel Spacing="14">
                     <StackPanel Spacing="5">
-                      <TextBlock Text="MAP" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                      <TextBlock Text="MAP" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
                       <TextBox Name="MapInput" Watermark="e.g. battleundere"/>
                     </StackPanel>
                     <StackPanel Spacing="5">
-                      <TextBlock Text="MONSTER" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                      <TextBlock Text="MONSTER" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
                       <TextBox Name="MonsterInput" Watermark="e.g. Treasure Pile"/>
                     </StackPanel>
                     <StackPanel Spacing="5">
-                      <TextBlock Text="ITEM TO FARM" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                      <TextBlock Text="ITEM TO FARM" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
                       <TextBox Name="ItemInput" Watermark="e.g. Treasure Relic"/>
                     </StackPanel>
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
                       <StackPanel Spacing="5">
-                        <TextBlock Text="QUANTITY" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Text="QUANTITY" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
                         <NumericUpDown Name="QuantityInput" Minimum="1" Maximum="100000" Value="1"/>
                       </StackPanel>
                       <StackPanel Grid.Column="1" Spacing="5">
-                        <TextBlock Text="CLASS TYPE" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Text="CLASS TYPE" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
                         <ComboBox Name="ClassTypeInput" SelectedIndex="0">
                           <ComboBoxItem Content="Farm"/>
                           <ComboBoxItem Content="Solo"/>
@@ -148,10 +148,10 @@
                         </ComboBox>
                       </StackPanel>
                     </Grid>
-                    <Button Content="Generate C# and open in editor  →" HorizontalAlignment="Left" Background="#6957D9" Padding="16,10" Click="GenerateButton_OnClick"/>
+                    <Button Content="Generate C# and open in editor  →" HorizontalAlignment="Left" Background="{DynamicResource AccentBrush}" Padding="16,10" Click="GenerateButton_OnClick"/>
                   </StackPanel>
                 </Border>
-                <TextBlock Text="More builder components will be added as independent, composable blocks: quests, equipment, inventory checks, map travel, loops, and conditionals." Foreground="#8290A5" TextWrapping="Wrap"/>
+                <TextBlock Text="More builder components will be added as independent, composable blocks: quests, equipment, inventory checks, map travel, loops, and conditionals." Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"/>
               </StackPanel>
             </ScrollViewer>
           </TabItem>
@@ -161,15 +161,15 @@
               <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
                 <StackPanel Spacing="5">
                   <TextBlock Text="Script Library" FontSize="26" FontWeight="Bold"/>
-                  <TextBlock Name="LibraryCountText" Text="0 SCRIPT(S)" Foreground="#8290A5" FontSize="10"/>
+                  <TextBlock Name="LibraryCountText" Text="0 SCRIPT(S)" Foreground="{DynamicResource TextMutedBrush}" FontSize="10"/>
                 </StackPanel>
-                <Button Grid.Column="1" Content="＋ Import scripts" Background="#6957D9" VerticalAlignment="Center" Click="ImportToLibraryButton_OnClick"/>
+                <Button Grid.Column="1" Content="＋ Import scripts" Background="{DynamicResource AccentBrush}" VerticalAlignment="Center" Click="ImportToLibraryButton_OnClick"/>
               </Grid>
               <TextBox Name="LibrarySearchInput" Grid.Row="1" Watermark="Search your local scripts..." Margin="0,0,0,12" TextChanged="LibrarySearchInput_OnTextChanged"/>
               <Grid Grid.Row="2" RowDefinitions="*,Auto">
-                <ListBox Name="LibraryList" Background="#1A2230"/>
+                <ListBox Name="LibraryList" Background="{DynamicResource SurfaceRaisedBrush}"/>
                 <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
-                  <Button Content="Open selected" Background="#6957D9" Click="OpenLibraryButton_OnClick"/>
+                  <Button Content="Open selected" Background="{DynamicResource AccentBrush}" Click="OpenLibraryButton_OnClick"/>
                   <Button Content="Remove from library" Click="RemoveLibraryButton_OnClick"/>
                 </StackPanel>
               </Grid>
@@ -181,33 +181,33 @@
               <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
                 <StackPanel Spacing="5">
                   <TextBlock Text="Diagnostics" FontSize="26" FontWeight="Bold"/>
-                  <TextBlock Name="DiagnosticsCountText" Text="RUN ANALYSIS TO CHECK THE CURRENT SCRIPT" Foreground="#8290A5" FontSize="10"/>
+                  <TextBlock Name="DiagnosticsCountText" Text="RUN ANALYSIS TO CHECK THE CURRENT SCRIPT" Foreground="{DynamicResource TextMutedBrush}" FontSize="10"/>
                 </StackPanel>
-                <Button Grid.Column="1" Content="Analyze current script" Background="#6957D9" VerticalAlignment="Center" Click="AnalyzeButton_OnClick"/>
+                <Button Grid.Column="1" Content="Analyze current script" Background="{DynamicResource AccentBrush}" VerticalAlignment="Center" Click="AnalyzeButton_OnClick"/>
               </Grid>
-              <TextBlock Grid.Row="1" Text="Roslyn C# parser diagnostics · syntax errors and warnings with line and column locations" Foreground="#94A2B7" Margin="0,0,0,12"/>
-              <ListBox Name="DiagnosticsList" Grid.Row="2" Background="#1A2230" SelectionChanged="DiagnosticsList_OnSelectionChanged"/>
+              <TextBlock Grid.Row="1" Text="Roslyn C# parser diagnostics · syntax errors and warnings with line and column locations" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,12"/>
+              <ListBox Name="DiagnosticsList" Grid.Row="2" Background="{DynamicResource SurfaceRaisedBrush}" SelectionChanged="DiagnosticsList_OnSelectionChanged"/>
             </Grid>
           </TabItem>
 
           <TabItem Header="Snippets">
             <Grid ColumnDefinitions="280,*" ColumnSpacing="18" Margin="4,18">
               <Grid Grid.Column="0" RowDefinitions="Auto,Auto,Auto,Auto,*">
-                <Grid><TextBlock Text="Code Snippets" FontSize="24" FontWeight="Bold"/><TextBlock Name="SnippetCountText" Text="0 SNIPPETS" FontSize="9" Foreground="#8290A5" HorizontalAlignment="Right" VerticalAlignment="Bottom"/></Grid>
-                <TextBlock Grid.Row="1" Text="CORE LIBRARY" FontSize="10" Foreground="#8290A5" Margin="0,8,0,4"/>
+                <Grid><TextBlock Text="Code Snippets" FontSize="24" FontWeight="Bold"/><TextBlock Name="SnippetCountText" Text="0 SNIPPETS" FontSize="9" Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/></Grid>
+                <TextBlock Grid.Row="1" Text="CORE LIBRARY" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" Margin="0,8,0,4"/>
                 <ComboBox Name="SnippetCoreFilter" Grid.Row="2" SelectionChanged="SnippetFilter_OnSelectionChanged"/>
                 <ComboBox Name="SnippetCategoryFilter" Grid.Row="3" Margin="0,8,0,8" SelectionChanged="SnippetFilter_OnSelectionChanged"/>
                 <Grid Grid.Row="4" RowDefinitions="Auto,*" RowSpacing="8">
                   <TextBox Name="SnippetSearchInput" Watermark="Search names, descriptions or code..." TextChanged="SnippetSearchInput_OnTextChanged"/>
-                  <ListBox Name="SnippetsList" Grid.Row="1" Background="#1A2230" SelectionChanged="SnippetsList_OnSelectionChanged"/>
+                  <ListBox Name="SnippetsList" Grid.Row="1" Background="{DynamicResource SurfaceRaisedBrush}" SelectionChanged="SnippetsList_OnSelectionChanged"/>
                 </Grid>
               </Grid>
-              <Border Grid.Column="1" Background="#1A2230" CornerRadius="12" Padding="18">
+              <Border Grid.Column="1" Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="18">
                 <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="12">
                   <TextBlock Text="Snippet preview" FontSize="18" FontWeight="SemiBold"/>
-                  <TextBlock Name="SnippetDescriptionText" Grid.Row="1" Text="Select a snippet to see what it does." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                  <TextBlock Name="SnippetDescriptionText" Grid.Row="1" Text="Select a snippet to see what it does." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                   <TextBox Name="SnippetPreviewText" Grid.Row="2" Classes="editor" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
-                  <Button Grid.Row="3" Content="Insert into editor  →" HorizontalAlignment="Left" Background="#6957D9" Click="InsertSnippetButton_OnClick"/>
+                  <Button Grid.Row="3" Content="Insert into editor  →" HorizontalAlignment="Left" Background="{DynamicResource AccentBrush}" Click="InsertSnippetButton_OnClick"/>
                 </Grid>
               </Border>
             </Grid>
