@@ -89,13 +89,13 @@ public sealed class UpdateService
     {
         return $"""
             $ErrorActionPreference = 'Stop'
-            $processId = {processId}
+            $appProcessId = {processId}
             $installPath = '{EscapePowerShell(applicationDirectory)}'
             $archivePath = '{EscapePowerShell(archivePath)}'
             $workPath = '{EscapePowerShell(updateDirectory)}'
             $exePath = '{EscapePowerShell(executablePath)}'
             try {{
-                Wait-Process -Id $processId -ErrorAction SilentlyContinue
+                Wait-Process -Id $appProcessId -ErrorAction SilentlyContinue
                 $extractPath = Join-Path $workPath 'extracted'
                 Expand-Archive -LiteralPath $archivePath -DestinationPath $extractPath -Force
                 Copy-Item -Path (Join-Path $extractPath '*') -Destination $installPath -Recurse -Force
