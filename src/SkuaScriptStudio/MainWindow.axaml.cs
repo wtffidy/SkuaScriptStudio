@@ -216,12 +216,37 @@ public partial class MainWindow : Window
 
     private void AnalyzeButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        IReadOnlyList<string> diagnostics = _diagnosticsService.Analyze(EditorTextBox.Text ?? string.Empty);
+        IReadOnlyList<ScriptDiagnostic> diagnostics = _diagnosticsService.Analyze(EditorTextBox.Text ?? string.Empty);
         DiagnosticsList.ItemsSource = diagnostics;
         DiagnosticsCountText.Text = diagnostics.Count == 0
             ? "NO SYNTAX ISSUES FOUND"
             : $"{diagnostics.Count} ISSUE(S) FOUND";
         SelectTab(4);
+    }
+
+    private void DiagnosticsList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (DiagnosticsList.SelectedItem is not ScriptDiagnostic diagnostic)
+            return;
+
+        string source = EditorTextBox.Text ?? string.Empty;
+        int offset = 0;
+
+        for (int line = 1; line < diagnostic.Line && offset < source.Length; line++)
+        {
+            int newlineIndex = source.IndexOf('\n', offset);
+            if (newlineIndex < 0)
+            {
+                offset = source.Length;
+                break;
+            }
+
+            offset = newlineIndex + 1;
+        }
+
+        EditorTextBox.CaretIndex = Math.Min(offset + diagnostic.Column - 1, source.Length);
+        SelectTab(1);
+        EditorTextBox.Focus();
     }
 
     private async Task ShowErrorAsync(string title, string message)
