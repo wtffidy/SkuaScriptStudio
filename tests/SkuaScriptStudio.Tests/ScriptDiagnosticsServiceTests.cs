@@ -38,6 +38,24 @@ public sealed class ScriptDiagnosticsServiceTests
     }
 
     [Fact]
+    public async Task AnalyzeAsync_ReturnsDiagnostics()
+    {
+        IReadOnlyList<ScriptDiagnostic> diagnostics = await _service.AnalyzeAsync("#warning Review this script");
+
+        Assert.Single(diagnostics);
+        Assert.Equal("Warning", diagnostics[0].Severity);
+    }
+
+    [Fact]
+    public async Task AnalyzeAsync_HonorsCancellation()
+    {
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => _service.AnalyzeAsync("public class TestScript {}", cancellation.Token));
+    }
+
+    [Fact]
     public void Analyze_RejectsNullSource()
     {
         Assert.Throws<ArgumentNullException>(() => _service.Analyze(null!));
