@@ -48,7 +48,7 @@ public sealed class ScriptFileService
 
         try
         {
-            await File.WriteAllTextAsync(temporaryPath, sourceSnapshot, cancellationToken).ConfigureAwait(false);
+            await File.WriteAllTextAsync(temporaryPath, sourceSnapshot, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             File.Move(temporaryPath, fullPath, true);
 
