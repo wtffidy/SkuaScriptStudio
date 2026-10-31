@@ -87,37 +87,37 @@ public sealed class UpdateService
 
     private static string CreateWindowsUpdateScript(int processId, string applicationDirectory, string archivePath, string updateDirectory, string executablePath)
     {
-        return $"""
+        return $$"""
             $ErrorActionPreference = 'Stop'
-            $appProcessId = {processId}
-            $installPath = '{EscapePowerShell(applicationDirectory)}'
-            $archivePath = '{EscapePowerShell(archivePath)}'
-            $workPath = '{EscapePowerShell(updateDirectory)}'
-            $exePath = '{EscapePowerShell(executablePath)}'
-            try {{
+            $appProcessId = {{processId}}
+            $installPath = '{{EscapePowerShell(applicationDirectory)}}'
+            $archivePath = '{{EscapePowerShell(archivePath)}}'
+            $workPath = '{{EscapePowerShell(updateDirectory)}}'
+            $exePath = '{{EscapePowerShell(executablePath)}}'
+            try {
                 Wait-Process -Id $appProcessId -ErrorAction SilentlyContinue
                 $extractPath = Join-Path $workPath 'extracted'
                 Expand-Archive -LiteralPath $archivePath -DestinationPath $extractPath -Force
                 Copy-Item -Path (Join-Path $extractPath '*') -Destination $installPath -Recurse -Force
                 Start-Process -FilePath $exePath
-            }}
-            catch {{
+            }
+            catch {
                 Add-Content -Path (Join-Path $workPath 'update-error.log') -Value $_
-            }}
+            }
             """;
     }
 
     private static string CreateLinuxUpdateScript(int processId, string applicationDirectory, string archivePath, string updateDirectory, string executablePath)
     {
-        return $"""
+        return $$"""
             #!/usr/bin/env bash
             set -e
-            while kill -0 {processId} 2>/dev/null; do sleep 1; done
-            mkdir -p "{EscapeShell(updateDirectory)}/extracted"
-            tar -xzf "{EscapeShell(archivePath)}" -C "{EscapeShell(updateDirectory)}/extracted"
-            cp -a "{EscapeShell(updateDirectory)}/extracted/." "{EscapeShell(applicationDirectory)}/"
-            chmod +x "{EscapeShell(executablePath)}"
-            nohup "{EscapeShell(executablePath)}" >/dev/null 2>&1 &
+            while kill -0 {{processId}} 2>/dev/null; do sleep 1; done
+            mkdir -p "{{EscapeShell(updateDirectory)}}/extracted"
+            tar -xzf "{{EscapeShell(archivePath)}}" -C "{{EscapeShell(updateDirectory)}}/extracted"
+            cp -a "{{EscapeShell(updateDirectory)}}/extracted/." "{{EscapeShell(applicationDirectory)}}/"
+            chmod +x "{{EscapeShell(executablePath)}}"
+            nohup "{{EscapeShell(executablePath)}}" >/dev/null 2>&1 &
             """;
     }
 
