@@ -39,7 +39,10 @@ jobs:
         shell: pwsh
         run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/win-x64
       - name: Package
-        run: Compress-Archive -Path artifacts/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
+        shell: pwsh
+        run: |
+          Copy-Item artifacts/win-x64/SkuaScriptStudio.exe SkuaScriptStudio.exe
+          Compress-Archive -Path artifacts/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
@@ -61,7 +64,10 @@ jobs:
       - name: Publish
         run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime linux-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/linux-x64
       - name: Package
-        run: tar -czf SkuaScriptStudio-linux-x64.tar.gz -C artifacts/linux-x64 .
+        run: |
+          cp artifacts/linux-x64/SkuaScriptStudio ./SkuaScriptStudio
+          chmod +x ./SkuaScriptStudio
+          tar -czf SkuaScriptStudio-linux-x64.tar.gz -C artifacts/linux-x64 .
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
@@ -83,7 +89,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: linux-x64
-      - name: Create release and upload installers
+      - name: Create release and upload app packages
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.version }}
@@ -93,5 +99,7 @@ jobs:
           prerelease: ${{ inputs.prerelease }}
           fail_on_unmatched_files: true
           files: |
+            SkuaScriptStudio.exe
+            SkuaScriptStudio
             SkuaScriptStudio-win-x64.zip
             SkuaScriptStudio-linux-x64.tar.gz
