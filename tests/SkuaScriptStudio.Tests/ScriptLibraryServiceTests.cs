@@ -81,6 +81,7 @@ public sealed class ScriptLibraryServiceTests
             Assert.Equal("Core.HuntMonster();", await File.ReadAllTextAsync(entry.FilePath));
             Assert.Equal("Core.HuntMonster();", await File.ReadAllTextAsync(sourcePath));
             Assert.Single(service.GetEntries());
+            Assert.Single(await service.GetEntriesAsync());
         }
         finally
         {
