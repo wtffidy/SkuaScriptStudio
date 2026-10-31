@@ -72,6 +72,28 @@ public sealed class ScriptLibraryService
     }
 
     /// <summary>
+    /// Enumerates library entries on a worker thread to keep filesystem access off the UI thread.
+    /// </summary>
+    public Task<IReadOnlyList<ScriptLibraryEntry>> GetEntriesAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.Run<IReadOnlyList<ScriptLibraryEntry>>(() =>
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!Directory.Exists(_libraryDirectory))
+                return [];
+
+            List<ScriptLibraryEntry> entries = [];
+            foreach (string path in Directory.EnumerateFiles(_libraryDirectory, "*.cs", SearchOption.TopDirectoryOnly))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                entries.Add(CreateEntry(path));
+            }
+
+            return entries.OrderByDescending(entry => entry.LastModifiedUtc).ToArray();
+        }, cancellationToken);
+    }
+
+    /// <summary>
     /// Removes a script from the application-owned library.
     /// </summary>
     public void Remove(string filePath)
