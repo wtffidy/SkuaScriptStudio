@@ -187,10 +187,21 @@
           </TabItem>
 
           <TabItem Header="Snippets">
-            <StackPanel Spacing="12" Margin="4,18">
-              <TextBlock Text="Code Snippets" FontSize="26" FontWeight="Bold"/>
-              <TextBlock Text="A searchable, user-editable catalog of reusable Skua code will be added here." Foreground="#94A2B7"/>
-            </StackPanel>
+            <Grid ColumnDefinitions="260,*" ColumnSpacing="18" Margin="4,18">
+              <StackPanel Grid.Column="0" Spacing="10">
+                <TextBlock Text="Code Snippets" FontSize="24" FontWeight="Bold"/>
+                <TextBlock Text="BUILT-IN SKUA PATTERNS" FontSize="10" Foreground="#8290A5"/>
+                <ListBox Name="SnippetsList" Background="#1A2230" SelectionChanged="SnippetsList_OnSelectionChanged"/>
+              </StackPanel>
+              <Border Grid.Column="1" Background="#1A2230" CornerRadius="12" Padding="18">
+                <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="12">
+                  <TextBlock Text="Snippet preview" FontSize="18" FontWeight="SemiBold"/>
+                  <TextBlock Name="SnippetDescriptionText" Grid.Row="1" Text="Select a snippet to see what it does." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                  <TextBox Name="SnippetPreviewText" Grid.Row="2" Classes="editor" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                  <Button Grid.Row="3" Content="Insert into editor  →" HorizontalAlignment="Left" Background="#6957D9" Click="InsertSnippetButton_OnClick"/>
+                </Grid>
+              </Border>
+            </Grid>
           </TabItem>
         </TabControl>
       </Grid>
