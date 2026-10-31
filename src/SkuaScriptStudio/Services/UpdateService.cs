@@ -82,7 +82,9 @@ public sealed class UpdateService
             ? new ProcessStartInfo("powershell.exe", $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"") { CreateNoWindow = true, UseShellExecute = false }
             : new ProcessStartInfo("/bin/bash", $"\"{scriptPath}\"") { CreateNoWindow = true, UseShellExecute = false };
 
-        Process.Start(startInfo) ?? throw new InvalidOperationException("Unable to start the update helper.");
+        Process? updateProcess = Process.Start(startInfo);
+        if (updateProcess is null)
+            throw new InvalidOperationException("Unable to start the update helper.");
     }
 
     private static string CreateWindowsUpdateScript(int processId, string applicationDirectory, string archivePath, string updateDirectory, string executablePath)
