@@ -112,7 +112,7 @@ public partial class MainWindow : Window
 
     private async void SaveButton_OnClick(object? sender, RoutedEventArgs e) => await SaveDocumentAsync(_document);
 
-    private async Task<bool> SaveDocumentAsync(ScriptDocument document)
+    private async Task<bool> SaveDocumentAsync(ScriptDocument document, bool refreshLibrary = true)
     {
         if (ReferenceEquals(_document, document))
             document.Source = EditorTextBox.Text ?? string.Empty;
@@ -144,7 +144,7 @@ public partial class MainWindow : Window
             EditorStatusText.Text = document.IsDirty
                 ? $"Saved snapshot · newer edits remain unsaved · {path}"
                 : $"Saved · {path}";
-            if (!document.IsDirty)
+            if (!document.IsDirty && refreshLibrary)
                 await LoadLibraryAsync();
 
             return !document.IsDirty;
@@ -161,7 +161,11 @@ public partial class MainWindow : Window
     private async void MainWindow_OnClosing(object? sender, WindowClosingEventArgs e)
     {
         if (_allowClose || !_document.IsDirty)
+        {
+            _libraryRefreshCancellation?.Cancel();
+            _diagnosticsCancellation?.Cancel();
             return;
+        }
 
         e.Cancel = true;
         if (_isConfirmingClose)
@@ -171,7 +175,7 @@ public partial class MainWindow : Window
         try
         {
             UnsavedChangesChoice choice = await ShowUnsavedChangesDialogAsync();
-            if (choice == UnsavedChangesChoice.Save && !await SaveDocumentAsync(_document))
+            if (choice == UnsavedChangesChoice.Save && !await SaveDocumentAsync(_document, refreshLibrary: false))
                 return;
 
             if (choice is UnsavedChangesChoice.Save or UnsavedChangesChoice.Discard)
