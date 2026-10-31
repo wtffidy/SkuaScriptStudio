@@ -1,0 +1,183 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SkuaScriptStudio.MainWindow"
+        Width="1440" Height="900" MinWidth="1100" MinHeight="700"
+        Title="Skua Script Studio">
+  <Grid RowDefinitions="68,*">
+    <Border Grid.Row="0" Background="#151B25" BorderBrush="#283344" BorderThickness="0,0,0,1" Padding="22,0">
+      <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+          <Border Width="34" Height="34" CornerRadius="9" Background="#6957D9">
+            <TextBlock Text="S" FontSize="21" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <StackPanel Spacing="0">
+            <TextBlock Text="SKUA SCRIPT STUDIO" FontWeight="Bold" FontSize="14" LetterSpacing="1.4"/>
+            <TextBlock Text="SCRIPT DEVELOPMENT WORKSPACE" FontSize="9" Foreground="#8290A5" LetterSpacing="1.1"/>
+          </StackPanel>
+        </StackPanel>
+        <TextBlock Grid.Column="1" Text="LOCAL WORKSPACE  •  .NET 10" Foreground="#8290A5" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+          <Button Name="OpenButton" Content="Open" Click="OpenButton_OnClick"/>
+          <Button Name="SaveButton" Content="Save" Click="SaveButton_OnClick" Background="#6957D9"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="220,*">
+      <Border Grid.Column="0" Background="#151B25" BorderBrush="#283344" BorderThickness="0,0,1,0" Padding="14">
+        <DockPanel LastChildFill="True">
+          <StackPanel DockPanel.Dock="Top" Spacing="5">
+            <TextBlock Text="WORKSPACE" Foreground="#718097" FontSize="10" FontWeight="Bold" Margin="10,8,0,8"/>
+            <Button Classes="nav" Content="⌂   Home" Click="HomeNav_OnClick"/>
+            <Button Classes="nav" Content="⌨   Editor" Click="EditorNav_OnClick"/>
+            <Button Classes="nav" Content="✣   Visual Builder" Click="BuilderNav_OnClick"/>
+            <Button Classes="nav" Content="▤   Script Library" Click="LibraryNav_OnClick"/>
+            <Button Classes="nav" Content="⌁   Diagnostics" Click="DiagnosticsNav_OnClick"/>
+            <TextBlock Text="TOOLS" Foreground="#718097" FontSize="10" FontWeight="Bold" Margin="10,24,0,8"/>
+            <Button Classes="nav" Content="◇   Snippets" Click="SnippetsNav_OnClick"/>
+          </StackPanel>
+          <StackPanel DockPanel.Dock="Bottom" Spacing="5">
+            <Border Height="1" Background="#283344" Margin="0,10"/>
+            <TextBlock Text="SKUA SCRIPT STUDIO" Foreground="#718097" FontSize="10" Margin="10,5,0,0"/>
+            <TextBlock Text="Foundation build · 0.1.0" Foreground="#718097" FontSize="10" Margin="10,0,0,5"/>
+          </StackPanel>
+        </DockPanel>
+      </Border>
+
+      <Grid Grid.Column="1" Margin="28">
+        <TabControl Name="WorkspaceTabs" Background="Transparent" BorderThickness="0">
+          <TabItem Header="Home">
+            <ScrollViewer>
+              <StackPanel Spacing="20" Margin="4,18">
+                <StackPanel Spacing="6">
+                  <TextBlock Text="Build something great." FontSize="30" FontWeight="Bold"/>
+                  <TextBlock Text="A focused workspace for creating and managing Skua scripts." Foreground="#94A2B7" FontSize="14"/>
+                </StackPanel>
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
+                  <Border Background="#1A2230" CornerRadius="12" Padding="18">
+                    <StackPanel Spacing="8">
+                      <TextBlock Text="01  EDITOR" Foreground="#A99BFF" FontSize="10" FontWeight="Bold"/>
+                      <TextBlock Text="Write real C#" FontSize="19" FontWeight="SemiBold"/>
+                      <TextBlock Text="Open, edit and save your scripts in one workspace." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                      <Button Content="Open editor →" HorizontalAlignment="Left" Click="EditorNav_OnClick"/>
+                    </StackPanel>
+                  </Border>
+                  <Border Grid.Column="1" Background="#1A2230" CornerRadius="12" Padding="18">
+                    <StackPanel Spacing="8">
+                      <TextBlock Text="02  BUILDER" Foreground="#A99BFF" FontSize="10" FontWeight="Bold"/>
+                      <TextBlock Text="Start from blocks" FontSize="19" FontWeight="SemiBold"/>
+                      <TextBlock Text="Configure common Skua actions and generate editable C#." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                      <Button Content="Open builder →" HorizontalAlignment="Left" Click="BuilderNav_OnClick"/>
+                    </StackPanel>
+                  </Border>
+                  <Border Grid.Column="2" Background="#1A2230" CornerRadius="12" Padding="18">
+                    <StackPanel Spacing="8">
+                      <TextBlock Text="03  LIBRARY" Foreground="#A99BFF" FontSize="10" FontWeight="Bold"/>
+                      <TextBlock Text="Keep it organized" FontSize="19" FontWeight="SemiBold"/>
+                      <TextBlock Text="Build a reusable local collection of scripts and templates." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                      <Button Content="Open library →" HorizontalAlignment="Left" Click="LibraryNav_OnClick"/>
+                    </StackPanel>
+                  </Border>
+                </Grid>
+                <Border Background="#171E29" BorderBrush="#293445" BorderThickness="1" CornerRadius="12" Padding="20">
+                  <StackPanel Spacing="8">
+                    <TextBlock Text="GETTING STARTED" FontSize="11" FontWeight="Bold" Foreground="#A99BFF"/>
+                    <TextBlock Text="This is the foundation build." FontSize="18" FontWeight="SemiBold"/>
+                    <TextBlock Text="The editor can open and save C# files, and the first builder component can generate a HuntMonster call. Roslyn-powered intelligence, richer visual components, and the full script library are planned next." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </ScrollViewer>
+          </TabItem>
+
+          <TabItem Header="Editor">
+            <Grid RowDefinitions="Auto,* ,Auto" Margin="4,16">
+              <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+                <StackPanel Spacing="3">
+                  <TextBlock Name="DocumentNameText" Text="Untitled.cs" FontSize="20" FontWeight="SemiBold"/>
+                  <TextBlock Text="C# SOURCE" FontSize="10" Foreground="#8290A5"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                  <Button Content="Open file" Click="OpenButton_OnClick"/>
+                  <Button Content="Save file" Background="#6957D9" Click="SaveButton_OnClick"/>
+                </StackPanel>
+              </Grid>
+              <TextBox Name="EditorTextBox" Grid.Row="1" Classes="editor" AcceptsReturn="True" AcceptsTab="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Watermark="// Your Skua C# script goes here..."/>
+              <Border Grid.Row="2" Background="#171E29" CornerRadius="6" Padding="10" Margin="0,10,0,0">
+                <TextBlock Name="EditorStatusText" Text="Ready · Local editing" FontSize="11" Foreground="#94A2B7"/>
+              </Border>
+            </Grid>
+          </TabItem>
+
+          <TabItem Header="Visual Builder">
+            <ScrollViewer>
+              <StackPanel Spacing="18" Margin="4,18" MaxWidth="850" HorizontalAlignment="Left">
+                <StackPanel Spacing="5">
+                  <TextBlock Text="Hunt Monster" FontSize="26" FontWeight="Bold"/>
+                  <TextBlock Text="Configure a common farming action. Generated code is inserted into the editor for further editing." Foreground="#94A2B7" TextWrapping="Wrap"/>
+                </StackPanel>
+                <Border Background="#1A2230" CornerRadius="12" Padding="20">
+                  <StackPanel Spacing="14">
+                    <StackPanel Spacing="5">
+                      <TextBlock Text="MAP" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                      <TextBox Name="MapInput" Watermark="e.g. battleundere"/>
+                    </StackPanel>
+                    <StackPanel Spacing="5">
+                      <TextBlock Text="MONSTER" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                      <TextBox Name="MonsterInput" Watermark="e.g. Treasure Pile"/>
+                    </StackPanel>
+                    <StackPanel Spacing="5">
+                      <TextBlock Text="ITEM TO FARM" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                      <TextBox Name="ItemInput" Watermark="e.g. Treasure Relic"/>
+                    </StackPanel>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
+                      <StackPanel Spacing="5">
+                        <TextBlock Text="QUANTITY" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                        <NumericUpDown Name="QuantityInput" Minimum="1" Maximum="100000" Value="1"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="5">
+                        <TextBlock Text="CLASS TYPE" Foreground="#AAB6C8" FontSize="11" FontWeight="Bold"/>
+                        <ComboBox Name="ClassTypeInput" SelectedIndex="0">
+                          <ComboBoxItem Content="Farm"/>
+                          <ComboBoxItem Content="Solo"/>
+                          <ComboBoxItem Content="Support"/>
+                        </ComboBox>
+                      </StackPanel>
+                    </Grid>
+                    <Button Content="Generate C# and open in editor  →" HorizontalAlignment="Left" Background="#6957D9" Padding="16,10" Click="GenerateButton_OnClick"/>
+                  </StackPanel>
+                </Border>
+                <TextBlock Text="More builder components will be added as independent, composable blocks: quests, equipment, inventory checks, map travel, loops, and conditionals." Foreground="#8290A5" TextWrapping="Wrap"/>
+              </StackPanel>
+            </ScrollViewer>
+          </TabItem>
+
+          <TabItem Header="Library">
+            <StackPanel Spacing="12" Margin="4,18">
+              <TextBlock Text="Script Library" FontSize="26" FontWeight="Bold"/>
+              <TextBlock Text="Your local script collection will live here. Open a C# file to begin working with it." Foreground="#94A2B7"/>
+              <Button Content="Open an existing script" HorizontalAlignment="Left" Click="OpenButton_OnClick"/>
+            </StackPanel>
+          </TabItem>
+
+          <TabItem Header="Diagnostics">
+            <StackPanel Spacing="12" Margin="4,18">
+              <TextBlock Text="Diagnostics" FontSize="26" FontWeight="Bold"/>
+              <TextBlock Text="Roslyn analysis and Skua-specific validation are not wired up yet." Foreground="#94A2B7"/>
+              <Border Background="#1A2230" CornerRadius="10" Padding="16">
+                <TextBlock Text="Planned: compiler diagnostics · nullable warnings · missing imports · invalid API usage · loop safety checks" TextWrapping="Wrap" Foreground="#AAB6C8"/>
+              </Border>
+            </StackPanel>
+          </TabItem>
+
+          <TabItem Header="Snippets">
+            <StackPanel Spacing="12" Margin="4,18">
+              <TextBlock Text="Code Snippets" FontSize="26" FontWeight="Bold"/>
+              <TextBlock Text="A searchable, user-editable catalog of reusable Skua code will be added here." Foreground="#94A2B7"/>
+            </StackPanel>
+          </TabItem>
+        </TabControl>
+      </Grid>
+    </Grid>
+  </Grid>
+</Window>
