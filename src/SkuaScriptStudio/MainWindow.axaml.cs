@@ -20,6 +20,8 @@ public partial class MainWindow : Window
     private CancellationTokenSource? _libraryRefreshCancellation;
     private ScriptLibraryEntry[] _libraryEntries = [];
     private long _libraryRefreshVersion;
+    private bool _allowClose;
+    private bool _isConfirmingClose;
 
     public MainWindow()
     {
@@ -85,10 +87,12 @@ public partial class MainWindow : Window
         }
     }
 
-    private async void SaveButton_OnClick(object? sender, RoutedEventArgs e)
+    private async void SaveButton_OnClick(object? sender, RoutedEventArgs e) => await SaveDocumentAsync(_document);
+
+    private async Task<bool> SaveDocumentAsync(ScriptDocument document)
     {
-        ScriptDocument document = _document;
-        document.Source = EditorTextBox.Text ?? string.Empty;
+        if (ReferenceEquals(_document, document))
+            document.Source = EditorTextBox.Text ?? string.Empty;
 
         try
         {
@@ -107,23 +111,109 @@ public partial class MainWindow : Window
             }
 
             if (string.IsNullOrWhiteSpace(path))
-                return;
+                return false;
 
             await _fileService.SaveAsync(document, path);
             if (!ReferenceEquals(_document, document))
-                return;
+                return !document.IsDirty;
 
             DocumentNameText.Text = document.Name + (document.IsDirty ? " *" : string.Empty);
             EditorStatusText.Text = document.IsDirty
                 ? $"Saved snapshot · newer edits remain unsaved · {path}"
                 : $"Saved · {path}";
-            RefreshLibrary();
+            if (!document.IsDirty)
+                await LoadLibraryAsync();
+
+            return !document.IsDirty;
         }
         catch (Exception exception)
         {
             if (ReferenceEquals(_document, document))
                 await ShowErrorAsync("Unable to save script", exception.Message);
+
+            return false;
         }
+    }
+
+    private async void MainWindow_OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        if (_allowClose || !_document.IsDirty)
+            return;
+
+        e.Cancel = true;
+        if (_isConfirmingClose)
+            return;
+
+        _isConfirmingClose = true;
+        try
+        {
+            UnsavedChangesChoice choice = await ShowUnsavedChangesDialogAsync();
+            if (choice == UnsavedChangesChoice.Save && !await SaveDocumentAsync(_document))
+                return;
+
+            if (choice is UnsavedChangesChoice.Save or UnsavedChangesChoice.Discard)
+            {
+                _allowClose = true;
+                Close();
+            }
+        }
+        finally
+        {
+            _isConfirmingClose = false;
+        }
+    }
+
+    private async Task<UnsavedChangesChoice> ShowUnsavedChangesDialogAsync()
+    {
+        Window dialog = new()
+        {
+            Title = "Unsaved changes",
+            Width = 440,
+            Height = 210,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            CanResize = false,
+            Content = new StackPanel
+            {
+                Margin = new Avalonia.Thickness(20),
+                Spacing = 16,
+                Children =
+                {
+                    new TextBlock
+                    {
+                        Text = $"Save changes to {_document.Name} before closing?",
+                        TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                        FontSize = 15
+                    },
+                    new StackPanel
+                    {
+                        Orientation = Avalonia.Layout.Orientation.Horizontal,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                        Spacing = 8,
+                        Children =
+                        {
+                            new Button { Content = "Cancel", MinWidth = 82, Tag = UnsavedChangesChoice.Cancel },
+                            new Button { Content = "Discard", MinWidth = 82, Tag = UnsavedChangesChoice.Discard },
+                            new Button { Content = "Save", MinWidth = 82, Tag = UnsavedChangesChoice.Save }
+                        }
+                    }
+                }
+            }
+        };
+
+        if (dialog.Content is StackPanel panel && panel.Children.LastOrDefault() is StackPanel buttons)
+        {
+            foreach (Button button in buttons.Children.OfType<Button>())
+                button.Click += (_, _) => dialog.Close((UnsavedChangesChoice)button.Tag!);
+        }
+
+        return await dialog.ShowDialog<UnsavedChangesChoice>(this);
+    }
+
+    private enum UnsavedChangesChoice
+    {
+        Cancel,
+        Save,
+        Discard
     }
 
     private void GenerateButton_OnClick(object? sender, RoutedEventArgs e)
