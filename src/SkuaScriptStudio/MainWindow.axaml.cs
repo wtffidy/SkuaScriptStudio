@@ -9,6 +9,7 @@ namespace SkuaScriptStudio;
 
 public partial class MainWindow : Window
 {
+    private readonly UpdateService _updateService = new();
     private readonly ScriptFileService _fileService = new();
     private readonly ScriptBuilderService _builderService = new();
     private readonly ScriptLibraryService _libraryService = new();
@@ -28,6 +29,7 @@ public partial class MainWindow : Window
     private bool _allowClose;
     private bool _isClosing;
     private bool _isConfirmingClose;
+    private bool _isInstallingUpdate;
 
     public MainWindow()
     {
@@ -39,6 +41,91 @@ public partial class MainWindow : Window
         SetEditorSource(_document.Source);
         RefreshSnippets();
         _ = LoadLibraryAsync();
+    }
+
+    private async void UpdateButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        UpdateButton.IsEnabled = false;
+        UpdateButton.Content = "Checking...";
+        try
+        {
+            UpdateCheckResult result = await _updateService.CheckForUpdatesAsync();
+            if (!result.IsUpdateAvailable)
+            {
+                UpdateButton.Content = "Up to date";
+                EditorStatusText.Text = $"You're running the latest version · {result.CurrentVersion}";
+                return;
+            }
+
+            UpdateButton.Content = $"Install v{result.LatestVersion}";
+            bool install = await ShowUpdatePromptAsync(result);
+            if (!install)
+                return;
+
+            UpdateButton.Content = "Downloading...";
+            await _updateService.InstallUpdateAsync(result);
+            _isInstallingUpdate = true;
+            _allowClose = true;
+            Close();
+        }
+        catch (Exception exception)
+        {
+            await ShowErrorAsync("Unable to check for updates", exception.Message);
+        }
+        finally
+        {
+            if (!_isInstallingUpdate)
+            {
+                UpdateButton.IsEnabled = true;
+                if (UpdateButton.Content?.ToString() is "Checking..." or "Downloading...")
+                    UpdateButton.Content = "Check for updates";
+            }
+        }
+    }
+
+    private async Task<bool> ShowUpdatePromptAsync(UpdateCheckResult update)
+    {
+        Window dialog = new()
+        {
+            Title = "Update available",
+            Width = 460,
+            Height = 220,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            CanResize = false,
+            Content = new StackPanel
+            {
+                Margin = new Avalonia.Thickness(20),
+                Spacing = 16,
+                Children =
+                {
+                    new TextBlock
+                    {
+                        Text = $"Version {update.LatestVersion} is available. You're currently running {update.CurrentVersion}. Install it now?",
+                        TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                        FontSize = 15
+                    },
+                    new StackPanel
+                    {
+                        Orientation = Avalonia.Layout.Orientation.Horizontal,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                        Spacing = 8,
+                        Children =
+                        {
+                            new Button { Content = "Later", MinWidth = 82, Tag = false },
+                            new Button { Content = "Install", MinWidth = 82, Tag = true }
+                        }
+                    }
+                }
+            }
+        };
+
+        if (dialog.Content is StackPanel panel && panel.Children.LastOrDefault() is StackPanel buttons)
+        {
+            foreach (Button button in buttons.Children.OfType<Button>())
+                button.Click += (_, _) => dialog.Close((bool)button.Tag!);
+        }
+
+        return await dialog.ShowDialog<bool>(this);
     }
 
     private void MainWindow_OnKeyDown(object? sender, KeyEventArgs e)
