@@ -191,6 +191,7 @@
               <StackPanel Grid.Column="0" Spacing="10">
                 <TextBlock Text="Code Snippets" FontSize="24" FontWeight="Bold"/>
                 <TextBlock Text="BUILT-IN SKUA PATTERNS" FontSize="10" Foreground="#8290A5"/>
+                <TextBox Name="SnippetSearchInput" Watermark="Search snippets..." TextChanged="SnippetSearchInput_OnTextChanged"/>
                 <ListBox Name="SnippetsList" Background="#1A2230" SelectionChanged="SnippetsList_OnSelectionChanged"/>
               </StackPanel>
               <Border Grid.Column="1" Background="#1A2230" CornerRadius="12" Padding="18">
