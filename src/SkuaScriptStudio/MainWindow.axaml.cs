@@ -13,11 +13,12 @@ public partial class MainWindow : Window
     private readonly ScriptLibraryService _libraryService = new();
     private readonly ScriptDiagnosticsService _diagnosticsService = new();
     private ScriptDocument _document = new();
+    private bool _isUpdatingEditor;
 
     public MainWindow()
     {
         InitializeComponent();
-        EditorTextBox.Text = _document.Source;
+        SetEditorSource(_document.Source);
         RefreshLibrary();
     }
 
@@ -58,7 +59,7 @@ public partial class MainWindow : Window
                 throw new InvalidOperationException("The selected file does not have a local filesystem path.");
 
             _document = await _fileService.OpenAsync(path);
-            EditorTextBox.Text = _document.Source;
+            SetEditorSource(_document.Source);
             DocumentNameText.Text = _document.Name;
             EditorStatusText.Text = $"Opened · {path}";
             RefreshLibrary();
@@ -122,7 +123,7 @@ public partial class MainWindow : Window
                 IsDirty = true
             };
 
-            EditorTextBox.Text = generated;
+            SetEditorSource(generated);
             DocumentNameText.Text = _document.Name + " *";
             EditorStatusText.Text = "Generated code · Review and edit before saving";
             SelectTab(1);
@@ -186,7 +187,7 @@ public partial class MainWindow : Window
         try
         {
             _document = await _fileService.OpenAsync(entry.FilePath);
-            EditorTextBox.Text = _document.Source;
+            SetEditorSource(_document.Source);
             DocumentNameText.Text = _document.Name;
             EditorStatusText.Text = $"Opened from library · {entry.FilePath}";
             SelectTab(1);
@@ -213,6 +214,30 @@ public partial class MainWindow : Window
         }
     }
 
+
+    private void EditorTextBox_OnTextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
+    {
+        if (_isUpdatingEditor)
+            return;
+
+        _document.Source = EditorTextBox.Text ?? string.Empty;
+        _document.IsDirty = true;
+        DocumentNameText.Text = _document.Name + " *";
+        EditorStatusText.Text = "Unsaved changes";
+    }
+
+    private void SetEditorSource(string source)
+    {
+        _isUpdatingEditor = true;
+        try
+        {
+            EditorTextBox.Text = source;
+        }
+        finally
+        {
+            _isUpdatingEditor = false;
+        }
+    }
 
     private void AnalyzeButton_OnClick(object? sender, RoutedEventArgs e)
     {
