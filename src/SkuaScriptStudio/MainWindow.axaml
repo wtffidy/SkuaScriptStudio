@@ -153,11 +153,23 @@
           </TabItem>
 
           <TabItem Header="Library">
-            <StackPanel Spacing="12" Margin="4,18">
-              <TextBlock Text="Script Library" FontSize="26" FontWeight="Bold"/>
-              <TextBlock Text="Your local script collection will live here. Open a C# file to begin working with it." Foreground="#94A2B7"/>
-              <Button Content="Open an existing script" HorizontalAlignment="Left" Click="OpenButton_OnClick"/>
-            </StackPanel>
+            <Grid RowDefinitions="Auto,Auto,*" Margin="4,18">
+              <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+                <StackPanel Spacing="5">
+                  <TextBlock Text="Script Library" FontSize="26" FontWeight="Bold"/>
+                  <TextBlock Name="LibraryCountText" Text="0 SCRIPT(S)" Foreground="#8290A5" FontSize="10"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="＋ Import scripts" Background="#6957D9" VerticalAlignment="Center" Click="ImportToLibraryButton_OnClick"/>
+              </Grid>
+              <TextBox Name="LibrarySearchInput" Grid.Row="1" Watermark="Search your local scripts..." Margin="0,0,0,12" TextChanged="LibrarySearchInput_OnTextChanged"/>
+              <Grid Grid.Row="2" RowDefinitions="*,Auto">
+                <ListBox Name="LibraryList" Background="#1A2230"/>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+                  <Button Content="Open selected" Background="#6957D9" Click="OpenLibraryButton_OnClick"/>
+                  <Button Content="Remove from library" Click="RemoveLibraryButton_OnClick"/>
+                </StackPanel>
+              </Grid>
+            </Grid>
           </TabItem>
 
           <TabItem Header="Diagnostics">
