@@ -189,13 +189,17 @@
           </TabItem>
 
           <TabItem Header="Snippets">
-            <Grid ColumnDefinitions="260,*" ColumnSpacing="18" Margin="4,18">
-              <StackPanel Grid.Column="0" Spacing="10">
+            <Grid ColumnDefinitions="280,*" ColumnSpacing="18" Margin="4,18">
+              <Grid Grid.Column="0" RowDefinitions="Auto,Auto,Auto,Auto,*">
                 <TextBlock Text="Code Snippets" FontSize="24" FontWeight="Bold"/>
-                <TextBlock Text="BUILT-IN SKUA PATTERNS" FontSize="10" Foreground="#8290A5"/>
-                <TextBox Name="SnippetSearchInput" Watermark="Search snippets..." TextChanged="SnippetSearchInput_OnTextChanged"/>
-                <ListBox Name="SnippetsList" Background="#1A2230" SelectionChanged="SnippetsList_OnSelectionChanged"/>
-              </StackPanel>
+                <TextBlock Grid.Row="1" Text="CORE LIBRARY" FontSize="10" Foreground="#8290A5" Margin="0,8,0,4"/>
+                <ComboBox Name="SnippetCoreFilter" Grid.Row="2" SelectionChanged="SnippetFilter_OnSelectionChanged"/>
+                <ComboBox Name="SnippetCategoryFilter" Grid.Row="3" Margin="0,8,0,8" SelectionChanged="SnippetFilter_OnSelectionChanged"/>
+                <Grid Grid.Row="4" RowDefinitions="Auto,*" RowSpacing="8">
+                  <TextBox Name="SnippetSearchInput" Watermark="Search names, descriptions or code..." TextChanged="SnippetSearchInput_OnTextChanged"/>
+                  <ListBox Name="SnippetsList" Grid.Row="1" Background="#1A2230" SelectionChanged="SnippetsList_OnSelectionChanged"/>
+                </Grid>
+              </Grid>
               <Border Grid.Column="1" Background="#1A2230" CornerRadius="12" Padding="18">
                 <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="12">
                   <TextBlock Text="Snippet preview" FontSize="18" FontWeight="SemiBold"/>
