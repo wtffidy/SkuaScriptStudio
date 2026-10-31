@@ -37,24 +37,30 @@ public sealed class ScriptLibraryService
         if (string.Equals(Path.GetFullPath(sourcePath), Path.GetFullPath(destinationPath), pathComparison))
             return CreateEntry(destinationPath);
 
-        if (File.Exists(destinationPath))
+        string name = Path.GetFileNameWithoutExtension(fileName);
+        string extension = Path.GetExtension(fileName);
+        int suffix = 1;
+
+        await using FileStream source = new(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read, 81920, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        while (true)
         {
-            string name = Path.GetFileNameWithoutExtension(fileName);
-            string extension = Path.GetExtension(fileName);
-            int suffix = 2;
+            cancellationToken.ThrowIfCancellationRequested();
+            destinationPath = Path.Combine(
+                _libraryDirectory,
+                suffix == 1 ? fileName : $"{name} ({suffix}){extension}");
 
-            do
+            try
             {
-                destinationPath = Path.Combine(_libraryDirectory, $"{name} ({suffix++}){extension}");
+                await using FileStream destination = new(destinationPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 81920, FileOptions.Asynchronous | FileOptions.SequentialScan);
+                await source.CopyToAsync(destination, cancellationToken);
+                return CreateEntry(destinationPath);
             }
-            while (File.Exists(destinationPath));
+            catch (IOException) when (File.Exists(destinationPath))
+            {
+                suffix++;
+                source.Position = 0;
+            }
         }
-
-        await using FileStream source = File.OpenRead(sourcePath);
-        await using FileStream destination = new(destinationPath, FileMode.CreateNew, FileAccess.Write, FileShare.None);
-        await source.CopyToAsync(destination, cancellationToken);
-
-        return CreateEntry(destinationPath);
     }
 
     /// <summary>
