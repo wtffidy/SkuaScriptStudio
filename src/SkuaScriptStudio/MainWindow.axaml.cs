@@ -11,6 +11,7 @@ public partial class MainWindow : Window
     private readonly ScriptFileService _fileService = new();
     private readonly ScriptBuilderService _builderService = new();
     private readonly ScriptLibraryService _libraryService = new();
+    private readonly ScriptDiagnosticsService _diagnosticsService = new();
     private ScriptDocument _document = new();
 
     public MainWindow()
@@ -210,6 +211,17 @@ public partial class MainWindow : Window
         {
             await ShowErrorAsync("Unable to remove library script", exception.Message);
         }
+    }
+
+
+    private void AnalyzeButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        IReadOnlyList<string> diagnostics = _diagnosticsService.Analyze(EditorTextBox.Text ?? string.Empty);
+        DiagnosticsList.ItemsSource = diagnostics;
+        DiagnosticsCountText.Text = diagnostics.Count == 0
+            ? "NO SYNTAX ISSUES FOUND"
+            : $"{diagnostics.Count} ISSUE(S) FOUND";
+        SelectTab(4);
     }
 
     private async Task ShowErrorAsync(string title, string message)
