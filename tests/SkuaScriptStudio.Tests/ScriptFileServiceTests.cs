@@ -36,21 +36,20 @@ public sealed class ScriptFileServiceTests
     }
 
     [Fact]
-    public async Task SaveAsync_LeavesDocumentDirtyWhenSourceChangesDuringWrite()
+    public async Task SaveAsync_HonorsCancellationWithoutCreatingDestination()
     {
         string root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
         string path = Path.Combine(root, "Farm.cs");
-        ScriptDocument document = new() { Source = new string('a', 1024 * 1024), IsDirty = true };
+        ScriptDocument document = new() { Source = "script", IsDirty = true };
         ScriptFileService service = new();
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
 
         try
         {
-            Task saveTask = service.SaveAsync(document, path);
-            document.Source = "newer edits";
-            await saveTask;
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => service.SaveAsync(document, path, cancellation.Token));
 
-            Assert.Equal(new string('a', 1024 * 1024), await File.ReadAllTextAsync(path));
-            Assert.Equal("newer edits", document.Source);
+            Assert.False(File.Exists(path));
             Assert.True(document.IsDirty);
         }
         finally
