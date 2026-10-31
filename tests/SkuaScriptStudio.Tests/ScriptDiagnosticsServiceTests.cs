@@ -1,3 +1,4 @@
+using SkuaScriptStudio.Models;
 using SkuaScriptStudio.Services;
 using Xunit;
 
@@ -10,7 +11,7 @@ public sealed class ScriptDiagnosticsServiceTests
     [Fact]
     public void Analyze_ReturnsNoIssuesForValidSyntax()
     {
-        IReadOnlyList<string> diagnostics = _service.Analyze("public class TestScript { public void Run() { } }");
+        IReadOnlyList<ScriptDiagnostic> diagnostics = _service.Analyze("public class TestScript { public void Run() { } }");
 
         Assert.Empty(diagnostics);
     }
@@ -18,12 +19,22 @@ public sealed class ScriptDiagnosticsServiceTests
     [Fact]
     public void Analyze_ReportsSyntaxErrorsWithLineAndColumn()
     {
-        IReadOnlyList<string> diagnostics = _service.Analyze("public class TestScript\n{\n    public void Run(\n}");
+        IReadOnlyList<ScriptDiagnostic> diagnostics = _service.Analyze("public class TestScript\n{\n    public void Run(\n}");
 
-        Assert.NotEmpty(diagnostics);
-        Assert.Contains(diagnostics, diagnostic =>
-            diagnostic.StartsWith("Error · Line ", StringComparison.Ordinal) &&
-            diagnostic.Contains("Column ", StringComparison.Ordinal));
+        ScriptDiagnostic diagnostic = Assert.Single(diagnostics);
+        Assert.Equal("Error", diagnostic.Severity);
+        Assert.StartsWith("CS", diagnostic.Id, StringComparison.Ordinal);
+        Assert.True(diagnostic.Line > 0);
+        Assert.True(diagnostic.Column > 0);
+    }
+
+    [Fact]
+    public void Analyze_ReportsWarnings()
+    {
+        IReadOnlyList<ScriptDiagnostic> diagnostics = _service.Analyze("#warning Review this script");
+
+        ScriptDiagnostic diagnostic = Assert.Single(diagnostics);
+        Assert.Equal("Warning", diagnostic.Severity);
     }
 
     [Fact]
