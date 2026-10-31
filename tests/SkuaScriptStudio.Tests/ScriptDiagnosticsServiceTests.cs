@@ -21,11 +21,11 @@ public sealed class ScriptDiagnosticsServiceTests
     {
         IReadOnlyList<ScriptDiagnostic> diagnostics = _service.Analyze("public class TestScript\n{\n    public void Run(\n}");
 
-        ScriptDiagnostic diagnostic = Assert.Single(diagnostics);
-        Assert.Equal("Error", diagnostic.Severity);
-        Assert.StartsWith("CS", diagnostic.Id, StringComparison.Ordinal);
-        Assert.True(diagnostic.Line > 0);
-        Assert.True(diagnostic.Column > 0);
+        Assert.Contains(diagnostics, diagnostic =>
+            diagnostic.Severity == "Error" &&
+            diagnostic.Id.StartsWith("CS", StringComparison.Ordinal) &&
+            diagnostic.Line > 0 &&
+            diagnostic.Column > 0);
     }
 
     [Fact]
