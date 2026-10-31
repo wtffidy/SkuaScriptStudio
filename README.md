@@ -42,6 +42,18 @@ dotnet run --project src/SkuaScriptStudio/SkuaScriptStudio.csproj
 dotnet test SkuaScriptStudio.sln --configuration Release
 ~~~
 
+## Releases and updates
+
+Releases are created manually from GitHub Actions:
+
+1. Open **[Release Skua Script Studio](https://github.com/wtffidy/SkuaScriptStudio/actions/workflows/release.yml)**.
+2. Select **Run workflow**.
+3. Enter the version without a `v` prefix (for example, `0.1.1`). Versions must increase for the in-app updater to detect them.
+4. Optionally mark the release as a prerelease and provide release notes.
+5. Run the workflow. It builds Windows x64 and Linux x64 packages, then publishes both ZIP/TAR.GZ files to a versioned GitHub Release.
+
+The desktop app's **Check for updates** button checks the latest non-prerelease GitHub Release. On Windows and Linux, it can download and apply the matching package, then restart the application. Close the app during installation; the update helper waits for the current process to exit before replacing application files. Keep the application in a folder your user account can write to. Android releases are not part of this workflow yet.
+
 ## Local data
 
 The script library is stored under the current user's application data directory:
