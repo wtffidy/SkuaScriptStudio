@@ -172,7 +172,7 @@ public partial class MainWindow : Window
             entries = entries.Where(entry => entry.Name.Contains(filter, StringComparison.OrdinalIgnoreCase));
 
         LibraryList.ItemsSource = entries.ToArray();
-        LibraryCountText.Text = $"{LibraryList.ItemCount} SCRIPT(S)";
+        LibraryCountText.Text = $"{LibraryList.Items.Count} SCRIPT(S)";
     }
 
     private void LibrarySearchInput_OnTextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e) => RefreshLibrary();
