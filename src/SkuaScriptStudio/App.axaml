@@ -1,0 +1,27 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SkuaScriptStudio.App"
+             RequestedThemeVariant="Dark">
+  <Application.Styles>
+    <FluentTheme />
+    <Style Selector="Window">
+      <Setter Property="Background" Value="#10131A" />
+      <Setter Property="Foreground" Value="#E7EAF0" />
+    </Style>
+    <Style Selector="Button.nav">
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Padding" Value="14,10" />
+      <Setter Property="Margin" Value="0,3" />
+      <Setter Property="Background" Value="#1A202B" />
+      <Setter Property="CornerRadius" Value="7" />
+    </Style>
+    <Style Selector="TextBox.editor">
+      <Setter Property="FontFamily" Value="Cascadia Code,Consolas,monospace" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="Background" Value="#111720" />
+      <Setter Property="Foreground" Value="#DCE5F2" />
+      <Setter Property="BorderBrush" Value="#293445" />
+      <Setter Property="Padding" Value="14" />
+    </Style>
+  </Application.Styles>
+</Application>
