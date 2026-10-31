@@ -1,5 +1,30 @@
 # Skua Script Studio
 
-A standalone cross-platform desktop environment for creating, editing, organizing, and validating Skua C# scripts.
+A cross-platform desktop workspace for creating and managing Skua C# scripts.
 
-Built with .NET 10 and Avalonia UI. The initial application foundation is developed on the `dev/foundation` branch.
+## Features
+
+- Open and save local C# scripts.
+- Import scripts into an application-managed local library.
+- Search, open, and remove library copies without deleting the original imported files.
+- Generate editable `Core.HuntMonster` code with the visual builder.
+- Windows and Linux CI build/test workflow targeting .NET 10.
+
+## Local data
+
+The script library is stored under the current user's application data directory:
+
+- Windows: `%APPDATA%/SkuaScriptStudio/Library`
+- Linux: `~/.config/SkuaScriptStudio/Library` (based on the platform application-data path)
+
+Imported scripts are copied into this folder. Editing a script opened from the library saves changes to the library copy.
+
+## Build
+
+```bash
+dotnet restore SkuaScriptStudio.sln
+dotnet build SkuaScriptStudio.sln --configuration Release
+dotnet test SkuaScriptStudio.sln --configuration Release
+```
+
+.NET 10 SDK required.
