@@ -17,6 +17,7 @@ public partial class MainWindow : Window
     private ScriptDocument _document = new();
     private bool _isUpdatingEditor;
     private long _documentLoadVersion;
+    private long _documentEditVersion;
     private CancellationTokenSource? _diagnosticsCancellation;
     private CancellationTokenSource? _libraryRefreshCancellation;
     private ScriptLibraryEntry[] _libraryEntries = [];
@@ -85,15 +86,16 @@ public partial class MainWindow : Window
             });
 
             IStorageFile? file = files.FirstOrDefault();
-            if (file is null || loadVersion != _documentLoadVersion)
+            if (file is null || loadVersion != _documentLoadVersion || !await ConfirmDocumentReplacementAsync())
                 return;
 
+            long editVersion = _documentEditVersion;
             string? path = file.TryGetLocalPath();
             if (string.IsNullOrWhiteSpace(path))
                 throw new InvalidOperationException("The selected file does not have a local filesystem path.");
 
             ScriptDocument document = await _fileService.OpenAsync(path);
-            if (loadVersion != _documentLoadVersion)
+            if (loadVersion != _documentLoadVersion || editVersion != _documentEditVersion)
                 return;
 
             _document = document;
@@ -190,6 +192,20 @@ public partial class MainWindow : Window
         }
     }
 
+    private async Task<bool> ConfirmDocumentReplacementAsync()
+    {
+        if (!_document.IsDirty)
+            return true;
+
+        UnsavedChangesChoice choice = await ShowUnsavedChangesDialogAsync();
+        return choice switch
+        {
+            UnsavedChangesChoice.Save => await SaveDocumentAsync(_document),
+            UnsavedChangesChoice.Discard => true,
+            _ => false
+        };
+    }
+
     private async Task<UnsavedChangesChoice> ShowUnsavedChangesDialogAsync()
     {
         Window dialog = new()
@@ -243,8 +259,10 @@ public partial class MainWindow : Window
         Discard
     }
 
-    private void GenerateButton_OnClick(object? sender, RoutedEventArgs e)
+    private async void GenerateButton_OnClick(object? sender, RoutedEventArgs e)
     {
+        if (!await ConfirmDocumentReplacementAsync())
+            return;
         string map = MapInput.Text?.Trim() ?? string.Empty;
         string monster = MonsterInput.Text?.Trim() ?? string.Empty;
         string item = ItemInput.Text?.Trim() ?? string.Empty;
@@ -358,10 +376,14 @@ public partial class MainWindow : Window
             return;
 
         long loadVersion = ++_documentLoadVersion;
+        if (!await ConfirmDocumentReplacementAsync())
+            return;
+
+        long editVersion = _documentEditVersion;
         try
         {
             ScriptDocument document = await _fileService.OpenAsync(entry.FilePath);
-            if (loadVersion != _documentLoadVersion)
+            if (loadVersion != _documentLoadVersion || editVersion != _documentEditVersion)
                 return;
 
             _document = document;
@@ -443,6 +465,7 @@ public partial class MainWindow : Window
 
         _document.Source = EditorTextBox.Text ?? string.Empty;
         _document.IsDirty = true;
+        _documentEditVersion++;
         InvalidateDiagnostics();
         DocumentNameText.Text = _document.Name + " *";
         EditorStatusText.Text = "Unsaved changes";
@@ -450,6 +473,7 @@ public partial class MainWindow : Window
 
     private void SetEditorSource(string source)
     {
+        _documentEditVersion++;
         InvalidateDiagnostics();
         _isUpdatingEditor = true;
         try
