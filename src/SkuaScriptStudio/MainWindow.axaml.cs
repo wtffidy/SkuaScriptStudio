@@ -59,7 +59,7 @@ public partial class MainWindow : Window
 
             UpdateButton.Content = $"Install v{result.LatestVersion}";
             bool install = await ShowUpdatePromptAsync(result);
-            if (!install)
+            if (!install || !await ConfirmDocumentReplacementAsync("installing an update"))
                 return;
 
             UpdateButton.Content = "Downloading...";
