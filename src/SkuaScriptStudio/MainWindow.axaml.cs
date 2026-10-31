@@ -10,12 +10,14 @@ public partial class MainWindow : Window
 {
     private readonly ScriptFileService _fileService = new();
     private readonly ScriptBuilderService _builderService = new();
+    private readonly ScriptLibraryService _libraryService = new();
     private ScriptDocument _document = new();
 
     public MainWindow()
     {
         InitializeComponent();
         EditorTextBox.Text = _document.Source;
+        RefreshLibrary();
     }
 
     private void HomeNav_OnClick(object? sender, RoutedEventArgs e) => SelectTab(0);
@@ -58,6 +60,7 @@ public partial class MainWindow : Window
             EditorTextBox.Text = _document.Source;
             DocumentNameText.Text = _document.Name;
             EditorStatusText.Text = $"Opened · {path}";
+            RefreshLibrary();
             SelectTab(1);
         }
         catch (Exception exception)
@@ -92,6 +95,7 @@ public partial class MainWindow : Window
             await _fileService.SaveAsync(_document, path);
             DocumentNameText.Text = _document.Name;
             EditorStatusText.Text = $"Saved · {path}";
+            RefreshLibrary();
         }
         catch (Exception exception)
         {
@@ -125,6 +129,86 @@ public partial class MainWindow : Window
         catch (ArgumentException exception)
         {
             _ = ShowErrorAsync("Missing builder information", exception.Message);
+        }
+    }
+
+
+    private async void ImportToLibraryButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        IReadOnlyList<IStorageFile> files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Import scripts into library",
+            AllowMultiple = true,
+            FileTypeFilter = [new FilePickerFileType("C# scripts") { Patterns = ["*.cs"] }]
+        });
+
+        try
+        {
+            foreach (IStorageFile file in files)
+            {
+                string? path = file.TryGetLocalPath();
+                if (!string.IsNullOrWhiteSpace(path))
+                    await _libraryService.ImportAsync(path);
+            }
+
+            RefreshLibrary();
+            EditorStatusText.Text = $"Library updated · {files.Count} file(s) imported";
+        }
+        catch (Exception exception)
+        {
+            await ShowErrorAsync("Unable to import scripts", exception.Message);
+        }
+    }
+
+    private void RefreshLibrary()
+    {
+        if (LibraryList is null)
+            return;
+
+        string filter = LibrarySearchInput?.Text?.Trim() ?? string.Empty;
+        IEnumerable<ScriptLibraryEntry> entries = _libraryService.GetEntries();
+
+        if (!string.IsNullOrWhiteSpace(filter))
+            entries = entries.Where(entry => entry.Name.Contains(filter, StringComparison.OrdinalIgnoreCase));
+
+        LibraryList.ItemsSource = entries.ToArray();
+        LibraryCountText.Text = $"{LibraryList.ItemCount} SCRIPT(S)";
+    }
+
+    private void LibrarySearchInput_OnTextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e) => RefreshLibrary();
+
+    private async void OpenLibraryButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (LibraryList.SelectedItem is not ScriptLibraryEntry entry)
+            return;
+
+        try
+        {
+            _document = await _fileService.OpenAsync(entry.FilePath);
+            EditorTextBox.Text = _document.Source;
+            DocumentNameText.Text = _document.Name;
+            EditorStatusText.Text = $"Opened from library · {entry.FilePath}";
+            SelectTab(1);
+        }
+        catch (Exception exception)
+        {
+            await ShowErrorAsync("Unable to open library script", exception.Message);
+        }
+    }
+
+    private async void RemoveLibraryButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (LibraryList.SelectedItem is not ScriptLibraryEntry entry)
+            return;
+
+        try
+        {
+            _libraryService.Remove(entry.FilePath);
+            RefreshLibrary();
+        }
+        catch (Exception exception)
+        {
+            await ShowErrorAsync("Unable to remove library script", exception.Message);
         }
     }
 
