@@ -7,6 +7,61 @@ namespace SkuaScriptStudio.Tests;
 public sealed class ScriptLibraryServiceTests
 {
     [Fact]
+    public async Task ImportAsync_HandlesConcurrentDuplicateNames()
+    {
+        string root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+        string firstDirectory = Path.Combine(root, "first");
+        string secondDirectory = Path.Combine(root, "second");
+        string libraryDirectory = Path.Combine(root, "library");
+        Directory.CreateDirectory(firstDirectory);
+        Directory.CreateDirectory(secondDirectory);
+        string firstPath = Path.Combine(firstDirectory, "Farm.cs");
+        string secondPath = Path.Combine(secondDirectory, "Farm.cs");
+        await File.WriteAllTextAsync(firstPath, "first");
+        await File.WriteAllTextAsync(secondPath, "second");
+
+        try
+        {
+            ScriptLibraryService service = new(libraryDirectory);
+            ScriptLibraryEntry[] entries = await Task.WhenAll(
+                service.ImportAsync(firstPath),
+                service.ImportAsync(secondPath));
+
+            Assert.Equal(2, entries.Select(entry => entry.Name).Distinct(StringComparer.Ordinal).Count());
+            Assert.Equal(2, service.GetEntries().Count);
+            Assert.Contains("first", await File.ReadAllTextAsync(entries[0].FilePath)) ||
+                Assert.Contains("second", await File.ReadAllTextAsync(entries[0].FilePath));
+            Assert.Contains("first", await File.ReadAllTextAsync(entries[1].FilePath)) ||
+                Assert.Contains("second", await File.ReadAllTextAsync(entries[1].FilePath));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+                Directory.Delete(root, true);
+        }
+    }
+
+    [Fact]
+    public async Task ImportAsync_RejectsNonCSharpFiles()
+    {
+        string root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        string sourcePath = Path.Combine(root, "notes.txt");
+        await File.WriteAllTextAsync(sourcePath, "not a script");
+
+        try
+        {
+            ScriptLibraryService service = new(Path.Combine(root, "library"));
+
+            await Assert.ThrowsAsync<ArgumentException>(() => service.ImportAsync(sourcePath));
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
+    }
+
+    [Fact]
     public async Task ImportAsync_CopiesScriptIntoLibrary()
     {
         string root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
