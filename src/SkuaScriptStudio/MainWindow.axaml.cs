@@ -275,8 +275,6 @@ public partial class MainWindow : Window
 
     private async void GenerateButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (!await ConfirmDocumentReplacementAsync())
-            return;
         string map = MapInput.Text?.Trim() ?? string.Empty;
         string monster = MonsterInput.Text?.Trim() ?? string.Empty;
         string item = ItemInput.Text?.Trim() ?? string.Empty;
@@ -286,6 +284,9 @@ public partial class MainWindow : Window
         try
         {
             string generated = _builderService.GenerateHuntMonster(map, monster, item, quantity, classType);
+            if (!await ConfirmDocumentReplacementAsync())
+                return;
+
             _documentLoadCancellation?.Cancel();
             ++_documentLoadVersion;
             _document = new ScriptDocument
