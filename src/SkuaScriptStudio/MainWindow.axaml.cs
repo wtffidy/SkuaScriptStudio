@@ -12,6 +12,7 @@ public partial class MainWindow : Window
     private readonly ScriptBuilderService _builderService = new();
     private readonly ScriptLibraryService _libraryService = new();
     private readonly ScriptDiagnosticsService _diagnosticsService = new();
+    private readonly ScriptSnippetService _snippetService = new();
     private ScriptDocument _document = new();
     private bool _isUpdatingEditor;
 
@@ -19,6 +20,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         SetEditorSource(_document.Source);
+        SnippetsList.ItemsSource = _snippetService.GetSnippets();
         RefreshLibrary();
     }
 
@@ -214,6 +216,33 @@ public partial class MainWindow : Window
         }
     }
 
+
+    private void SnippetsList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (SnippetsList.SelectedItem is not ScriptSnippet snippet)
+            return;
+
+        SnippetDescriptionText.Text = snippet.Description;
+        SnippetPreviewText.Text = snippet.Code;
+    }
+
+    private void InsertSnippetButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (SnippetsList.SelectedItem is not ScriptSnippet snippet)
+            return;
+
+        string source = EditorTextBox.Text ?? string.Empty;
+        string updatedSource = string.IsNullOrWhiteSpace(source)
+            ? snippet.Code
+            : $"{source.TrimEnd()}{Environment.NewLine}{Environment.NewLine}{snippet.Code}";
+
+        _document.Source = updatedSource;
+        _document.IsDirty = true;
+        SetEditorSource(updatedSource);
+        DocumentNameText.Text = _document.Name + " *";
+        EditorStatusText.Text = $"Inserted snippet · {snippet.Name}";
+        SelectTab(1);
+    }
 
     private void EditorTextBox_OnTextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
     {
