@@ -7,6 +7,31 @@ namespace SkuaScriptStudio.Tests;
 public sealed class ScriptFileServiceTests
 {
     [Fact]
+    public async Task OpenAsync_LoadsSourceAndFileMetadata()
+    {
+        string root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        string path = Path.Combine(root, "Farm.cs");
+        await File.WriteAllTextAsync(path, "Core.HuntMonster();");
+        ScriptFileService service = new();
+
+        try
+        {
+            ScriptDocument document = await service.OpenAsync(path);
+
+            Assert.Equal("Farm.cs", document.Name);
+            Assert.Equal(Path.GetFullPath(path), document.FilePath);
+            Assert.Equal("Core.HuntMonster();", document.Source);
+            Assert.False(document.IsDirty);
+            Assert.NotEqual(default, document.LastModifiedUtc);
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
+    }
+
+    [Fact]
     public async Task SaveAsync_CreatesAndOverwritesScript()
     {
         string root = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
