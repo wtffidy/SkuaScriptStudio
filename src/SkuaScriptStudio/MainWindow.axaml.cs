@@ -560,7 +560,7 @@ public partial class MainWindow : Window
     {
         List<string> missingIncludes = includes
             .Select(include => $"//cs_include {include}")
-            .Where(directive => !source.Split(['\\r', '\\n'], StringSplitOptions.RemoveEmptyEntries)
+            .Where(directive => !source.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
                 .Any(line => string.Equals(line.Trim(), directive, StringComparison.OrdinalIgnoreCase)))
             .ToList();
 
