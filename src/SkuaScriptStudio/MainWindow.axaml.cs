@@ -90,7 +90,7 @@ public partial class MainWindow : Window
             });
 
             IStorageFile? file = files.FirstOrDefault();
-            if (file is null || loadVersion != _documentLoadVersion || !await ConfirmDocumentReplacementAsync())
+            if (file is null || loadVersion != _documentLoadVersion || !await ConfirmDocumentReplacementAsync("opening another script"))
                 return;
 
             long editVersion = _documentEditVersion;
@@ -190,7 +190,7 @@ public partial class MainWindow : Window
         _isConfirmingClose = true;
         try
         {
-            UnsavedChangesChoice choice = await ShowUnsavedChangesDialogAsync();
+            UnsavedChangesChoice choice = await ShowUnsavedChangesDialogAsync("closing the studio");
             if (choice == UnsavedChangesChoice.Save && !await SaveDocumentAsync(_document, refreshLibrary: false))
                 return;
 
@@ -206,12 +206,12 @@ public partial class MainWindow : Window
         }
     }
 
-    private async Task<bool> ConfirmDocumentReplacementAsync()
+    private async Task<bool> ConfirmDocumentReplacementAsync(string action)
     {
         if (!_document.IsDirty)
             return true;
 
-        UnsavedChangesChoice choice = await ShowUnsavedChangesDialogAsync();
+        UnsavedChangesChoice choice = await ShowUnsavedChangesDialogAsync(action);
         return choice switch
         {
             UnsavedChangesChoice.Save => await SaveDocumentAsync(_document, refreshLibrary: false),
@@ -220,7 +220,7 @@ public partial class MainWindow : Window
         };
     }
 
-    private async Task<UnsavedChangesChoice> ShowUnsavedChangesDialogAsync()
+    private async Task<UnsavedChangesChoice> ShowUnsavedChangesDialogAsync(string action)
     {
         Window dialog = new()
         {
@@ -237,7 +237,7 @@ public partial class MainWindow : Window
                 {
                     new TextBlock
                     {
-                        Text = $"Save changes to {_document.Name} before closing?",
+                        Text = $"Save changes to {_document.Name} before {action}?",
                         TextWrapping = Avalonia.Media.TextWrapping.Wrap,
                         FontSize = 15
                     },
@@ -284,7 +284,7 @@ public partial class MainWindow : Window
         try
         {
             string generated = _builderService.GenerateHuntMonster(map, monster, item, quantity, classType);
-            if (!await ConfirmDocumentReplacementAsync())
+            if (!await ConfirmDocumentReplacementAsync("replacing the current script"))
                 return;
 
             _documentLoadCancellation?.Cancel();
@@ -398,7 +398,7 @@ public partial class MainWindow : Window
 
         try
         {
-            if (!await ConfirmDocumentReplacementAsync() || cancellation.IsCancellationRequested || loadVersion != _documentLoadVersion)
+            if (!await ConfirmDocumentReplacementAsync("opening another script") || cancellation.IsCancellationRequested || loadVersion != _documentLoadVersion)
                 return;
 
             long editVersion = _documentEditVersion;
