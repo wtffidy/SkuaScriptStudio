@@ -38,7 +38,7 @@ dotnet run --project src/SkuaScriptStudio/SkuaScriptStudio.csproj
 
 ### Build locally
 
-The local build scripts run the test suite, detect the current OS/architecture, and publish a self-contained single-file app to `artifacts/local`.
+The local build scripts pull the latest `main` (when the working tree is clean), detect the current OS/architecture, reuse incremental build outputs, and publish a self-contained single-file app to `artifacts/local`. They use parallel MSBuild workers and skip tests by default for faster iteration.
 
 **Windows (PowerShell):**
 
@@ -46,7 +46,7 @@ The local build scripts run the test suite, detect the current OS/architecture, 
 .\build.ps1
 ~~~
 
-Add `-Run` to launch the app after publishing, or `-SkipTests` to skip tests.
+Add `-Run` to launch the app after publishing, `-Test` to run tests, or `-NoPull` to build the current checkout without pulling.
 
 **Linux / macOS:**
 
@@ -54,7 +54,7 @@ Add `-Run` to launch the app after publishing, or `-SkipTests` to skip tests.
 bash build.sh
 ~~~
 
-Add `--run` to launch the app after publishing, or `--skip-tests` to skip tests.
+Add `--run` to launch the app after publishing, `--test` to run tests, or `--no-pull` to build the current checkout without pulling.
 
 ### Run tests separately
 
