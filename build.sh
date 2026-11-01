@@ -5,51 +5,59 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOLUTION="$ROOT/SkuaScriptStudio.sln"
 PROJECT="$ROOT/src/SkuaScriptStudio/SkuaScriptStudio.csproj"
 OUTPUT="$ROOT/artifacts/local"
+JOBS="$(getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)"
+(( JOBS > 16 )) && JOBS=16
+(( JOBS < 4 )) && JOBS=4
 
-if ! command -v dotnet >/dev/null 2>&1; then
-    echo "The .NET 10 SDK was not found. Install it from https://dotnet.microsoft.com/download/dotnet/10.0" >&2
-    exit 1
-fi
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1 MSBUILDDISABLENODEREUSE=0
 
+command -v dotnet >/dev/null 2>&1 || { echo ".NET 10 SDK is required." >&2; exit 1; }
 SDK_VERSION="$(dotnet --version)"
 SDK_MAJOR="${SDK_VERSION%%.*}"
-if [[ "$SDK_MAJOR" -lt 10 ]]; then
-    echo "Skua Script Studio requires the .NET 10 SDK. Found $SDK_VERSION." >&2
-    exit 1
+(( SDK_MAJOR >= 10 )) || { echo ".NET 10 SDK is required. Found $SDK_VERSION." >&2; exit 1; }
+
+if [[ "$(uname -s)" == "Linux" ]]; then
+    case "$(uname -m)" in
+        x86_64) RID="linux-x64" ;;
+        aarch64|arm64) RID="linux-arm64" ;;
+        *) echo "Unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+    esac
+else
+    case "$(uname -m)" in
+        x86_64) RID="osx-x64" ;;
+        arm64|aarch64) RID="osx-arm64" ;;
+        *) echo "Unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+    esac
 fi
 
-ARCH="$(uname -m)"
-case "$(uname -s):$ARCH" in
-    Linux:x86_64) RID="linux-x64" ;;
-    Linux:aarch64|Linux:arm64) RID="linux-arm64" ;;
-    Darwin:x86_64) RID="osx-x64" ;;
-    Darwin:arm64|Darwin:aarch64) RID="osx-arm64" ;;
-    *) echo "Unsupported platform: $(uname -s) $ARCH" >&2; exit 1 ;;
-esac
-
-SKIP_TESTS=0
+TEST=0
 RUN_APP=0
+NO_PULL=0
 for ARG in "$@"; do
     case "$ARG" in
-        --skip-tests) SKIP_TESTS=1 ;;
+        --test) TEST=1 ;;
         --run) RUN_APP=1 ;;
+        --no-pull) NO_PULL=1 ;;
         *) echo "Unknown argument: $ARG" >&2; exit 1 ;;
     esac
 done
 
-echo "Building Skua Script Studio for $RID..."
-if [[ "$SKIP_TESTS" -eq 0 ]]; then
-    dotnet test "$SOLUTION" --configuration Release
+if [[ "$NO_PULL" -eq 0 && -d "$ROOT/.git" ]]; then
+    command -v git >/dev/null 2>&1 || { echo "Git is required to update the repository." >&2; exit 1; }
+    [[ -z "$(git -C "$ROOT" status --porcelain)" ]] || { echo "Local changes detected. Commit or stash them before building."; exit 1; }
+    echo "Pulling latest main..."
+    git -C "$ROOT" pull --ff-only origin main
 fi
 
-rm -rf "$OUTPUT"
-dotnet publish "$PROJECT" --configuration Release --runtime "$RID" --self-contained true \
-    -p:PublishSingleFile=true \
-    -p:IncludeNativeLibrariesForSelfExtract=true \
-    -p:EnableCompressionInSingleFile=true \
-    -o "$OUTPUT"
+echo "Building $RID using $JOBS MSBuild workers (incremental)..."
+if [[ "$TEST" -eq 1 ]]; then
+    dotnet test "$SOLUTION" --configuration Release --no-restore --verbosity quiet -m:"$JOBS"
+fi
+
+dotnet restore "$PROJECT" --runtime "$RID" --verbosity quiet
+dotnet publish "$PROJECT" --configuration Release --runtime "$RID" --self-contained true --no-restore --verbosity quiet -m:"$JOBS" -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o "$OUTPUT"
 
 echo "Build complete: $OUTPUT"
 if [[ "$RUN_APP" -eq 1 ]]; then
-    "$OUTPUT/SkuaScriptStudio"
+    if [[ "$RID" == win-* ]]; then "$OUTPUT/SkuaScriptStudio.exe"; else "$OUTPUT/SkuaScriptStudio"; fi
 fi
