@@ -68,7 +68,7 @@ public sealed class ScriptBuilderService
             "Equip a class" =>
                 $"Core.EquipClass(ClassType.{(step.ClassType is "Farm" or "Solo" or "Support" ? step.ClassType : "Farm")});",
             "Equip gear" when !string.IsNullOrWhiteSpace(step.Value) =>
-                $"Core.Equip({value});",
+                $"Core.Equip({string.Join(", ", step.Value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(name => SymbolDisplay.FormatLiteral(name, quote: true)))});",
             "Travel to a map" when !string.IsNullOrWhiteSpace(step.Map) =>
                 $"Core.Join({map});",
             "Move to a cell" when HasValues(step.Cell, step.Pad) =>
