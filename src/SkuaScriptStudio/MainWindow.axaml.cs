@@ -494,7 +494,14 @@ public partial class MainWindow : Window
 
         try
         {
-            _ = _builderService.GenerateScript([step]);
+            if (action is "If item missing" or "Repeat until item owned")
+            {
+                if (string.IsNullOrWhiteSpace(step.Item))
+                    throw new ArgumentException($"The block '{action}' requires an item name.");
+            }
+            else if (action is not "End block" and not "End repeat")
+                _ = _builderService.GenerateScript([step]);
+
             bool wasEditing = _editingBuilderStepIndex >= 0 && _editingBuilderStepIndex < _builderSteps.Count;
             int editedIndex = _editingBuilderStepIndex;
             if (wasEditing)
