@@ -382,24 +382,24 @@ public partial class MainWindow : Window
 
         string action = (BuilderActionInput?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
         bool isHunt = action == "Hunt for an item";
-        bool isQuest = action is "Accept a quest" or "Complete a quest";
+        bool isQuest = action is "Accept a quest" or "Complete a quest" or "Register quests";
         bool isEquip = action == "Equip a class";
         bool isTravel = action == "Travel to a map";
         bool isInventory = action == "Check inventory";
         bool isLog = action == "Log a message";
         bool isWait = action is "Wait" or "Wait for an item";
         bool isCell = action == "Move to a cell";
-        bool isItemAction = action is "Wait for an item" or "Add drops" or "Remove drops" or "Bank items" or "Unbank items" or "Log farming progress" or "If item missing" or "Repeat until item owned";
+        bool isItemAction = action is "Wait for an item" or "Add drops" or "Remove drops" or "Bank items" or "Unbank items" or "Log farming progress" or "If item missing";
         bool isGear = action == "Equip gear";
         bool isAggro = action == "Configure aggro";
 
         BuilderMapField.IsVisible = isHunt || isTravel;
         BuilderTargetField.IsVisible = isHunt;
         BuilderItemField.IsVisible = isHunt || isInventory || isItemAction;
-        BuilderQuantityField.IsVisible = isHunt || isInventory || isWait || action == "Log farming progress";
+        BuilderQuantityField.IsVisible = isHunt || isInventory || isWait || action is "Log farming progress" or "If item missing" or "Repeat N times";
         BuilderValueField.IsVisible = isQuest || isLog || isGear;
-        BuilderValueLabel.Text = isGear ? "Gear item name(s), comma separated" : isQuest ? "Quest ID" : "Message";
-        BuilderValueInput.Watermark = isGear ? "e.g. Blade of Awe, Cape of Awe" : isQuest ? "e.g. 12345" : "Message to show in the bot log";
+        BuilderValueLabel.Text = isGear ? "Gear item name(s), comma separated" : action == "Register quests" ? "Quest IDs (comma separated)" : isQuest ? "Quest ID" : "Message";
+        BuilderValueInput.Watermark = isGear ? "e.g. Blade of Awe, Cape of Awe" : action == "Register quests" ? "e.g. 12345, 12346" : isQuest ? "e.g. 12345" : "Message to show in the bot log";
         BuilderClassField.IsVisible = isEquip;
         BuilderCellFields.IsVisible = isCell;
         BuilderEnabledInput.IsVisible = isAggro;
@@ -407,6 +407,8 @@ public partial class MainWindow : Window
         {
             "Hunt for an item" => "Tell us where to go, which monster to fight, and which item to collect.",
             "Accept a quest" or "Complete a quest" => "Enter the numeric quest ID. You do not need to write any code.",
+            "Register quests" => "Register one or more quest IDs. Separate multiple IDs with commas.",
+            "Cancel registered quests" => "Clear the currently registered quest list.",
             "Equip a class" => "Choose the class the bot should equip before continuing.",
             "Travel to a map" => "Enter the map name the bot should travel to.",
             "Check inventory" => "Enter the item and minimum quantity the bot should check for.",
@@ -423,7 +425,7 @@ public partial class MainWindow : Window
             "Rest" => "Restore health and mana before the next action.",
             "Configure aggro" => "Choose whether the script should handle monster aggro.",
             "If item missing" => "Opens an IF block. The blocks you add next run only when you do not own the requested quantity. Close it with End block.",
-            "Repeat until item owned" => "Opens a loop that repeats its child blocks until you own the requested quantity. The loop also stops when the bot is stopped. Close it with End repeat.",
+            "Repeat N times" => "Repeats the blocks inside this section the number of times entered. It also stops when the bot is stopped. Close it with End repeat.",
             "End block" => "Closes the most recently opened IF block.",
             "End repeat" => "Closes the most recently opened REPEAT block.",
             _ => "Choose a block to see exactly what information it needs."
@@ -494,7 +496,7 @@ public partial class MainWindow : Window
 
         try
         {
-            if (action is "If item missing" or "Repeat until item owned")
+            if (action == "If item missing")
             {
                 if (string.IsNullOrWhiteSpace(step.Item))
                     throw new ArgumentException($"The block '{action}' requires an item name.");
