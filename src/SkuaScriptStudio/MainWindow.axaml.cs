@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Input;
@@ -17,6 +18,8 @@ public partial class MainWindow : Window
     private readonly ScriptSnippetService _snippetService = new();
     private readonly List<ScriptBuilderStep> _builderSteps = [];
     private int _editingBuilderStepIndex = -1;
+    private int _builderDragSourceIndex = -1;
+    private Point _builderDragStart;
     private ScriptDocument _document = new();
     private bool _isUpdatingEditor;
     private long _documentLoadVersion;
@@ -371,6 +374,60 @@ public partial class MainWindow : Window
         Cancel,
         Save,
         Discard
+    }
+
+    private void BuilderStepsList_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        _builderDragSourceIndex = BuilderStepsList.SelectedIndex;
+        _builderDragStart = e.GetPosition(BuilderStepsList);
+    }
+
+    private async void BuilderStepsList_OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (_builderDragSourceIndex < 0 || !e.GetCurrentPoint(BuilderStepsList).Properties.IsLeftButtonPressed)
+            return;
+
+        Point current = e.GetPosition(BuilderStepsList);
+        if (Math.Abs(current.X - _builderDragStart.X) < 6 && Math.Abs(current.Y - _builderDragStart.Y) < 6)
+            return;
+
+        int sourceIndex = _builderDragSourceIndex;
+        _builderDragSourceIndex = -1;
+        DataObject data = new();
+        data.Set("BuilderStepIndex", sourceIndex);
+        await DragDrop.DoDragDrop(e, data, DragDropEffects.Move);
+    }
+
+    private void BuilderStepsList_OnDragOver(object? sender, DragEventArgs e)
+    {
+        e.DragEffects = e.Data.Get("BuilderStepIndex") is int ? DragDropEffects.Move : DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    private void BuilderStepsList_OnDrop(object? sender, DragEventArgs e)
+    {
+        if (e.Data.Get("BuilderStepIndex") is not int sourceIndex || sourceIndex < 0 || sourceIndex >= _builderSteps.Count)
+            return;
+
+        Control? target = e.Source as Control;
+        while (target is not null && target is not ListBoxItem)
+            target = target.Parent as Control;
+
+        int targetIndex = target is null ? _builderSteps.Count - 1 : BuilderStepsList.IndexFromContainer(target);
+        if (targetIndex < 0 || targetIndex >= _builderSteps.Count || targetIndex == sourceIndex)
+            return;
+
+        ScriptBuilderStep step = _builderSteps[sourceIndex];
+        _builderSteps.RemoveAt(sourceIndex);
+        if (targetIndex > sourceIndex)
+            targetIndex--;
+
+        _builderSteps.Insert(targetIndex, step);
+        CancelBuilderEdit();
+        RefreshBuilderSteps();
+        BuilderStepsList.SelectedIndex = targetIndex;
+        BuilderStatusText.Text = $"Moved block to position {targetIndex + 1}.";
+        e.Handled = true;
     }
 
     private void BuilderActionInput_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => UpdateBuilderActionFields();
