@@ -15,7 +15,7 @@ function Format-Duration([TimeSpan]$Duration) { return ("{0:N3}s" -f $Duration.T
 
 function Add-Timing([string]$Name, [System.Diagnostics.Stopwatch]$Timer) {
     $Timer.Stop()
-    Write-Host ("  {0,-12} {1}" -f $Name, (Format-Duration $Timer.Elapsed)) -ForegroundColor DarkGray
+    Write-Host ("  {0,-12} {1}" -f $Name, (Format-Duration $Timer.Elapsed))
 }
 
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = "1"
@@ -36,7 +36,7 @@ if (-not $NoPull -and (Test-Path (Join-Path $Root ".git"))) {
     $Changes = & git -C $Root status --porcelain
     if ($LASTEXITCODE -ne 0) { throw "Unable to check Git working tree." }
     if ($Changes) { throw "Local changes detected. Commit or stash them before building so the update cannot overwrite your work." }
-    Write-Host "Pulling latest main..." -ForegroundColor Cyan
+    Write-Host "Pulling latest main..."
     $StageTimer = [System.Diagnostics.Stopwatch]::StartNew()
     & git -C $Root pull --ff-only origin main
     if ($LASTEXITCODE -ne 0) { throw "Git pull failed. Resolve the repository state before building." }
@@ -63,8 +63,8 @@ $RuntimeIdentifier = switch ($Architecture) {
     default { throw "Unsupported architecture: $Architecture" }
 }
 
-Write-Host "Building $RuntimeIdentifier using $Jobs MSBuild workers..." -ForegroundColor Cyan
-Write-Host "Incremental build enabled; NuGet and intermediate outputs are reused." -ForegroundColor DarkGray
+Write-Host "Building $RuntimeIdentifier using $Jobs MSBuild workers..."
+Write-Host "Incremental build enabled; NuGet and intermediate outputs are reused."
 
 if ($Test) {
     $StageTimer = [System.Diagnostics.Stopwatch]::StartNew()
@@ -83,8 +83,8 @@ dotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --s
 if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
 Add-Timing "Publish" $StageTimer
 $TotalTimer.Stop()
-Write-Host ("  TOTAL        {0}" -f (Format-Duration $TotalTimer.Elapsed)) -ForegroundColor Green
-Write-Host "Build complete: $Output" -ForegroundColor Green
+Write-Host ("  TOTAL        {0}" -f (Format-Duration $TotalTimer.Elapsed))
+Write-Host "Build complete: $Output"
 
 if ($Run) {
     $Executable = if ($IsWindowsHost) { Join-Path $Output "SkuaScriptStudio.exe" } else { Join-Path $Output "SkuaScriptStudio" }
