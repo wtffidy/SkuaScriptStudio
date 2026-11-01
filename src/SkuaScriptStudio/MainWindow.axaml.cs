@@ -439,7 +439,7 @@ public partial class MainWindow : Window
 
         string action = (BuilderActionInput?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
         bool isHunt = action == "Hunt for an item";
-        bool isGenericFarm = action == "Generic farming preset";
+        bool isGenericFarm = action is "Generic farming preset" or "Simple farming preset";
         bool isQuest = action is "Accept a quest" or "Complete a quest" or "Register quests";
         bool isEquip = action == "Equip a class";
         bool isTravel = action == "Travel to a map";
@@ -459,14 +459,15 @@ public partial class MainWindow : Window
         BuilderQuantityField.IsVisible = isHunt || isInventory || isWait || isGenericFarm || action is "Log farming progress" or "If item missing" or "Repeat N times";
         BuilderQuantityLabel.Text = action == "Repeat N times" ? "Repeat count" : isWait && action == "Wait" ? "Seconds" : "Item quantity";
         BuilderValueField.IsVisible = isQuest || isLog || isGear || isGenericFarm;
-        BuilderValueLabel.Text = isGenericFarm || action == "Register quests" ? "Quest IDs (comma separated)" : isGear ? "Gear item name(s), comma separated" : isQuest ? "Quest ID" : "Message";
-        BuilderValueInput.Watermark = isGear ? "e.g. Blade of Awe, Cape of Awe" : action == "Register quests" ? "e.g. 12345, 12346" : isQuest ? "e.g. 12345" : "Message to show in the bot log";
+        BuilderValueLabel.Text = isGenericFarm || action == "Register quests" ? "Quest IDs (comma separated, optional for simple farming)" : isGear ? "Gear item name(s), comma separated" : isQuest ? "Quest ID" : "Message";
+        BuilderValueInput.Watermark = isGear ? "e.g. Blade of Awe, Cape of Awe" : isGenericFarm || action == "Register quests" ? "e.g. 12345, 12346 (optional for simple farming)" : isQuest ? "e.g. 12345" : "Message to show in the bot log";
         BuilderClassField.IsVisible = isEquip;
         BuilderCellFields.IsVisible = isCell;
         BuilderEnabledInput.IsVisible = isAggro;
         BuilderActionHelpText.Text = action switch
         {
-            "Generic farming preset" => "Build the complete inventory-aware farming routine. Enter quest IDs and one hunt per line as map|monster.",
+            "Generic farming preset" => "Check the item, return if already owned, log progress, register quests, then hunt until the target quantity is reached.",
+            "Simple farming preset" => "Same inventory-aware farming loop without requiring quest IDs. Add one hunt per line as map|monster.",
             "Hunt for an item" => "Tell us where to go, which monster to fight, and which item to collect.",
             "Accept a quest" or "Complete a quest" => "Enter the numeric quest ID. You do not need to write any code.",
             "Register quests" => "Register one or more quest IDs. Separate multiple IDs with commas.",
@@ -562,7 +563,7 @@ public partial class MainWindow : Window
 
         try
         {
-            if (action == "Generic farming preset" && (string.IsNullOrWhiteSpace(step.Item) || string.IsNullOrWhiteSpace(step.Value) || string.IsNullOrWhiteSpace(step.Hunts)))
+            if (action is "Generic farming preset" or "Simple farming preset" && (string.IsNullOrWhiteSpace(step.Item) || string.IsNullOrWhiteSpace(step.Hunts) || (action == "Generic farming preset" && string.IsNullOrWhiteSpace(step.Value))))
                 throw new ArgumentException("The farming preset requires an item, quantity, quest IDs, and at least one hunt.");
             if (action == "If item missing")
             {
