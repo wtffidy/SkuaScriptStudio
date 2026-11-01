@@ -29,6 +29,9 @@ public sealed class ScriptBuilderService
                 if (openBlocks.Count == 0 || openBlocks.Peek() != expected)
                     throw new ArgumentException($"Block {index + 1} closes an {expected.ToUpperInvariant()} block that is not open.");
 
+                if (expected == "repeat")
+                    bodyLines.Add(Indent("Core.Sleep();", indentation));
+
                 indentation--;
                 openBlocks.Pop();
                 bodyLines.Add(Indent("}", indentation));
