@@ -21,7 +21,7 @@ public sealed class ScriptBuilderService
         for (int index = 0; index < steps.Count; index++)
         {
             ScriptBuilderStep step = steps[index] ?? throw new ArgumentException($"Block {index + 1} is null.", nameof(steps));
-            string generated = GenerateAction(step);
+            string generated = GenerateAction(step, index);
 
             if (step.Action is "End block" or "End repeat")
             {
@@ -92,7 +92,7 @@ public sealed class ScriptBuilderService
             """;
     }
 
-    private static string GenerateAction(ScriptBuilderStep step)
+    private static string GenerateAction(ScriptBuilderStep step, int index)
     {
         string map = SymbolDisplay.FormatLiteral(step.Map.Trim(), quote: true);
         string target = SymbolDisplay.FormatLiteral(step.Target.Trim(), quote: true);
