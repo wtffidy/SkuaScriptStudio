@@ -91,6 +91,16 @@ The current action choices are:
 - **Check inventory** — item name and required quantity.
 - **Log a message** — text to show in the bot log.
 - **Wait** — pause duration in seconds.
+- **Wait for an item** — safely wait until the inventory contains the requested quantity, while still allowing the bot to be stopped.
+- **Equip gear** — equip one or more comma-separated item names.
+- **Move to a cell** — move to a named room cell and pad.
+- **Add drops** or **Remove drops** — manage one or more items in the drop list.
+- **Bank items** or **Unbank items** — move one or more items between inventory and bank.
+- **Log farming progress** — write an item and target quantity to the farming log.
+- **Rest** — restore health and mana.
+- **Configure aggro** — turn aggro handling on or off.
+
+Select an existing step and choose **Edit** to change its settings without rebuilding it from scratch. Use **Remove** to delete the selected step.
 
 The finished script includes the CoreBots setup scaffold and is opened in the Editor for review and saving. The builder keeps your ordered steps until you clear them or close the application.
 
