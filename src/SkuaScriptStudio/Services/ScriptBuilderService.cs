@@ -175,15 +175,17 @@ public sealed class ScriptBuilderService
 
         foreach (string entry in step.Hunts.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
         {
-            string[] parts = entry.Split('|', 2, StringSplitOptions.TrimEntries);
-            string map = parts.Length == 2 ? parts[0] : step.Map;
-            string monster = parts.Length == 2 ? parts[1] : entry;
-            if (!HasValues(map, monster))
-                throw new ArgumentException("Each hunt must be a monster name or map|monster pair.");
+            string[] parts = entry.Split('|', StringSplitOptions.TrimEntries);
+            if (parts.Length is < 4 or > 5 || !HasValues(parts[0], parts[1], parts[2]) || !int.TryParse(parts[3], out int huntQuantity) || huntQuantity < 1)
+                throw new ArgumentException("Each hunt must use map|mob|item|quant|isTemp. The isTemp value is optional.");
 
-            string mapLiteral = SymbolDisplay.FormatLiteral(map, quote: true);
-            string monsterLiteral = SymbolDisplay.FormatLiteral(monster, quote: true);
-            lines.Add($"    Core.HuntMonster({mapLiteral}, {monsterLiteral}, {item}, {quantity}, isTemp: {step.IsTemporary.ToString().ToLowerInvariant()});");
+            bool isTemporary = parts.Length == 5
+                ? bool.TryParse(parts[4], out bool parsedIsTemporary) ? parsedIsTemporary : throw new ArgumentException($"Invalid isTemp value in hunt: {entry}")
+                : step.IsTemporary;
+            string mapLiteral = SymbolDisplay.FormatLiteral(parts[0], quote: true);
+            string monsterLiteral = SymbolDisplay.FormatLiteral(parts[1], quote: true);
+            string huntItemLiteral = SymbolDisplay.FormatLiteral(parts[2], quote: true);
+            lines.Add($"    Core.HuntMonster({mapLiteral}, {monsterLiteral}, {huntItemLiteral}, {huntQuantity}, isTemp: {isTemporary.ToString().ToLowerInvariant()});");
         }
 
         lines.Add("}");
