@@ -493,9 +493,11 @@ public partial class MainWindow : Window
             _ = _builderService.GenerateScript([step]);
             if (_editingBuilderStepIndex >= 0 && _editingBuilderStepIndex < _builderSteps.Count)
             {
-                _builderSteps[_editingBuilderStepIndex] = step;
+                int editedIndex = _editingBuilderStepIndex;
+                _builderSteps[editedIndex] = step;
                 CancelBuilderEdit();
-                BuilderStepsList.SelectedIndex = _editingBuilderStepIndex;
+                RefreshBuilderSteps();
+                BuilderStepsList.SelectedIndex = editedIndex;
             }
             else
                 _builderSteps.Add(step);
