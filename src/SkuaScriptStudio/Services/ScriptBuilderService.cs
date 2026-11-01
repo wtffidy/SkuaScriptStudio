@@ -23,6 +23,7 @@ public sealed class ScriptBuilderService
 
         string body = string.Join(Environment.NewLine + Environment.NewLine, actions);
         return $$"""
+            //cs_include Scripts/CoreBots.cs
             using Skua.Core.Interfaces;
 
             public class MyScript
@@ -51,30 +52,56 @@ public sealed class ScriptBuilderService
         string map = SymbolDisplay.FormatLiteral(step.Map.Trim(), quote: true);
         string target = SymbolDisplay.FormatLiteral(step.Target.Trim(), quote: true);
         string item = SymbolDisplay.FormatLiteral(step.Item.Trim(), quote: true);
+        string cell = SymbolDisplay.FormatLiteral(step.Cell.Trim(), quote: true);
+        string pad = SymbolDisplay.FormatLiteral(step.Pad.Trim(), quote: true);
         string value = SymbolDisplay.FormatLiteral(step.Value.Trim(), quote: true);
         int quantity = Math.Max(1, step.Quantity);
 
         return step.Action switch
         {
-            "Hunt for an item" when !string.IsNullOrWhiteSpace(step.Map) && !string.IsNullOrWhiteSpace(step.Target) && !string.IsNullOrWhiteSpace(step.Item) =>
+            "Hunt for an item" when HasValues(step.Map, step.Target, step.Item) =>
                 $"Core.HuntMonster({map}, {target}, {item}, {quantity});",
-            "Accept a quest" when int.TryParse(step.Value, out int acceptQuestId) && acceptQuestId > 0 =>
+            "Accept a quest" when TryGetId(step.Value, out int acceptQuestId) =>
                 $"Core.EnsureAccept({acceptQuestId});",
-            "Complete a quest" when int.TryParse(step.Value, out int completeQuestId) && completeQuestId > 0 =>
+            "Complete a quest" when TryGetId(step.Value, out int completeQuestId) =>
                 $"Core.EnsureComplete({completeQuestId});",
             "Equip a class" =>
                 $"Core.EquipClass(ClassType.{(step.ClassType is "Farm" or "Solo" or "Support" ? step.ClassType : "Farm")});",
+            "Equip gear" when !string.IsNullOrWhiteSpace(step.Value) =>
+                $"Core.Equip({value});",
             "Travel to a map" when !string.IsNullOrWhiteSpace(step.Map) =>
                 $"Core.Join({map});",
+            "Move to a cell" when HasValues(step.Cell, step.Pad) =>
+                $"Core.Jump({cell}, {pad});",
             "Check inventory" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"if (!Core.CheckInventory({item}, {quantity}))\n    Core.Logger(\"Still need the required item quantity.\");",
+            "Wait for an item" when !string.IsNullOrWhiteSpace(step.Item) =>
+                $"while (!Bot.ShouldExit && !Core.CheckInventory({item}, {quantity}))\n    Core.Sleep();",
+            "Add drops" when !string.IsNullOrWhiteSpace(step.Item) =>
+                $"Core.AddDrop({item});",
+            "Remove drops" when !string.IsNullOrWhiteSpace(step.Item) =>
+                $"Core.RemoveDrop({item});",
+            "Bank items" when !string.IsNullOrWhiteSpace(step.Item) =>
+                $"Core.ToBank({item});",
+            "Unbank items" when !string.IsNullOrWhiteSpace(step.Item) =>
+                $"Core.Unbank({item});",
             "Log a message" when !string.IsNullOrWhiteSpace(step.Value) =>
                 $"Core.Logger({value});",
+            "Log farming progress" when !string.IsNullOrWhiteSpace(step.Item) =>
+                $"Core.FarmingLogger({item}, {quantity});",
+            "Rest" =>
+                "Core.Rest();",
+            "Configure aggro" =>
+                $"Core.ConfigureAggro({step.Enabled.ToString().ToLowerInvariant()});",
             "Wait" =>
                 $"Core.Sleep({quantity * 1000});",
             _ => throw new ArgumentException($"The step '{step.Action}' is missing information or has an invalid value.")
         };
     }
+
+    private static bool HasValues(params string[] values) => values.All(value => !string.IsNullOrWhiteSpace(value));
+
+    private static bool TryGetId(string value, out int id) => int.TryParse(value, out id) && id > 0;
 
     private static string Indent(string source, int levels)
     {
