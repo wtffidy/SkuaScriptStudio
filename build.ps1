@@ -73,10 +73,13 @@ if ($Test) {
     Add-Timing "Tests" $StageTimer
 }
 
+$StageTimer = [System.Diagnostics.Stopwatch]::StartNew()
 dotnet restore $Project --runtime $RuntimeIdentifier --verbosity quiet
 if ($LASTEXITCODE -ne 0) { throw "Restore failed." }
+Add-Timing "Restore" $StageTimer
 
-$StageTimer = [System.Diagnostics.Stopwatch]::StartNew()\ndotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true --no-restore --verbosity quiet -m:$Jobs -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o $Output
+$StageTimer = [System.Diagnostics.Stopwatch]::StartNew()
+dotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true --no-restore --verbosity quiet -m:$Jobs -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o $Output
 if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
 Add-Timing "Publish" $StageTimer
 $TotalTimer.Stop()
