@@ -170,6 +170,8 @@
                       <ComboBox Name="BuilderActionInput" SelectedIndex="0" SelectionChanged="BuilderActionInput_OnSelectionChanged">
                         <ComboBoxItem Content="Hunt for an item"/>
                         <ComboBoxItem Content="Accept a quest"/>
+                        <ComboBoxItem Content="Register quests"/>
+                        <ComboBoxItem Content="Cancel registered quests"/>
                         <ComboBoxItem Content="Complete a quest"/>
                         <ComboBoxItem Content="Equip a class"/>
                         <ComboBoxItem Content="Travel to a map"/>
@@ -187,7 +189,7 @@
                         <ComboBoxItem Content="Rest"/>
                         <ComboBoxItem Content="Configure aggro"/>
                         <ComboBoxItem Content="If item missing"/>
-                        <ComboBoxItem Content="Repeat until item owned"/>
+                        <ComboBoxItem Content="Repeat N times"/>
                         <ComboBoxItem Content="End block"/>
                         <ComboBoxItem Content="End repeat"/>
                       </ComboBox>
