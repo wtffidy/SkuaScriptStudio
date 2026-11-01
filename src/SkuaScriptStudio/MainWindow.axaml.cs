@@ -389,7 +389,7 @@ public partial class MainWindow : Window
         bool isLog = action == "Log a message";
         bool isWait = action is "Wait" or "Wait for an item";
         bool isCell = action == "Move to a cell";
-        bool isItemAction = action is "Wait for an item" or "Add drops" or "Remove drops" or "Bank items" or "Unbank items" or "Log farming progress";
+        bool isItemAction = action is "Wait for an item" or "Add drops" or "Remove drops" or "Bank items" or "Unbank items" or "Log farming progress" or "If item missing" or "Repeat until item owned";
         bool isGear = action == "Equip gear";
         bool isAggro = action == "Configure aggro";
 
@@ -422,7 +422,11 @@ public partial class MainWindow : Window
             "Log farming progress" => "Log the item name and target quantity using the farming logger.",
             "Rest" => "Restore health and mana before the next action.",
             "Configure aggro" => "Choose whether the script should handle monster aggro.",
-            _ => "Choose an action to see exactly what information it needs."
+            "If item missing" => "Opens an IF block. The blocks you add next run only when you do not own the requested quantity. Close it with End block.",
+            "Repeat until item owned" => "Opens a loop that repeats its child blocks until you own the requested quantity. The loop also stops when the bot is stopped. Close it with End repeat.",
+            "End block" => "Closes the most recently opened IF block.",
+            "End repeat" => "Closes the most recently opened REPEAT block.",
+            _ => "Choose a block to see exactly what information it needs."
         };
     }
 
@@ -566,7 +570,7 @@ public partial class MainWindow : Window
         _builderSteps.Clear();
         CancelBuilderEdit();
         RefreshBuilderSteps();
-        BuilderStatusText.Text = "Start by adding your first action.";
+        BuilderStatusText.Text = "Add action blocks and wrap them in IF / END IF or REPEAT / END REPEAT blocks.";
     }
 
     private async void BuildScriptButton_OnClick(object? sender, RoutedEventArgs e)
