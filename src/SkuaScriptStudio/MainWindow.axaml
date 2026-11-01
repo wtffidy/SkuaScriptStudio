@@ -158,14 +158,14 @@
               <StackPanel Spacing="18" Margin="4,18">
                 <StackPanel Spacing="5">
                   <TextBlock Text="Build a script" FontSize="28" FontWeight="Bold"/>
-                  <TextBlock Text="Add actions in the order you want them to run. You can add as many as you need, then build the whole script in one go." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                  <TextBlock Text="Assemble a visual command flow. Add actions, wrap them in inventory conditions or repeat-until loops, reorder blocks, then generate editable Skua C#." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                 </StackPanel>
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
                   <Border Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="20">
                     <StackPanel Spacing="12">
                       <StackPanel Spacing="4">
-                        <TextBlock Text="1. CHOOSE AN ACTION" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold"/>
-                        <TextBlock Text="What should your bot do?" FontSize="19" FontWeight="SemiBold"/>
+                        <TextBlock Text="1. CHOOSE A BLOCK" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Text="Build the bot flow" FontSize="19" FontWeight="SemiBold"/>
                       </StackPanel>
                       <ComboBox Name="BuilderActionInput" SelectedIndex="0" SelectionChanged="BuilderActionInput_OnSelectionChanged">
                         <ComboBoxItem Content="Hunt for an item"/>
@@ -186,6 +186,10 @@
                         <ComboBoxItem Content="Log farming progress"/>
                         <ComboBoxItem Content="Rest"/>
                         <ComboBoxItem Content="Configure aggro"/>
+                        <ComboBoxItem Content="If item missing"/>
+                        <ComboBoxItem Content="Repeat until item owned"/>
+                        <ComboBoxItem Content="End block"/>
+                        <ComboBoxItem Content="End repeat"/>
                       </ComboBox>
                       <TextBlock Text="2. FILL IN THE DETAILS" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold" Margin="0,8,0,0"/>
                       <TextBlock Name="BuilderActionHelpText" Text="Choose an action to see exactly what information it needs." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
@@ -240,7 +244,7 @@
                       <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Spacing="4">
                           <TextBlock Text="3. YOUR SCRIPT" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold"/>
-                          <TextBlock Text="Action sequence" FontSize="19" FontWeight="SemiBold"/>
+                          <TextBlock Text="Block workspace" FontSize="19" FontWeight="SemiBold"/>
                         </StackPanel>
                         <TextBlock Name="BuilderStepCountText" Grid.Column="1" Text="0 STEP(S)" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" VerticalAlignment="Center"/>
                       </Grid>
@@ -257,7 +261,7 @@
                       <StackPanel Grid.Row="3" Spacing="8">
                         <TextBlock Name="BuilderStatusText" Text="Start by adding your first action. Your steps will run from top to bottom." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
                         <Button Name="BuildScriptButton" Content="Build my complete script  →" Background="{DynamicResource AccentBrush}" HorizontalAlignment="Stretch" Padding="16,12" IsEnabled="False" Click="BuildScriptButton_OnClick"/>
-                        <TextBlock Text="The finished script opens in the editor, ready to review and save." Foreground="{DynamicResource TextMutedBrush}" FontSize="11" TextWrapping="Wrap"/>
+                        <TextBlock Text="Use IF / END IF and REPEAT / END REPEAT blocks to create structured logic. Generated C# opens in the editor for review." Foreground="{DynamicResource TextMutedBrush}" FontSize="11" TextWrapping="Wrap"/>
                       </StackPanel>
                     </Grid>
                   </Border>
