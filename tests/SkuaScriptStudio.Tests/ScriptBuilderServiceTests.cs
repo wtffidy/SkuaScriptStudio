@@ -20,7 +20,7 @@ public sealed class ScriptBuilderServiceTests
 
         string result = _service.GenerateScript(steps);
 
-        Assert.Contains("using Skua.Core.Interfaces;", result);
+        Assert.Contains("//cs_include Scripts/CoreBots.cs", result);\n        Assert.Contains("using Skua.Core.Interfaces;", result);
         Assert.Contains("public void ScriptMain(IScriptInterface bot)", result);
         Assert.Contains("Core.SetOptions(false);", result);
         Assert.True(result.IndexOf("Core.EquipClass(ClassType.Farm);", StringComparison.Ordinal) < result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal));
