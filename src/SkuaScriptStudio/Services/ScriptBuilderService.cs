@@ -121,6 +121,9 @@ public sealed class ScriptBuilderService
             "Check inventory" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"if (!Core.CheckInventory({item}, {quantity}))\n    Core.Logger(\"Still need the required item quantity.\");",
             "Generic farming preset" when !string.IsNullOrWhiteSpace(step.Item) && HasQuestIds(step.Value) && HasHuntEntries(step.Hunts) =>
+                GenerateGenericFarm(step, registerQuests: true),
+            "Simple farming preset" when !string.IsNullOrWhiteSpace(step.Item) && HasHuntEntries(step.Hunts) =>
+                GenerateGenericFarm(step, registerQuests: false),
                 GenerateGenericFarm(step),
             "If item missing" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"if (!Core.CheckInventory({item}, {quantity}))",
@@ -155,7 +158,7 @@ public sealed class ScriptBuilderService
         };
     }
 
-    private static string GenerateGenericFarm(ScriptBuilderStep step)
+    private static string GenerateGenericFarm(ScriptBuilderStep step, bool registerQuests)
     {
         string item = SymbolDisplay.FormatLiteral(step.Item.Trim(), quote: true);
         int quantity = Math.Max(1, step.Quantity);
@@ -164,10 +167,12 @@ public sealed class ScriptBuilderService
             $"if (Core.CheckInventory({item}, {quantity}))",
             "    return;",
             $"Core.FarmingLogger({item}, {quantity});",
-            $"Core.RegisterQuests({step.Value});",
             $"while (!Bot.ShouldExit & !Core.CheckInventory({item}, {quantity}))",
             "{"
         ];
+
+        if (registerQuests)
+            lines.Insert(3, $"Core.RegisterQuests({step.Value});");
 
         foreach (string entry in step.Hunts.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
         {
