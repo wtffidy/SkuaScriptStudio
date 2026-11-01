@@ -155,43 +155,91 @@
 
           <TabItem Header="Visual Builder">
             <ScrollViewer>
-              <StackPanel Spacing="18" Margin="4,18" MaxWidth="850" HorizontalAlignment="Left">
+              <StackPanel Spacing="18" Margin="4,18">
                 <StackPanel Spacing="5">
-                  <TextBlock Text="Hunt Monster" FontSize="26" FontWeight="Bold"/>
-                  <TextBlock Text="Configure a common farming action. Generated code is inserted into the editor for further editing." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                  <TextBlock Text="Build a script" FontSize="28" FontWeight="Bold"/>
+                  <TextBlock Text="Add actions in the order you want them to run. You can add as many as you need, then build the whole script in one go." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                 </StackPanel>
-                <Border Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="20">
-                  <StackPanel Spacing="14">
-                    <StackPanel Spacing="5">
-                      <TextBlock Text="MAP" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
-                      <TextBox Name="MapInput" Watermark="e.g. battleundere"/>
-                    </StackPanel>
-                    <StackPanel Spacing="5">
-                      <TextBlock Text="MONSTER" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
-                      <TextBox Name="MonsterInput" Watermark="e.g. Treasure Pile"/>
-                    </StackPanel>
-                    <StackPanel Spacing="5">
-                      <TextBlock Text="ITEM TO FARM" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
-                      <TextBox Name="ItemInput" Watermark="e.g. Treasure Relic"/>
-                    </StackPanel>
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="14">
-                      <StackPanel Spacing="5">
-                        <TextBlock Text="QUANTITY" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
-                        <NumericUpDown Name="QuantityInput" Minimum="1" Maximum="100000" Value="1"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                  <Border Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="20">
+                    <StackPanel Spacing="12">
+                      <StackPanel Spacing="4">
+                        <TextBlock Text="1. CHOOSE AN ACTION" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Text="What should your bot do?" FontSize="19" FontWeight="SemiBold"/>
                       </StackPanel>
-                      <StackPanel Grid.Column="1" Spacing="5">
-                        <TextBlock Text="CLASS TYPE" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11" FontWeight="Bold"/>
-                        <ComboBox Name="ClassTypeInput" SelectedIndex="0">
+                      <ComboBox Name="BuilderActionInput" SelectedIndex="0">
+                        <ComboBoxItem Content="Hunt for an item"/>
+                        <ComboBoxItem Content="Accept a quest"/>
+                        <ComboBoxItem Content="Complete a quest"/>
+                        <ComboBoxItem Content="Equip a class"/>
+                        <ComboBoxItem Content="Travel to a map"/>
+                        <ComboBoxItem Content="Check inventory"/>
+                        <ComboBoxItem Content="Log a message"/>
+                        <ComboBoxItem Content="Wait"/>
+                      </ComboBox>
+                      <TextBlock Text="2. FILL IN THE DETAILS" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold" Margin="0,8,0,0"/>
+                      <TextBlock Text="Only the fields needed by your selected action are used." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
+                      <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <StackPanel Spacing="4">
+                          <TextBlock Text="Map name"/>
+                          <TextBox Name="BuilderMapInput" Watermark="e.g. battleundere"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="4">
+                          <TextBlock Text="Monster / target"/>
+                          <TextBox Name="BuilderTargetInput" Watermark="e.g. Treasure Pile"/>
+                        </StackPanel>
+                      </Grid>
+                      <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <StackPanel Spacing="4">
+                          <TextBlock Text="Item name"/>
+                          <TextBox Name="BuilderItemInput" Watermark="e.g. Treasure Relic"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="4">
+                          <TextBlock Text="Quantity / seconds"/>
+                          <NumericUpDown Name="BuilderQuantityInput" Minimum="1" Maximum="100000" Value="1"/>
+                        </StackPanel>
+                      </Grid>
+                      <StackPanel Spacing="4">
+                        <TextBlock Text="Quest ID / message"/>
+                        <TextBox Name="BuilderValueInput" Watermark="Quest number or text to log"/>
+                      </StackPanel>
+                      <StackPanel Spacing="4">
+                        <TextBlock Text="Class to equip"/>
+                        <ComboBox Name="BuilderClassInput" SelectedIndex="0">
                           <ComboBoxItem Content="Farm"/>
                           <ComboBoxItem Content="Solo"/>
                           <ComboBoxItem Content="Support"/>
                         </ComboBox>
                       </StackPanel>
+                      <Button Content="＋ Add this step" Background="{DynamicResource AccentBrush}" HorizontalAlignment="Stretch" Padding="14,10" Click="AddBuilderStepButton_OnClick"/>
+                    </StackPanel>
+                  </Border>
+                  <Border Grid.Column="1" Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="20">
+                    <Grid RowDefinitions="Auto,*,Auto,Auto" RowSpacing="12">
+                      <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="4">
+                          <TextBlock Text="3. YOUR SCRIPT" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold"/>
+                          <TextBlock Text="Action sequence" FontSize="19" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <TextBlock Name="BuilderStepCountText" Grid.Column="1" Text="0 STEP(S)" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" VerticalAlignment="Center"/>
+                      </Grid>
+                      <Border Grid.Row="1" Background="{DynamicResource SurfaceInsetBrush}" CornerRadius="8" Padding="8" MinHeight="280">
+                        <ListBox Name="BuilderStepsList" Background="Transparent"/>
+                      </Border>
+                      <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
+                        <Button Content="↑ Move up" Click="MoveBuilderStepUpButton_OnClick"/>
+                        <Button Grid.Column="1" Content="↓ Move down" Click="MoveBuilderStepDownButton_OnClick"/>
+                        <Button Grid.Column="2" Content="Remove" Click="RemoveBuilderStepButton_OnClick"/>
+                        <Button Grid.Column="3" Content="Clear all" Click="ClearBuilderButton_OnClick"/>
+                      </Grid>
+                      <StackPanel Grid.Row="3" Spacing="8">
+                        <TextBlock Name="BuilderStatusText" Text="Start by adding your first action. Your steps will run from top to bottom." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
+                        <Button Name="BuildScriptButton" Content="Build my complete script  →" Background="{DynamicResource AccentBrush}" HorizontalAlignment="Stretch" Padding="16,12" IsEnabled="False" Click="BuildScriptButton_OnClick"/>
+                        <TextBlock Text="The finished script opens in the editor, ready to review and save." Foreground="{DynamicResource TextMutedBrush}" FontSize="11" TextWrapping="Wrap"/>
+                      </StackPanel>
                     </Grid>
-                    <Button Content="Generate C# and open in editor  →" HorizontalAlignment="Left" Background="{DynamicResource AccentBrush}" Padding="16,10" Click="GenerateButton_OnClick"/>
-                  </StackPanel>
-                </Border>
-                <TextBlock Text="More builder components will be added as independent, composable blocks: quests, equipment, inventory checks, map travel, loops, and conditionals." Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"/>
+                  </Border>
+                </Grid>
               </StackPanel>
             </ScrollViewer>
           </TabItem>
