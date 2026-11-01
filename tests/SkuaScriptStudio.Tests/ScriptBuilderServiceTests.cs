@@ -20,7 +20,8 @@ public sealed class ScriptBuilderServiceTests
 
         string result = _service.GenerateScript(steps);
 
-        Assert.Contains("//cs_include Scripts/CoreBots.cs", result);\n        Assert.Contains("using Skua.Core.Interfaces;", result);
+        Assert.Contains("//cs_include Scripts/CoreBots.cs", result);
+        Assert.Contains("using Skua.Core.Interfaces;", result);
         Assert.Contains("public void ScriptMain(IScriptInterface bot)", result);
         Assert.Contains("Core.SetOptions(false);", result);
         Assert.True(result.IndexOf("Core.EquipClass(ClassType.Farm);", StringComparison.Ordinal) < result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal));
@@ -54,6 +55,52 @@ public sealed class ScriptBuilderServiceTests
         ScriptBuilderStep[] steps = [new() { Action = action, Map = map, Target = target, Item = item, Value = value }];
 
         Assert.Throws<ArgumentException>(() => _service.GenerateScript(steps));
+    }
+
+
+    [Fact]
+    public void GenerateScript_ExpandsMultipleGearNames()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Equip gear", Value = "Blade of Awe, Cape of Awe" }
+        ];
+
+        string result = _service.GenerateScript(steps);
+
+        Assert.Contains("Core.Equip(\"Blade of Awe\", \"Cape of Awe\");", result);
+    }
+
+    [Fact]
+    public void GenerateScript_GeneratesSafeInventoryWaitAndDropActions()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Add drops", Item = "Token" },
+            new() { Action = "Wait for an item", Item = "Token", Quantity = 25 },
+            new() { Action = "Remove drops", Item = "Token" }
+        ];
+
+        string result = _service.GenerateScript(steps);
+
+        Assert.Contains("Core.AddDrop(\"Token\");", result);
+        Assert.Contains("while (!Bot.ShouldExit && !Core.CheckInventory(\"Token\", 25))", result);
+        Assert.Contains("Core.RemoveDrop(\"Token\");", result);
+    }
+
+    [Fact]
+    public void GenerateScript_UsesCellPadAndAggroSettings()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Move to a cell", Cell = "Boss", Pad = "Left" },
+            new() { Action = "Configure aggro", Enabled = false }
+        ];
+
+        string result = _service.GenerateScript(steps);
+
+        Assert.Contains("Core.Jump(\"Boss\", \"Left\");", result);
+        Assert.Contains("Core.ConfigureAggro(false);", result);
     }
 
     [Fact]
