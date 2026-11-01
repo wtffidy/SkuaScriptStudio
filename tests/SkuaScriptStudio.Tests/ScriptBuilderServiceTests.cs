@@ -193,4 +193,49 @@ public sealed class ScriptBuilderServiceTests
 
         Assert.Throws<ArgumentException>(() => _service.GenerateScript(steps));
     }
+    [Fact]
+    public void GenerateScript_RegistersMultipleQuestsAndCanCancelThem()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Register quests", Value = "12345, 12346" },
+            new() { Action = "Cancel registered quests" }
+        ];
+
+        string result = _service.GenerateScript(steps);
+
+        Assert.Contains("Core.RegisterQuests(12345, 12346);", result);
+        Assert.Contains("Core.CancelRegisteredQuests();", result);
+        Microsoft.CodeAnalysis.SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(result);
+        Assert.Empty(syntaxTree.GetDiagnostics().Where(diagnostic => diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error));
+    }
+
+    [Fact]
+    public void GenerateScript_RejectsInvalidRegisteredQuestIds()
+    {
+        ScriptBuilderStep[] steps = [new() { Action = "Register quests", Value = "12345, nope" }];
+
+        Assert.Throws<ArgumentException>(() => _service.GenerateScript(steps));
+    }
+
+    [Fact]
+    public void GenerateScript_UsesRepeatCountAndUniqueNestedCounters()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Repeat N times", Quantity = 3 },
+            new() { Action = "Repeat N times", Quantity = 2 },
+            new() { Action = "Rest" },
+            new() { Action = "End repeat" },
+            new() { Action = "End repeat" }
+        ];
+
+        string result = _service.GenerateScript(steps);
+
+        Assert.Contains("int repeat0 = 0; repeat0 < 3", result);
+        Assert.Contains("int repeat1 = 0; repeat1 < 2", result);
+        Microsoft.CodeAnalysis.SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(result);
+        Assert.Empty(syntaxTree.GetDiagnostics().Where(diagnostic => diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error));
+    }
+
 }
