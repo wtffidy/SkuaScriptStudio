@@ -72,19 +72,29 @@ The editor is a source editor; it does not run scripts.
 
 ## Using the Visual Builder
 
-The current Visual Builder generates one common action: **Core.HuntMonster**.
+The Visual Builder assembles a complete script from a sequence of actions. You do not need to know where C# code belongs.
 
-1. Select **Visual Builder**.
-2. Enter the **Map** name (for example, battleundere).
-3. Enter the **Monster** name (for example, Treasure Pile).
-4. Enter the **Item to farm**.
-5. Set the required **Quantity**.
-6. Choose a **Class Type**: Farm, Solo, or Support.
-7. Select **Generate C# and open in editor**.
+1. Open **Visual Builder**.
+2. Choose an action from **What should your bot do?**
+3. Fill in the fields shown for that action. Unneeded fields are hidden, and the short description explains what to enter.
+4. Select **Add this step**.
+5. Repeat to add as many actions as your script needs.
+6. Select a step and use **Move up**, **Move down**, or **Remove** to arrange the sequence. Steps run from top to bottom.
+7. Select **Build my complete script** when the sequence is ready.
 
-The builder generates a Core.EquipClass call followed by a Core.HuntMonster call. The generated code is placed in the Editor, where you can review and change it before saving.
+The current action choices are:
 
-**Important:** Generating code replaces the current editor document. If the current document has unsaved changes, the application asks whether to save, discard, or cancel first.
+- **Hunt for an item** — map, monster, item name, and quantity.
+- **Accept a quest** or **Complete a quest** — numeric quest ID.
+- **Equip a class** — Farm, Solo, or Support.
+- **Travel to a map** — map name.
+- **Check inventory** — item name and required quantity.
+- **Log a message** — text to show in the bot log.
+- **Wait** — pause duration in seconds.
+
+The finished script includes the CoreBots setup scaffold and is opened in the Editor for review and saving. The builder keeps your ordered steps until you clear them or close the application.
+
+**Important:** Building a script replaces the current editor document. If the current document has unsaved changes, the application asks whether to save, discard, or cancel first.
 
 ## Managing the Script Library
 
