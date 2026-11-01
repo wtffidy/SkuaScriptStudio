@@ -251,7 +251,7 @@
                         <TextBlock Name="BuilderStepCountText" Grid.Column="1" Text="0 STEP(S)" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" VerticalAlignment="Center"/>
                       </Grid>
                       <Border Grid.Row="1" Background="{DynamicResource SurfaceInsetBrush}" CornerRadius="8" Padding="8" MinHeight="280">
-                        <ListBox Name="BuilderStepsList" Background="Transparent" BorderThickness="0" Padding="4">
+                        <ListBox Name="BuilderStepsList" Background="Transparent" BorderThickness="0" Padding="4" DragDrop.AllowDrop="True" PointerPressed="BuilderStepsList_OnPointerPressed" PointerMoved="BuilderStepsList_OnPointerMoved" DragOver="BuilderStepsList_OnDragOver" Drop="BuilderStepsList_OnDrop">
                           <ListBox.ItemTemplate>
                             <DataTemplate>
                               <Border Background="{DynamicResource SurfaceRaisedBrush}" BorderBrush="{DynamicResource AccentBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,3">
