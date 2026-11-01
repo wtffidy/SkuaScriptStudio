@@ -1,3 +1,4 @@
+using SkuaScriptStudio.Models;
 using SkuaScriptStudio.Services;
 using Xunit;
 
@@ -8,56 +9,56 @@ public sealed class ScriptBuilderServiceTests
     private readonly ScriptBuilderService _service = new();
 
     [Fact]
-    public void GenerateHuntMonster_UsesRequestedValues()
+    public void GenerateScript_CreatesCompleteScaffoldAndPreservesStepOrder()
     {
-        string result = _service.GenerateHuntMonster("battleundere", "Treasure Pile", "Treasure Relic", 12, "Farm");
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Equip a class", ClassType = "Farm" },
+            new() { Action = "Hunt for an item", Map = "battleundere", Target = "Treasure Pile", Item = "Treasure Relic", Quantity = 12 },
+            new() { Action = "Complete a quest", Value = "12345" }
+        ];
 
-        Assert.Contains("Core.EquipClass(ClassType.Farm);", result);
-        Assert.Contains("Core.HuntMonster(\"battleundere\", \"Treasure Pile\", \"Treasure Relic\", 12);", result);
+        string result = _service.GenerateScript(steps);
+
+        Assert.Contains("using Skua.Core.Interfaces;", result);
+        Assert.Contains("public void ScriptMain(IScriptInterface bot)", result);
+        Assert.Contains("Core.SetOptions(false);", result);
+        Assert.True(result.IndexOf("Core.EquipClass(ClassType.Farm);", StringComparison.Ordinal) < result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal));
+        Assert.True(result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal) < result.IndexOf("Core.EnsureComplete(12345);", StringComparison.Ordinal));
     }
 
     [Fact]
-    public void GenerateHuntMonster_EscapesStringValues()
+    public void GenerateScript_EscapesStringValues()
     {
-        string result = _service.GenerateHuntMonster("map\\name", "A \"quoted\" monster", "Item", 1, "Solo");
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Hunt for an item", Map = "map\\name", Target = "A \"quoted\" monster", Item = "Item", Quantity = 1 }
+        ];
+
+        string result = _service.GenerateScript(steps);
 
         Assert.Contains("\"map\\\\name\"", result);
         Assert.Contains("\"A \\\"quoted\\\" monster\"", result);
     }
 
-    [Fact]
-    public void GenerateHuntMonster_EscapesControlCharacters()
-    {
-        string result = _service.GenerateHuntMonster("map\nname", "monster\tname", "item\r\nname", 1, "Farm");
-
-        Assert.Contains("\"map\\nname\"", result);
-        Assert.Contains("\"monster\\tname\"", result);
-        Assert.Contains("\"item\\r\\nname\"", result);
-    }
-
-    [Fact]
-    public void GenerateHuntMonster_ClampsQuantityToOne()
-    {
-        string result = _service.GenerateHuntMonster("map", "monster", "item", 0, "Farm");
-
-        Assert.EndsWith(", 1);", result.Trim());
-    }
-
-    [Fact]
-    public void GenerateHuntMonster_FallsBackToFarmForUnknownClass()
-    {
-        string result = _service.GenerateHuntMonster("map", "monster", "item", 1, "Invalid");
-
-        Assert.Contains("Core.EquipClass(ClassType.Farm);", result);
-    }
-
     [Theory]
-    [InlineData("", "monster", "item", "Farm")]
-    [InlineData("map", "", "item", "Farm")]
-    [InlineData("map", "monster", "", "Farm")]
-    [InlineData("map", "monster", "item", "")]
-    public void GenerateHuntMonster_RejectsMissingRequiredValues(string map, string monster, string item, string classType)
+    [InlineData("Hunt for an item", "", "monster", "item", "")]
+    [InlineData("Hunt for an item", "map", "", "item", "")]
+    [InlineData("Hunt for an item", "map", "monster", "", "")]
+    [InlineData("Accept a quest", "", "", "", "not-a-number")]
+    [InlineData("Complete a quest", "", "", "", "0")]
+    [InlineData("Travel to a map", "", "", "", "")]
+    [InlineData("Log a message", "", "", "", "")]
+    public void GenerateScript_RejectsIncompleteSteps(string action, string map, string target, string item, string value)
     {
-        Assert.Throws<ArgumentException>(() => _service.GenerateHuntMonster(map, monster, item, 1, classType));
+        ScriptBuilderStep[] steps = [new() { Action = action, Map = map, Target = target, Item = item, Value = value }];
+
+        Assert.Throws<ArgumentException>(() => _service.GenerateScript(steps));
+    }
+
+    [Fact]
+    public void GenerateScript_RejectsAnEmptySequence()
+    {
+        Assert.Throws<ArgumentException>(() => _service.GenerateScript([]));
     }
 }
