@@ -26,7 +26,7 @@ A cross-platform desktop workspace for creating, editing, and organizing Skua C#
 ### Requirements
 
 - .NET 10 SDK
-- Windows or Linux
+- Windows, Linux, or macOS
 
 ### Run from source
 
@@ -36,7 +36,27 @@ dotnet build SkuaScriptStudio.sln --configuration Release
 dotnet run --project src/SkuaScriptStudio/SkuaScriptStudio.csproj
 ~~~
 
-### Run tests
+### Build locally
+
+The local build scripts run the test suite, detect the current OS/architecture, and publish a self-contained single-file app to `artifacts/local`.
+
+**Windows (PowerShell):**
+
+~~~powershell
+.\build.ps1
+~~~
+
+Add `-Run` to launch the app after publishing, or `-SkipTests` to skip tests.
+
+**Linux / macOS:**
+
+~~~bash
+bash build.sh
+~~~
+
+Add `--run` to launch the app after publishing, or `--skip-tests` to skip tests.
+
+### Run tests separately
 
 ~~~bash
 dotnet test SkuaScriptStudio.sln --configuration Release
