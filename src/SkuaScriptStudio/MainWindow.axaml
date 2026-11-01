@@ -169,6 +169,7 @@
                       </StackPanel>
                       <ComboBox Name="BuilderActionInput" SelectedIndex="0" SelectionChanged="BuilderActionInput_OnSelectionChanged">
                         <ComboBoxItem Content="Generic farming preset"/>
+                        <ComboBoxItem Content="Simple farming preset"/>
                         <ComboBoxItem Content="Hunt for an item"/>
                         <ComboBoxItem Content="Accept a quest"/>
                         <ComboBoxItem Content="Register quests"/>
