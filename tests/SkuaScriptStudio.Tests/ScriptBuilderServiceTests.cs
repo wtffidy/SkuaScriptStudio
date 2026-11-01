@@ -144,4 +144,41 @@ public sealed class ScriptBuilderServiceTests
     {
         Assert.Throws<ArgumentException>(() => _service.GenerateScript([]));
     }
+
+    [Fact]
+    public void GenerateScript_NestsInventoryConditionsAndRepeatLoops()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "If item missing", Item = "Quest Token", Quantity = 10 },
+            new() { Action = "Repeat until item owned", Item = "Quest Token", Quantity = 10 },
+            new() { Action = "Hunt for an item", Map = "battleundere", Target = "Treasure Pile", Item = "Quest Token", Quantity = 10 },
+            new() { Action = "End repeat" },
+            new() { Action = "End block" }
+        ];
+
+        string result = _service.GenerateScript(steps);
+        Microsoft.CodeAnalysis.SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(result);
+
+        Assert.Contains("if (!Core.CheckInventory(\"Quest Token\", 10))", result);
+        Assert.Contains("while (!Bot.ShouldExit && !Core.CheckInventory(\"Quest Token\", 10))", result);
+        Assert.True(result.IndexOf("while (!Bot.ShouldExit", StringComparison.Ordinal) < result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal));
+        Assert.Empty(syntaxTree.GetDiagnostics().Where(diagnostic => diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error));
+    }
+
+    [Fact]
+    public void GenerateScript_RejectsMismatchedControlFlowClosers()
+    {
+        ScriptBuilderStep[] steps = [new() { Action = "If item missing", Item = "Token" }, new() { Action = "End repeat" }];
+
+        Assert.Throws<ArgumentException>(() => _service.GenerateScript(steps));
+    }
+
+    [Fact]
+    public void GenerateScript_RejectsUnclosedControlFlowBlocks()
+    {
+        ScriptBuilderStep[] steps = [new() { Action = "Repeat until item owned", Item = "Token" }];
+
+        Assert.Throws<ArgumentException>(() => _service.GenerateScript(steps));
+    }
 }
