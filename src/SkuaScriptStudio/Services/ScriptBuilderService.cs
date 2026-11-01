@@ -53,13 +53,27 @@ public sealed class ScriptBuilderService
 
         string body = string.Join(Environment.NewLine, bodyLines);
         return $$"""
+            /*
+            name: MyScript
+            description: Generated Skua script.
+            tags: generated, skua
+            */
             //cs_include Scripts/CoreBots.cs
+            //cs_include Scripts/CoreFarms.cs
+            //cs_include Scripts/CoreStory.cs
+            //cs_include Scripts/CoreArmyLite.cs
+            //cs_include Scripts/SevenCircles.cs
             using Skua.Core.Interfaces;
+            using Skua.Core.Models.Items;
+            using Skua.Core.Options;
 
             public class MyScript
             {
-                public IScriptInterface Bot => IScriptInterface.Instance;
-                public CoreBots Core => CoreBots.Instance;
+                private IScriptInterface Bot => IScriptInterface.Instance;
+                private CoreBots Core => CoreBots.Instance;
+
+                public bool DontPreconfigure = true;
+                public string[] MultiOptions = { "Generic", "Select" };
 
                 public void ScriptMain(IScriptInterface bot)
                 {
