@@ -152,6 +152,43 @@ public sealed class ScriptBuilderServiceTests
     }
 
     [Fact]
+    public void GenerateScript_GeneratesGenericFarmingPresetWithTemporaryHunts()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new()
+            {
+                Action = "Generic farming preset",
+                Item = "Relic",
+                Quantity = 25,
+                Value = "1234, 5678",
+                IsTemporary = true,
+                Hunts = "battleundere|Treasure Pile\nbattleundere|Draconocean"
+            }
+        ];
+
+        string result = _service.GenerateScript(steps);
+        Microsoft.CodeAnalysis.SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(result);
+
+        Assert.Contains("if (Core.CheckInventory(\"Relic\", 25))", result);
+        Assert.Contains("Core.FarmingLogger(\"Relic\", 25);", result);
+        Assert.Contains("Core.RegisterQuests(1234, 5678);", result);
+        Assert.Contains("while (!Bot.ShouldExit & !Core.CheckInventory(\"Relic\", 25))", result);
+        Assert.Contains("Core.HuntMonster(\"battleundere\", \"Treasure Pile\", \"Relic\", 25, isTemp: true);", result);
+        Assert.Contains("Core.HuntMonster(\"battleundere\", \"Draconocean\", \"Relic\", 25, isTemp: true);", result);
+        Assert.Empty(syntaxTree.GetDiagnostics().Where(diagnostic => diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error));
+    }
+
+    [Fact]
+    public void GenerateScript_PassesInventoryItemsAsNonTemporaryWhenConfigured()
+    {
+        ScriptBuilderStep[] steps = [new() { Action = "Hunt for an item", Map = "map", Target = "monster", Item = "Token", IsTemporary = false }];
+
+        string result = _service.GenerateScript(steps);
+
+        Assert.Contains("Core.HuntMonster(\"map\", \"monster\", \"Token\", 1, isTemp: false);", result);
+    }
+    [Fact]
     public void GenerateScript_RejectsAnEmptySequence()
     {
         Assert.Throws<ArgumentException>(() => _service.GenerateScript([]));
