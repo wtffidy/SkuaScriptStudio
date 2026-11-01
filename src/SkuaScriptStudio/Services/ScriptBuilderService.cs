@@ -43,6 +43,7 @@ public sealed class ScriptBuilderService
 
             if (step.Action is "If item missing" or "Repeat until item owned")
             {
+                bodyLines.Add(Indent("{", indentation));
                 openBlocks.Push(step.Action == "If item missing" ? "if" : "repeat");
                 indentation++;
             }
