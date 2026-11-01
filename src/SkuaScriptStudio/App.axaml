@@ -15,11 +15,23 @@
       <Setter Property="Background" Value="{DynamicResource AppBackgroundBrush}" />
       <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
     </Style>
+    <Style Selector="Button">
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Padding" Value="13,8" />
+      <Setter Property="Background" Value="#30223C" />
+      <Setter Property="BorderBrush" Value="#4A3659" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+    </Style>
+    <Style Selector="Button:pointerover">
+      <Setter Property="Background" Value="#49305B" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentBorderBrush}" />
+    </Style>
     <Style Selector="Button.nav">
       <Setter Property="HorizontalContentAlignment" Value="Left" />
       <Setter Property="Padding" Value="14,10" />
       <Setter Property="Margin" Value="0,3" />
       <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="Transparent" />
       <Setter Property="CornerRadius" Value="7" />
     </Style>
     <Style Selector="TextBox.editor">
