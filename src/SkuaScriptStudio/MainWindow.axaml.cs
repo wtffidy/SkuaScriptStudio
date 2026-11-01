@@ -15,6 +15,7 @@ public partial class MainWindow : Window
     private readonly ScriptLibraryService _libraryService = new();
     private readonly ScriptDiagnosticsService _diagnosticsService = new();
     private readonly ScriptSnippetService _snippetService = new();
+    private readonly List<ScriptBuilderStep> _builderSteps = [];
     private ScriptDocument _document = new();
     private bool _isUpdatingEditor;
     private long _documentLoadVersion;
@@ -370,37 +371,110 @@ public partial class MainWindow : Window
         Discard
     }
 
-    private async void GenerateButton_OnClick(object? sender, RoutedEventArgs e)
+    private async void AddBuilderStepButton_OnClick(object? sender, RoutedEventArgs e)
     {
-        string map = MapInput.Text?.Trim() ?? string.Empty;
-        string monster = MonsterInput.Text?.Trim() ?? string.Empty;
-        string item = ItemInput.Text?.Trim() ?? string.Empty;
-        int quantity = decimal.ToInt32(QuantityInput.Value ?? 1);
-        string classType = (ClassTypeInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Farm";
+        string action = (BuilderActionInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
+        string map = BuilderMapInput.Text?.Trim() ?? string.Empty;
+        string target = BuilderTargetInput.Text?.Trim() ?? string.Empty;
+        string item = BuilderItemInput.Text?.Trim() ?? string.Empty;
+        string value = BuilderValueInput.Text?.Trim() ?? string.Empty;
+        int quantity = decimal.ToInt32(BuilderQuantityInput.Value ?? 1);
+        string classType = (BuilderClassInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Farm";
+
+        ScriptBuilderStep step = new()
+        {
+            Action = action,
+            Map = map,
+            Target = target,
+            Item = item,
+            Value = value,
+            Quantity = quantity,
+            ClassType = classType
+        };
 
         try
         {
-            string generated = _builderService.GenerateHuntMonster(map, monster, item, quantity, classType);
-            if (!await ConfirmDocumentReplacementAsync("replacing the current script"))
+            _ = _builderService.GenerateScript([step]);
+            _builderSteps.Add(step);
+            RefreshBuilderSteps();
+            BuilderValueInput.Text = string.Empty;
+            BuilderStatusText.Text = $"Added step {_builderSteps.Count}. Add more actions to build the full routine.";
+        }
+        catch (ArgumentException exception)
+        {
+            await ShowErrorAsync("Check this step", exception.Message);
+        }
+    }
+
+    private void RemoveBuilderStepButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (BuilderStepsList.SelectedItem is not ScriptBuilderStep step)
+            return;
+
+        _builderSteps.Remove(step);
+        RefreshBuilderSteps();
+        BuilderStatusText.Text = "Step removed.";
+    }
+
+    private void MoveBuilderStepUpButton_OnClick(object? sender, RoutedEventArgs e) => MoveBuilderStep(-1);
+
+    private void MoveBuilderStepDownButton_OnClick(object? sender, RoutedEventArgs e) => MoveBuilderStep(1);
+
+    private void MoveBuilderStep(int offset)
+    {
+        int index = BuilderStepsList.SelectedIndex;
+        int newIndex = index + offset;
+        if (index < 0 || newIndex < 0 || newIndex >= _builderSteps.Count)
+            return;
+
+        ScriptBuilderStep step = _builderSteps[index];
+        _builderSteps.RemoveAt(index);
+        _builderSteps.Insert(newIndex, step);
+        RefreshBuilderSteps();
+        BuilderStepsList.SelectedIndex = newIndex;
+    }
+
+    private void RefreshBuilderSteps()
+    {
+        BuilderStepsList.ItemsSource = null;
+        BuilderStepsList.ItemsSource = _builderSteps.ToArray();
+        BuilderStepCountText.Text = $"{_builderSteps.Count} STEP(S)";
+        BuildScriptButton.IsEnabled = _builderSteps.Count > 0;
+        ClearBuilderButton.IsEnabled = _builderSteps.Count > 0;
+    }
+
+    private void ClearBuilderButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _builderSteps.Clear();
+        RefreshBuilderSteps();
+        BuilderStatusText.Text = "Start by adding your first action.";
+    }
+
+    private async void BuildScriptButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            string generated = _builderService.GenerateScript(_builderSteps);
+            if (!await ConfirmDocumentReplacementAsync("creating a script from the visual builder"))
                 return;
 
             _documentLoadCancellation?.Cancel();
             ++_documentLoadVersion;
             _document = new ScriptDocument
             {
-                Name = "GeneratedHuntMonster.cs",
+                Name = "MySkuaScript.cs",
                 Source = generated,
                 IsDirty = true
             };
 
             SetEditorSource(generated);
             DocumentNameText.Text = _document.Name + " *";
-            EditorStatusText.Text = "Generated code · Review and edit before saving";
+            EditorStatusText.Text = $"Built a complete script from {_builderSteps.Count} step(s) · Review and save";
             SelectTab(1);
         }
         catch (ArgumentException exception)
         {
-            _ = ShowErrorAsync("Missing builder information", exception.Message);
+            await ShowErrorAsync("Your script needs a little more work", exception.Message);
         }
     }
 
