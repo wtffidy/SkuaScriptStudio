@@ -564,7 +564,7 @@ public partial class MainWindow : Window
         try
         {
             if (action is "Generic farming preset" or "Simple farming preset" && (string.IsNullOrWhiteSpace(step.Item) || string.IsNullOrWhiteSpace(step.Hunts) || (action == "Generic farming preset" && string.IsNullOrWhiteSpace(step.Value))))
-                throw new ArgumentException("The farming preset requires an item, quantity, quest IDs, and at least one hunt.");
+                throw new ArgumentException(action == "Generic farming preset" ? "The quest farming preset requires an item, quantity, quest IDs, and at least one hunt." : "The simple farming preset requires an item, quantity, and at least one hunt.");
             if (action == "If item missing")
             {
                 if (string.IsNullOrWhiteSpace(step.Item))
