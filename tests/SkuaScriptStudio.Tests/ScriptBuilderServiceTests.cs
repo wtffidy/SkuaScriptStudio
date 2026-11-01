@@ -25,6 +25,9 @@ public sealed class ScriptBuilderServiceTests
         Assert.Contains("using Skua.Core.Interfaces;", result);
         Assert.Contains("public void ScriptMain(IScriptInterface bot)", result);
         Assert.Contains("Core.SetOptions(false);", result);
+        Assert.Contains("// Step 1: Equip a class", result);
+        Assert.Contains("// Step 2: Hunt for an item", result);
+        Assert.Contains("// Step 3: Complete a quest", result);
         Assert.True(result.IndexOf("Core.EquipClass(ClassType.Farm);", StringComparison.Ordinal) < result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal));
         Assert.True(result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal) < result.IndexOf("Core.EnsureComplete(12345);", StringComparison.Ordinal));
     }
