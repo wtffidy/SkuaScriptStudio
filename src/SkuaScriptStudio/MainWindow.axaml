@@ -127,7 +127,7 @@
                   <StackPanel Spacing="8">
                     <TextBlock Text="GETTING STARTED" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentTextBrush}"/>
                     <TextBlock Text="This is the foundation build." FontSize="18" FontWeight="SemiBold"/>
-                    <TextBlock Text="The editor can open and save C# files, the local library can import, search, open and remove script copies, and the first builder generates a HuntMonster call. Roslyn-powered intelligence and richer visual components are next." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                    <TextBlock Text="The editor can open and save C# files, the local library can import, search, open and remove script copies, and the visual builder assembles complete scripts from guided actions. Add steps, arrange their order, and build the finished script." Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                   </StackPanel>
                 </Border>
               </StackPanel>
@@ -167,7 +167,7 @@
                         <TextBlock Text="1. CHOOSE AN ACTION" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold"/>
                         <TextBlock Text="What should your bot do?" FontSize="19" FontWeight="SemiBold"/>
                       </StackPanel>
-                      <ComboBox Name="BuilderActionInput" SelectedIndex="0">
+                      <ComboBox Name="BuilderActionInput" SelectedIndex="0" SelectionChanged="BuilderActionInput_OnSelectionChanged">
                         <ComboBoxItem Content="Hunt for an item"/>
                         <ComboBoxItem Content="Accept a quest"/>
                         <ComboBoxItem Content="Complete a quest"/>
@@ -178,32 +178,32 @@
                         <ComboBoxItem Content="Wait"/>
                       </ComboBox>
                       <TextBlock Text="2. FILL IN THE DETAILS" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold" Margin="0,8,0,0"/>
-                      <TextBlock Text="Only the fields needed by your selected action are used." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
+                      <TextBlock Name="BuilderActionHelpText" Text="Choose an action to see exactly what information it needs." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
                       <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                        <StackPanel Spacing="4">
+                        <StackPanel Name="BuilderMapField" Spacing="4">
                           <TextBlock Text="Map name"/>
                           <TextBox Name="BuilderMapInput" Watermark="e.g. battleundere"/>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Spacing="4">
+                        <StackPanel Name="BuilderTargetField" Grid.Column="1" Spacing="4">
                           <TextBlock Text="Monster / target"/>
                           <TextBox Name="BuilderTargetInput" Watermark="e.g. Treasure Pile"/>
                         </StackPanel>
                       </Grid>
                       <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                        <StackPanel Spacing="4">
+                        <StackPanel Name="BuilderItemField" Spacing="4">
                           <TextBlock Text="Item name"/>
                           <TextBox Name="BuilderItemInput" Watermark="e.g. Treasure Relic"/>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Spacing="4">
+                        <StackPanel Name="BuilderQuantityField" Grid.Column="1" Spacing="4">
                           <TextBlock Text="Quantity / seconds"/>
                           <NumericUpDown Name="BuilderQuantityInput" Minimum="1" Maximum="100000" Value="1"/>
                         </StackPanel>
                       </Grid>
-                      <StackPanel Spacing="4">
+                      <StackPanel Name="BuilderValueField" Spacing="4">
                         <TextBlock Text="Quest ID / message"/>
                         <TextBox Name="BuilderValueInput" Watermark="Quest number or text to log"/>
                       </StackPanel>
-                      <StackPanel Spacing="4">
+                      <StackPanel Name="BuilderClassField" Spacing="4">
                         <TextBlock Text="Class to equip"/>
                         <ComboBox Name="BuilderClassInput" SelectedIndex="0">
                           <ComboBoxItem Content="Farm"/>
@@ -230,7 +230,7 @@
                         <Button Content="↑ Move up" Click="MoveBuilderStepUpButton_OnClick"/>
                         <Button Grid.Column="1" Content="↓ Move down" Click="MoveBuilderStepDownButton_OnClick"/>
                         <Button Grid.Column="2" Content="Remove" Click="RemoveBuilderStepButton_OnClick"/>
-                        <Button Grid.Column="3" Content="Clear all" Click="ClearBuilderButton_OnClick"/>
+                        <Button Name="ClearBuilderButton" Grid.Column="3" Content="Clear all" Click="ClearBuilderButton_OnClick"/>
                       </Grid>
                       <StackPanel Grid.Row="3" Spacing="8">
                         <TextBlock Name="BuilderStatusText" Text="Start by adding your first action. Your steps will run from top to bottom." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
