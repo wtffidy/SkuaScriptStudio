@@ -79,6 +79,7 @@ public sealed class ScriptBuilderService
     private static string Indent(string source, int levels)
     {
         string indentation = new(' ', levels * 4);
-        return string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select(line => indentation + line));
+        string normalized = source.Replace("\r\n", "\n", StringComparison.Ordinal);
+        return string.Join(Environment.NewLine, normalized.Split('\n').Select(line => indentation + line));
     }
 }
