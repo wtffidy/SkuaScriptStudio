@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - mobile
       - dev/**
   pull_request:
     branches:
@@ -25,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
