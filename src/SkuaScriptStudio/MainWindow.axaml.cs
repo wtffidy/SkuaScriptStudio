@@ -393,20 +393,20 @@ public partial class MainWindow : Window
 
         int sourceIndex = _builderDragSourceIndex;
         _builderDragSourceIndex = -1;
-        DataObject data = new();
-        data.Set("BuilderStepIndex", sourceIndex);
-        await DragDrop.DoDragDrop(e, data, DragDropEffects.Move);
+        DataTransfer data = new();
+        data.Add(DataTransferItem.CreateText(sourceIndex.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+        await DragDrop.DoDragDropAsync(e, data, DragDropEffects.Move);
     }
 
     private void BuilderStepsList_OnDragOver(object? sender, DragEventArgs e)
     {
-        e.DragEffects = e.Data.Get("BuilderStepIndex") is int ? DragDropEffects.Move : DragDropEffects.None;
+        e.DragEffects = int.TryParse(e.DataTransfer.TryGetText(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _) ? DragDropEffects.Move : DragDropEffects.None;
         e.Handled = true;
     }
 
     private void BuilderStepsList_OnDrop(object? sender, DragEventArgs e)
     {
-        if (e.Data.Get("BuilderStepIndex") is not int sourceIndex || sourceIndex < 0 || sourceIndex >= _builderSteps.Count)
+        if (!int.TryParse(e.DataTransfer.TryGetText(), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out int sourceIndex) || sourceIndex < 0 || sourceIndex >= _builderSteps.Count)
             return;
 
         Control? target = e.Source as Control;
