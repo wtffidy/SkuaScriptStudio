@@ -89,6 +89,21 @@ public sealed class ScriptBuilderServiceTests
     }
 
     [Fact]
+    public void GenerateScript_ExpandsMultipleInventoryItemNames()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Add drops", Item = "Token A, Token B" },
+            new() { Action = "Bank items", Item = "Token A, Token B" }
+        ];
+
+        string result = _service.GenerateScript(steps);
+
+        Assert.Contains("Core.AddDrop(\"Token A\", \"Token B\");", result);
+        Assert.Contains("Core.ToBank(\"Token A\", \"Token B\");", result);
+    }
+
+    [Fact]
     public void GenerateScript_UsesCellPadAndAggroSettings()
     {
         ScriptBuilderStep[] steps =
