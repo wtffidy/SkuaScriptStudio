@@ -249,7 +249,23 @@
                         <TextBlock Name="BuilderStepCountText" Grid.Column="1" Text="0 STEP(S)" Foreground="{DynamicResource TextMutedBrush}" FontSize="10" VerticalAlignment="Center"/>
                       </Grid>
                       <Border Grid.Row="1" Background="{DynamicResource SurfaceInsetBrush}" CornerRadius="8" Padding="8" MinHeight="280">
-                        <ListBox Name="BuilderStepsList" Background="Transparent"/>
+                        <ListBox Name="BuilderStepsList" Background="Transparent" BorderThickness="0" Padding="4">
+                          <ListBox.ItemTemplate>
+                            <DataTemplate>
+                              <Border Background="{DynamicResource SurfaceRaisedBrush}" BorderBrush="{DynamicResource AccentBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,3">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                  <Border Width="28" Height="28" CornerRadius="7" Background="{DynamicResource SurfaceInsetBrush}" VerticalAlignment="Center">
+                                    <TextBlock Text="▦" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource AccentTextBrush}" FontWeight="Bold"/>
+                                  </Border>
+                                  <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock Text="SCRIPT BLOCK" FontSize="9" Foreground="{DynamicResource TextMutedBrush}" LetterSpacing="1"/>
+                                  </StackPanel>
+                                </Grid>
+                              </Border>
+                            </DataTemplate>
+                          </ListBox.ItemTemplate>
+                        </ListBox>
                       </Border>
                       <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="6">
                         <Button Content="↑ Up" Click="MoveBuilderStepUpButton_OnClick"/>
