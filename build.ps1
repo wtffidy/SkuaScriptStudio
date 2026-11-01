@@ -10,6 +10,19 @@ $Solution = Join-Path $Root "SkuaScriptStudio.sln"
 $Project = Join-Path $Root "src/SkuaScriptStudio/SkuaScriptStudio.csproj"
 $Output = Join-Path $Root "artifacts/local"
 $Jobs = [Math]::Min(16, [Math]::Max(4, [Environment]::ProcessorCount))
+$TotalTimer = [System.Diagnostics.Stopwatch]::StartNew()
+$Timings = [System.Collections.Generic.List[object]]::new()
+
+function Format-Duration([TimeSpan]$Duration) {
+    if ($Duration.TotalMinutes -ge 1) { return $Duration.ToString("m\\:ss\\.fff") }
+    return $Duration.ToString("s\\.fff") + "s"
+}
+
+function Add-Timing([string]$Name, [System.Diagnostics.Stopwatch]$Timer) {
+    $Timer.Stop()
+    $Timings.Add([pscustomobject]@{ Name = $Name; Duration = $Timer.Elapsed })
+    Write-Host ("  {0,-12} {1}" -f $Name, (Format-Duration $Timer.Elapsed)) -ForegroundColor DarkGray
+}
 
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = "1"
 $env:DOTNET_NOLOGO = "1"
@@ -65,7 +78,7 @@ if ($Test) {
 dotnet restore $Project --runtime $RuntimeIdentifier --verbosity quiet
 if ($LASTEXITCODE -ne 0) { throw "Restore failed." }
 
-dotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true --no-restore --verbosity quiet -m:$Jobs -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o $Output
+$StageTimer = [System.Diagnostics.Stopwatch]::StartNew()\ndotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true --no-restore --verbosity quiet -m:$Jobs -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o $Output
 if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
 
 Write-Host "Build complete: $Output" -ForegroundColor Green
