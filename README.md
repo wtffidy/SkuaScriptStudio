@@ -38,7 +38,7 @@ dotnet run --project src/SkuaScriptStudio/SkuaScriptStudio.csproj
 
 ### Build locally
 
-The local build scripts pull the latest `main` (when the working tree is clean), detect the current OS/architecture, reuse incremental build outputs, and publish a self-contained single-file app to `artifacts/local`. They use parallel MSBuild workers and skip tests by default for faster iteration.
+The local build scripts pull the latest `main` (when the working tree is clean), detect the current OS/architecture, reuse incremental build outputs, and publish a self-contained single-file app to `artifacts/local`. They use parallel MSBuild workers, skip tests by default for faster iteration, and print per-stage plus total elapsed build times.
 
 **Windows (PowerShell):**
 
