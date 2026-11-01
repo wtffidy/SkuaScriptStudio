@@ -41,7 +41,7 @@ public sealed class ScriptBuilderService
             bodyLines.Add(Indent($"// Block {index + 1}: {step.Action}", indentation));
             bodyLines.Add(Indent(generated, indentation));
 
-            if (step.Action is "If item missing" or "Repeat until item owned")
+            if (step.Action is "If item missing" or "Repeat N times")
             {
                 bodyLines.Add(Indent("{", indentation));
                 openBlocks.Push(step.Action == "If item missing" ? "if" : "repeat");
@@ -122,8 +122,12 @@ public sealed class ScriptBuilderService
                 $"if (!Core.CheckInventory({item}, {quantity}))\n    Core.Logger(\"Still need the required item quantity.\");",
             "If item missing" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"if (!Core.CheckInventory({item}, {quantity}))",
-            "Repeat until item owned" when !string.IsNullOrWhiteSpace(step.Item) =>
-                $"while (!Bot.ShouldExit && !Core.CheckInventory({item}, {quantity}))",
+            "Repeat N times" when quantity > 0 =>
+                $"for (int repeat{index} = 0; repeat{index} < {quantity} && !Bot.ShouldExit; repeat{index}++)",
+            "Register quests" when HasQuestIds(step.Value) =>
+                $"Core.RegisterQuests({step.Value});",
+            "Cancel registered quests" =>
+                "Core.CancelRegisteredQuests();",
             "End block" or "End repeat" => string.Empty,
             "Wait for an item" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"while (!Bot.ShouldExit && !Core.CheckInventory({item}, {quantity}))\n    Core.Sleep();",
@@ -154,6 +158,10 @@ public sealed class ScriptBuilderService
     private static bool HasCsvValues(string value) => value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Length > 0;
 
     private static string FormatStringArguments(string value) => string.Join(", ", value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(name => SymbolDisplay.FormatLiteral(name, quote: true)));
+
+    private static bool HasQuestIds(string value) =>
+        value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Length > 0 &&
+        value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).All(id => int.TryParse(id, out int questId) && questId > 0);
 
     private static bool TryGetId(string value, out int id) => int.TryParse(value, out id) && id > 0;
 
