@@ -68,7 +68,7 @@ public sealed class ScriptBuilderService
             "Equip a class" =>
                 $"Core.EquipClass(ClassType.{(step.ClassType is "Farm" or "Solo" or "Support" ? step.ClassType : "Farm")});",
             "Equip gear" when !string.IsNullOrWhiteSpace(step.Value) =>
-                $"Core.Equip({string.Join(", ", step.Value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(name => SymbolDisplay.FormatLiteral(name, quote: true)))});",
+                $"Core.Equip({FormatStringArguments(step.Value)});",
             "Travel to a map" when !string.IsNullOrWhiteSpace(step.Map) =>
                 $"Core.Join({map});",
             "Move to a cell" when HasValues(step.Cell, step.Pad) =>
@@ -77,14 +77,14 @@ public sealed class ScriptBuilderService
                 $"if (!Core.CheckInventory({item}, {quantity}))\n    Core.Logger(\"Still need the required item quantity.\");",
             "Wait for an item" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"while (!Bot.ShouldExit && !Core.CheckInventory({item}, {quantity}))\n    Core.Sleep();",
-            "Add drops" when !string.IsNullOrWhiteSpace(step.Item) =>
-                $"Core.AddDrop({item});",
-            "Remove drops" when !string.IsNullOrWhiteSpace(step.Item) =>
-                $"Core.RemoveDrop({item});",
-            "Bank items" when !string.IsNullOrWhiteSpace(step.Item) =>
-                $"Core.ToBank({item});",
-            "Unbank items" when !string.IsNullOrWhiteSpace(step.Item) =>
-                $"Core.Unbank({item});",
+            "Add drops" when HasCsvValues(step.Item) =>
+                $"Core.AddDrop({FormatStringArguments(step.Item)});",
+            "Remove drops" when HasCsvValues(step.Item) =>
+                $"Core.RemoveDrop({FormatStringArguments(step.Item)});",
+            "Bank items" when HasCsvValues(step.Item) =>
+                $"Core.ToBank({FormatStringArguments(step.Item)});",
+            "Unbank items" when HasCsvValues(step.Item) =>
+                $"Core.Unbank({FormatStringArguments(step.Item)});",
             "Log a message" when !string.IsNullOrWhiteSpace(step.Value) =>
                 $"Core.Logger({value});",
             "Log farming progress" when !string.IsNullOrWhiteSpace(step.Item) =>
@@ -100,6 +100,10 @@ public sealed class ScriptBuilderService
     }
 
     private static bool HasValues(params string[] values) => values.All(value => !string.IsNullOrWhiteSpace(value));
+
+    private static bool HasCsvValues(string value) => value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Length > 0;
+
+    private static string FormatStringArguments(string value) => string.Join(", ", value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(name => SymbolDisplay.FormatLiteral(name, quote: true)));
 
     private static bool TryGetId(string value, out int id) => int.TryParse(value, out id) && id > 0;
 
