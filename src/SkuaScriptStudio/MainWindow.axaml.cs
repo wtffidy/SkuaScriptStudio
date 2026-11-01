@@ -35,6 +35,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        UpdateBuilderActionFields();
         SnippetCoreFilter.ItemsSource = _snippetService.GetCores();
         SnippetCoreFilter.SelectedIndex = 0;
         SnippetCategoryFilter.ItemsSource = _snippetService.GetCategories();
@@ -371,6 +372,38 @@ public partial class MainWindow : Window
         Discard
     }
 
+    private void BuilderActionInput_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => UpdateBuilderActionFields();
+
+    private void UpdateBuilderActionFields()
+    {
+        string action = (BuilderActionInput?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
+        bool isHunt = action == "Hunt for an item";
+        bool isQuest = action is "Accept a quest" or "Complete a quest";
+        bool isEquip = action == "Equip a class";
+        bool isTravel = action == "Travel to a map";
+        bool isInventory = action == "Check inventory";
+        bool isLog = action == "Log a message";
+        bool isWait = action == "Wait";
+
+        BuilderMapField.IsVisible = isHunt || isTravel;
+        BuilderTargetField.IsVisible = isHunt;
+        BuilderItemField.IsVisible = isHunt || isInventory;
+        BuilderQuantityField.IsVisible = isHunt || isInventory || isWait;
+        BuilderValueField.IsVisible = isQuest || isLog;
+        BuilderClassField.IsVisible = isEquip;
+        BuilderActionHelpText.Text = action switch
+        {
+            "Hunt for an item" => "Tell us where to go, which monster to fight, and which item to collect.",
+            "Accept a quest" or "Complete a quest" => "Enter the numeric quest ID. You do not need to write any code.",
+            "Equip a class" => "Choose the class the bot should equip before continuing.",
+            "Travel to a map" => "Enter the map name the bot should travel to.",
+            "Check inventory" => "Enter the item and minimum quantity the bot should check for.",
+            "Log a message" => "Enter the message you want shown in the bot log.",
+            "Wait" => "Choose how many seconds the bot should pause before the next step.",
+            _ => "Choose an action to see exactly what information it needs."
+        };
+    }
+
     private async void AddBuilderStepButton_OnClick(object? sender, RoutedEventArgs e)
     {
         string action = (BuilderActionInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
@@ -397,7 +430,11 @@ public partial class MainWindow : Window
             _ = _builderService.GenerateScript([step]);
             _builderSteps.Add(step);
             RefreshBuilderSteps();
+            BuilderMapInput.Text = string.Empty;
+            BuilderTargetInput.Text = string.Empty;
+            BuilderItemInput.Text = string.Empty;
             BuilderValueInput.Text = string.Empty;
+            BuilderQuantityInput.Value = 1;
             BuilderStatusText.Text = $"Added step {_builderSteps.Count}. Add more actions to build the full routine.";
         }
         catch (ArgumentException exception)
