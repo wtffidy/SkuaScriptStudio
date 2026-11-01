@@ -15,10 +15,11 @@ public sealed class ScriptBuilderService
             throw new ArgumentException("Add at least one step before building your script.", nameof(steps));
 
         List<string> actions = [];
-        foreach (ScriptBuilderStep step in steps)
+        for (int index = 0; index < steps.Count; index++)
         {
+            ScriptBuilderStep step = steps[index];
             ArgumentNullException.ThrowIfNull(step);
-            actions.Add(GenerateAction(step));
+            actions.Add($"// Step {index + 1}: {step.Action}{Environment.NewLine}{GenerateAction(step)}");
         }
 
         string body = string.Join(Environment.NewLine + Environment.NewLine, actions);
