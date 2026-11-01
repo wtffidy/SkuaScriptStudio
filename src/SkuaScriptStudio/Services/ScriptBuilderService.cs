@@ -105,7 +105,7 @@ public sealed class ScriptBuilderService
         return step.Action switch
         {
             "Hunt for an item" when HasValues(step.Map, step.Target, step.Item) =>
-                $"Core.HuntMonster({map}, {target}, {item}, {quantity});",
+                $"Core.HuntMonster({map}, {target}, {item}, {quantity}, isTemp: {step.IsTemporary.ToString().ToLowerInvariant()});",
             "Accept a quest" when TryGetId(step.Value, out int acceptQuestId) =>
                 $"Core.EnsureAccept({acceptQuestId});",
             "Complete a quest" when TryGetId(step.Value, out int completeQuestId) =>
@@ -120,6 +120,8 @@ public sealed class ScriptBuilderService
                 $"Core.Jump({cell}, {pad});",
             "Check inventory" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"if (!Core.CheckInventory({item}, {quantity}))\n    Core.Logger(\"Still need the required item quantity.\");",
+            "Generic farming preset" when !string.IsNullOrWhiteSpace(step.Item) && HasQuestIds(step.Value) && HasHuntEntries(step.Hunts) =>
+                GenerateGenericFarm(step),
             "If item missing" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"if (!Core.CheckInventory({item}, {quantity}))",
             "Repeat N times" when quantity > 0 =>
@@ -153,6 +155,38 @@ public sealed class ScriptBuilderService
         };
     }
 
+    private static string GenerateGenericFarm(ScriptBuilderStep step)
+    {
+        string item = SymbolDisplay.FormatLiteral(step.Item.Trim(), quote: true);
+        int quantity = Math.Max(1, step.Quantity);
+        List<string> lines =
+        [
+            $"if (Core.CheckInventory({item}, {quantity}))",
+            "    return;",
+            $"Core.FarmingLogger({item}, {quantity});",
+            $"Core.RegisterQuests({step.Value});",
+            $"while (!Bot.ShouldExit & !Core.CheckInventory({item}, {quantity}))",
+            "{"
+        ];
+
+        foreach (string entry in step.Hunts.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+        {
+            string[] parts = entry.Split('|', 2, StringSplitOptions.TrimEntries);
+            string map = parts.Length == 2 ? parts[0] : step.Map;
+            string monster = parts.Length == 2 ? parts[1] : entry;
+            if (!HasValues(map, monster))
+                throw new ArgumentException("Each hunt must be a monster name or map|monster pair.");
+
+            string mapLiteral = SymbolDisplay.FormatLiteral(map, quote: true);
+            string monsterLiteral = SymbolDisplay.FormatLiteral(monster, quote: true);
+            lines.Add($"    Core.HuntMonster({mapLiteral}, {monsterLiteral}, {item}, {quantity}, isTemp: {step.IsTemporary.ToString().ToLowerInvariant()});");
+        }
+
+        lines.Add("}");
+        return string.Join(Environment.NewLine, lines);
+    }
+
+    private static bool HasHuntEntries(string hunts) => !string.IsNullOrWhiteSpace(hunts);
     private static bool HasValues(params string[] values) => values.All(value => !string.IsNullOrWhiteSpace(value));
 
     private static bool HasCsvValues(string value) => value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Length > 0;
