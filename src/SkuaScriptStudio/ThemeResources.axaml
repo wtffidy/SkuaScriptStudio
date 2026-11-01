@@ -6,6 +6,7 @@
   <SolidColorBrush x:Key="SurfaceInsetBrush" Color="#17141F" />
   <SolidColorBrush x:Key="EditorBackgroundBrush" Color="#12111A" />
   <SolidColorBrush x:Key="BorderBrush" Color="#393044" />
+  <SolidColorBrush x:Key="AccentBorderBrush" Color="#70478C" />
   <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F1ECF5" />
   <SolidColorBrush x:Key="TextSecondaryBrush" Color="#BDB2C9" />
   <SolidColorBrush x:Key="TextMutedBrush" Color="#988BA6" />
