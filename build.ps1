@@ -18,17 +18,23 @@ if ([version]($SdkVersion.Split('-')[0]) -lt [version]"10.0") {
     throw "Skua Script Studio requires the .NET 10 SDK. Found $SdkVersion."
 }
 
-$Architecture = [System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture
-$RuntimeIdentifier = switch ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()) {
+$RuntimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
+$Architecture = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
+$IsWindowsHost = $RuntimeInfo]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)
+$IsMacHost = $RuntimeInfo]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)
+$IsLinuxHost = $RuntimeInfo]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Linux)
+
+$RuntimeIdentifier = switch ($Architecture) {
     "X64" {
-        if ($IsWindows) { "win-x64" }
-        elseif ($IsMacOS) { "osx-x64" }
-        else { "linux-x64" }
+        if ($IsWindowsHost) { "win-x64" }
+        elseif ($IsMacHost) { "osx-x64" }
+        elseif ($IsLinuxHost) { "linux-x64" }
+        else { throw "Unsupported operating system." }
     }
     "Arm64" {
-        if ($IsMacOS) { "osx-arm64" }
-        elseif ($IsLinux) { "linux-arm64" }
-        else { throw "Windows ARM64 publishing is not configured." }
+        if ($IsMacHost) { "osx-arm64" }
+        elseif ($IsLinuxHost) { "linux-arm64" }
+        else { throw "ARM64 publishing is not configured for this operating system." }
     }
     default { throw "Unsupported architecture: $Architecture" }
 }
