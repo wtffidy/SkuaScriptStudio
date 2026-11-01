@@ -491,18 +491,20 @@ public partial class MainWindow : Window
         try
         {
             _ = _builderService.GenerateScript([step]);
-            if (_editingBuilderStepIndex >= 0 && _editingBuilderStepIndex < _builderSteps.Count)
+            bool wasEditing = _editingBuilderStepIndex >= 0 && _editingBuilderStepIndex < _builderSteps.Count;
+            int editedIndex = _editingBuilderStepIndex;
+            if (wasEditing)
             {
-                int editedIndex = _editingBuilderStepIndex;
                 _builderSteps[editedIndex] = step;
                 CancelBuilderEdit();
-                RefreshBuilderSteps();
-                BuilderStepsList.SelectedIndex = editedIndex;
             }
             else
                 _builderSteps.Add(step);
 
             RefreshBuilderSteps();
+            if (wasEditing)
+                BuilderStepsList.SelectedIndex = editedIndex;
+
             BuilderMapInput.Text = string.Empty;
             BuilderTargetInput.Text = string.Empty;
             BuilderItemInput.Text = string.Empty;
@@ -510,7 +512,9 @@ public partial class MainWindow : Window
             BuilderQuantityInput.Value = 1;
             BuilderCellInput.Text = "Enter";
             BuilderPadInput.Text = "Spawn";
-            BuilderStatusText.Text = $"Added step {_builderSteps.Count}. Add more actions to build the full routine.";
+            BuilderStatusText.Text = wasEditing
+                ? $"Updated step {editedIndex + 1}. Your script has {_builderSteps.Count} step(s)."
+                : $"Added step {_builderSteps.Count}. Add more actions to build the full routine.";
         }
         catch (ArgumentException exception)
         {
@@ -540,6 +544,7 @@ public partial class MainWindow : Window
         if (index < 0 || newIndex < 0 || newIndex >= _builderSteps.Count)
             return;
 
+        CancelBuilderEdit();
         ScriptBuilderStep step = _builderSteps[index];
         _builderSteps.RemoveAt(index);
         _builderSteps.Insert(newIndex, step);
