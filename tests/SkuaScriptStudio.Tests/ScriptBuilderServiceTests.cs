@@ -21,13 +21,25 @@ public sealed class ScriptBuilderServiceTests
 
         string result = _service.GenerateScript(steps);
 
+        Assert.Contains("name: MyScript", result);
+        Assert.Contains("description: Generated Skua script.", result);
         Assert.Contains("//cs_include Scripts/CoreBots.cs", result);
+        Assert.Contains("//cs_include Scripts/CoreFarms.cs", result);
+        Assert.Contains("//cs_include Scripts/CoreStory.cs", result);
+        Assert.Contains("//cs_include Scripts/CoreArmyLite.cs", result);
+        Assert.Contains("//cs_include Scripts/SevenCircles.cs", result);
         Assert.Contains("using Skua.Core.Interfaces;", result);
+        Assert.Contains("using Skua.Core.Models.Items;", result);
+        Assert.Contains("using Skua.Core.Options;", result);
+        Assert.Contains("private IScriptInterface Bot => IScriptInterface.Instance;", result);
+        Assert.Contains("private CoreBots Core => CoreBots.Instance;", result);
+        Assert.Contains("public bool DontPreconfigure = true;", result);
+        Assert.Contains("public string[] MultiOptions", result);
         Assert.Contains("public void ScriptMain(IScriptInterface bot)", result);
         Assert.Contains("Core.SetOptions(false);", result);
-        Assert.Contains("// Step 1: Equip a class", result);
-        Assert.Contains("// Step 2: Hunt for an item", result);
-        Assert.Contains("// Step 3: Complete a quest", result);
+        Assert.Contains("// Block 1: Equip a class", result);
+        Assert.Contains("// Block 2: Hunt for an item", result);
+        Assert.Contains("// Block 3: Complete a quest", result);
         Assert.True(result.IndexOf("Core.EquipClass(ClassType.Farm);", StringComparison.Ordinal) < result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal));
         Assert.True(result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal) < result.IndexOf("Core.EnsureComplete(12345);", StringComparison.Ordinal));
     }
