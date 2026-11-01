@@ -232,7 +232,7 @@
                           <ComboBoxItem Content="Support"/>
                         </ComboBox>
                       </StackPanel>
-                      <Button Content="＋ Add this step" Background="{DynamicResource AccentBrush}" HorizontalAlignment="Stretch" Padding="14,10" Click="AddBuilderStepButton_OnClick"/>
+                      <Button Name="AddBuilderStepButton" Content="＋ Add this step" Background="{DynamicResource AccentBrush}" HorizontalAlignment="Stretch" Padding="14,10" Click="AddBuilderStepButton_OnClick"/>
                     </StackPanel>
                   </Border>
                   <Border Grid.Column="1" Background="{DynamicResource SurfaceRaisedBrush}" CornerRadius="12" Padding="20">
@@ -250,7 +250,7 @@
                       <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
                         <Button Content="↑ Move up" Click="MoveBuilderStepUpButton_OnClick"/>
                         <Button Grid.Column="1" Content="↓ Move down" Click="MoveBuilderStepDownButton_OnClick"/>
-                        <Button Grid.Column="2" Content="Remove" Click="RemoveBuilderStepButton_OnClick"/>
+                        <Button Grid.Column="2" Content="Edit selected" Click="EditBuilderStepButton_OnClick"/>
                         <Button Name="ClearBuilderButton" Grid.Column="3" Content="Clear all" Click="ClearBuilderButton_OnClick"/>
                       </Grid>
                       <StackPanel Grid.Row="3" Spacing="8">
