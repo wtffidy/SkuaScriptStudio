@@ -124,7 +124,6 @@ public sealed class ScriptBuilderService
                 GenerateGenericFarm(step, registerQuests: true),
             "Simple farming preset" when !string.IsNullOrWhiteSpace(step.Item) && HasHuntEntries(step.Hunts) =>
                 GenerateGenericFarm(step, registerQuests: false),
-                GenerateGenericFarm(step),
             "If item missing" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"if (!Core.CheckInventory({item}, {quantity}))",
             "Repeat N times" when quantity > 0 =>
