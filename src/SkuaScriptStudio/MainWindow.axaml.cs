@@ -454,6 +454,7 @@ public partial class MainWindow : Window
         BuilderTargetField.IsVisible = isHunt;
         BuilderItemField.IsVisible = isHunt || isInventory || isItemAction;
         BuilderQuantityField.IsVisible = isHunt || isInventory || isWait || action is "Log farming progress" or "If item missing" or "Repeat N times";
+        BuilderQuantityLabel.Text = action == "Repeat N times" ? "Repeat count" : isWait && action == "Wait" ? "Seconds" : "Item quantity";
         BuilderValueField.IsVisible = isQuest || isLog || isGear;
         BuilderValueLabel.Text = isGear ? "Gear item name(s), comma separated" : action == "Register quests" ? "Quest IDs (comma separated)" : isQuest ? "Quest ID" : "Message";
         BuilderValueInput.Watermark = isGear ? "e.g. Blade of Awe, Cape of Awe" : action == "Register quests" ? "e.g. 12345, 12346" : isQuest ? "e.g. 12345" : "Message to show in the bot log";
