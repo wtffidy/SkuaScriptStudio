@@ -439,6 +439,7 @@ public partial class MainWindow : Window
 
         string action = (BuilderActionInput?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
         bool isHunt = action == "Hunt for an item";
+        bool isGenericFarm = action == "Generic farming preset";
         bool isQuest = action is "Accept a quest" or "Complete a quest" or "Register quests";
         bool isEquip = action == "Equip a class";
         bool isTravel = action == "Travel to a map";
@@ -452,17 +453,20 @@ public partial class MainWindow : Window
 
         BuilderMapField.IsVisible = isHunt || isTravel;
         BuilderTargetField.IsVisible = isHunt;
-        BuilderItemField.IsVisible = isHunt || isInventory || isItemAction;
-        BuilderQuantityField.IsVisible = isHunt || isInventory || isWait || action is "Log farming progress" or "If item missing" or "Repeat N times";
+        BuilderItemField.IsVisible = isHunt || isInventory || isItemAction || isGenericFarm;
+        BuilderHuntsField.IsVisible = isGenericFarm;
+        BuilderTemporaryInput.IsVisible = isHunt || isGenericFarm;
+        BuilderQuantityField.IsVisible = isHunt || isInventory || isWait || isGenericFarm || action is "Log farming progress" or "If item missing" or "Repeat N times";
         BuilderQuantityLabel.Text = action == "Repeat N times" ? "Repeat count" : isWait && action == "Wait" ? "Seconds" : "Item quantity";
-        BuilderValueField.IsVisible = isQuest || isLog || isGear;
-        BuilderValueLabel.Text = isGear ? "Gear item name(s), comma separated" : action == "Register quests" ? "Quest IDs (comma separated)" : isQuest ? "Quest ID" : "Message";
+        BuilderValueField.IsVisible = isQuest || isLog || isGear || isGenericFarm;
+        BuilderValueLabel.Text = isGenericFarm || action == "Register quests" ? "Quest IDs (comma separated)" : isGear ? "Gear item name(s), comma separated" : isQuest ? "Quest ID" : "Message";
         BuilderValueInput.Watermark = isGear ? "e.g. Blade of Awe, Cape of Awe" : action == "Register quests" ? "e.g. 12345, 12346" : isQuest ? "e.g. 12345" : "Message to show in the bot log";
         BuilderClassField.IsVisible = isEquip;
         BuilderCellFields.IsVisible = isCell;
         BuilderEnabledInput.IsVisible = isAggro;
         BuilderActionHelpText.Text = action switch
         {
+            "Generic farming preset" => "Build the complete inventory-aware farming routine. Enter quest IDs and one hunt per line as map|monster.",
             "Hunt for an item" => "Tell us where to go, which monster to fight, and which item to collect.",
             "Accept a quest" or "Complete a quest" => "Enter the numeric quest ID. You do not need to write any code.",
             "Register quests" => "Register one or more quest IDs. Separate multiple IDs with commas.",
@@ -508,6 +512,8 @@ public partial class MainWindow : Window
         BuilderMapInput.Text = step.Map;
         BuilderTargetInput.Text = step.Target;
         BuilderItemInput.Text = step.Item;
+        BuilderHuntsInput.Text = step.Hunts;
+        BuilderTemporaryInput.IsChecked = step.IsTemporary;
         BuilderValueInput.Text = step.Value;
         BuilderQuantityInput.Value = step.Quantity;
         BuilderCellInput.Text = step.Cell;
@@ -544,6 +550,8 @@ public partial class MainWindow : Window
             Map = map,
             Target = target,
             Item = item,
+            Hunts = BuilderHuntsInput.Text?.Trim() ?? string.Empty,
+            IsTemporary = BuilderTemporaryInput.IsChecked ?? true,
             Value = value,
             Quantity = quantity,
             ClassType = classType,
@@ -554,6 +562,8 @@ public partial class MainWindow : Window
 
         try
         {
+            if (action == "Generic farming preset" && (string.IsNullOrWhiteSpace(step.Item) || string.IsNullOrWhiteSpace(step.Value) || string.IsNullOrWhiteSpace(step.Hunts)))
+                throw new ArgumentException("The farming preset requires an item, quantity, quest IDs, and at least one hunt.");
             if (action == "If item missing")
             {
                 if (string.IsNullOrWhiteSpace(step.Item))
@@ -579,6 +589,8 @@ public partial class MainWindow : Window
             BuilderMapInput.Text = string.Empty;
             BuilderTargetInput.Text = string.Empty;
             BuilderItemInput.Text = string.Empty;
+            BuilderHuntsInput.Text = string.Empty;
+            BuilderTemporaryInput.IsChecked = true;
             BuilderValueInput.Text = string.Empty;
             BuilderQuantityInput.Value = 1;
             BuilderCellInput.Text = "Enter";
