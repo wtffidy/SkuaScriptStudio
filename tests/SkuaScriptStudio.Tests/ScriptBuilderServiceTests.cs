@@ -163,7 +163,7 @@ public sealed class ScriptBuilderServiceTests
                 Quantity = 25,
                 Value = "1234, 5678",
                 IsTemporary = true,
-                Hunts = "battleundere|Treasure Pile\nbattleundere|Draconocean"
+                Hunts = "battleundere|Treasure Pile|Relic|25|true\nbattleundere|Draconocean|Relic|10|false"
             }
         ];
 
@@ -175,8 +175,25 @@ public sealed class ScriptBuilderServiceTests
         Assert.Contains("Core.RegisterQuests(1234, 5678);", result);
         Assert.Contains("while (!Bot.ShouldExit & !Core.CheckInventory(\"Relic\", 25))", result);
         Assert.Contains("Core.HuntMonster(\"battleundere\", \"Treasure Pile\", \"Relic\", 25, isTemp: true);", result);
-        Assert.Contains("Core.HuntMonster(\"battleundere\", \"Draconocean\", \"Relic\", 25, isTemp: true);", result);
+        Assert.Contains("Core.HuntMonster(\"battleundere\", \"Draconocean\", \"Relic\", 10, isTemp: false);", result);
         Assert.Empty(syntaxTree.GetDiagnostics().Where(diagnostic => diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error));
+    }
+
+    [Fact]
+    public void GenerateScript_RejectsMalformedHuntPresetRows()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new()
+            {
+                Action = "Simple farming preset",
+                Item = "Relic",
+                Quantity = 5,
+                Hunts = "battleundere|Treasure Pile|Relic|not-a-number|true"
+            }
+        ];
+
+        Assert.Throws<ArgumentException>(() => _service.GenerateScript(steps));
     }
 
     [Fact]
