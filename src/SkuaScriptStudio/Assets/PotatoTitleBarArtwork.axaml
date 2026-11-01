@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SkuaScriptStudio.Assets.PotatoTitleBarArtwork"
+             IsHitTestVisible="False">
+  <Grid ClipToBounds="True">
+    <Canvas>
+      <Ellipse Canvas.Left="360" Canvas.Top="-74" Width="170" Height="170" Fill="#A66BDB" Opacity="0.13"/>
+      <Ellipse Canvas.Left="700" Canvas.Top="-94" Width="210" Height="210" Fill="#D7A85D" Opacity="0.10"/>
+      <Ellipse Canvas.Right="260" Canvas.Top="-72" Width="180" Height="180" Fill="#A66BDB" Opacity="0.12"/>
+      <TextBlock Canvas.Left="430" Canvas.Top="-8" Text="🥔" FontSize="74" Opacity="0.58"/>
+      <TextBlock Canvas.Right="250" Canvas.Top="-24" Text="👑" FontSize="35" Opacity="0.60"/>
+      <TextBlock Canvas.Right="100" Canvas.Top="12" Text="✦  ✧  ✦" FontSize="22" Foreground="#D7A85D" Opacity="0.45"/>
+    </Canvas>
+  </Grid>
+</UserControl>
