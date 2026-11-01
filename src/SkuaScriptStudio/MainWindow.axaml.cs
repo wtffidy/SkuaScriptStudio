@@ -16,6 +16,7 @@ public partial class MainWindow : Window
     private readonly ScriptDiagnosticsService _diagnosticsService = new();
     private readonly ScriptSnippetService _snippetService = new();
     private readonly List<ScriptBuilderStep> _builderSteps = [];
+    private int _editingBuilderStepIndex = -1;
     private ScriptDocument _document = new();
     private bool _isUpdatingEditor;
     private long _documentLoadVersion;
@@ -425,6 +426,42 @@ public partial class MainWindow : Window
         };
     }
 
+    private void EditBuilderStepButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        int index = BuilderStepsList.SelectedIndex;
+        if (index < 0 || index >= _builderSteps.Count)
+        {
+            BuilderStatusText.Text = "Select a step first, then choose Edit selected.";
+            return;
+        }
+
+        ScriptBuilderStep step = _builderSteps[index];
+        _editingBuilderStepIndex = index;
+        BuilderActionInput.SelectedItem = BuilderActionInput.Items
+            .OfType<ComboBoxItem>()
+            .FirstOrDefault(item => string.Equals(item.Content?.ToString(), step.Action, StringComparison.Ordinal));
+        UpdateBuilderActionFields();
+        BuilderMapInput.Text = step.Map;
+        BuilderTargetInput.Text = step.Target;
+        BuilderItemInput.Text = step.Item;
+        BuilderValueInput.Text = step.Value;
+        BuilderQuantityInput.Value = step.Quantity;
+        BuilderCellInput.Text = step.Cell;
+        BuilderPadInput.Text = step.Pad;
+        BuilderEnabledInput.IsChecked = step.Enabled;
+        BuilderClassInput.SelectedItem = BuilderClassInput.Items
+            .OfType<ComboBoxItem>()
+            .FirstOrDefault(item => string.Equals(item.Content?.ToString(), step.ClassType, StringComparison.Ordinal));
+        AddBuilderStepButton.Content = "Update selected step";
+        BuilderStatusText.Text = $"Editing step {index + 1}. Update it when you're done.";
+    }
+
+    private void CancelBuilderEdit()
+    {
+        _editingBuilderStepIndex = -1;
+        AddBuilderStepButton.Content = "＋ Add this step";
+    }
+
     private async void AddBuilderStepButton_OnClick(object? sender, RoutedEventArgs e)
     {
         string action = (BuilderActionInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
@@ -454,7 +491,15 @@ public partial class MainWindow : Window
         try
         {
             _ = _builderService.GenerateScript([step]);
-            _builderSteps.Add(step);
+            if (_editingBuilderStepIndex >= 0 && _editingBuilderStepIndex < _builderSteps.Count)
+            {
+                _builderSteps[_editingBuilderStepIndex] = step;
+                CancelBuilderEdit();
+                BuilderStepsList.SelectedIndex = _editingBuilderStepIndex;
+            }
+            else
+                _builderSteps.Add(step);
+
             RefreshBuilderSteps();
             BuilderMapInput.Text = string.Empty;
             BuilderTargetInput.Text = string.Empty;
@@ -477,6 +522,7 @@ public partial class MainWindow : Window
             return;
 
         _builderSteps.Remove(step);
+        CancelBuilderEdit();
         RefreshBuilderSteps();
         BuilderStatusText.Text = "Step removed.";
     }
@@ -511,6 +557,7 @@ public partial class MainWindow : Window
     private void ClearBuilderButton_OnClick(object? sender, RoutedEventArgs e)
     {
         _builderSteps.Clear();
+        CancelBuilderEdit();
         RefreshBuilderSteps();
         BuilderStatusText.Text = "Start by adding your first action.";
     }
