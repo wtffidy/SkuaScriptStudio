@@ -18,7 +18,6 @@ if ([version]($SdkVersion.Split('-')[0]) -lt [version]"10.0") {
     throw "Skua Script Studio requires the .NET 10 SDK. Found $SdkVersion."
 }
 
-$RuntimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
 $Architecture = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
 $IsWindowsHost = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)
 $IsMacHost = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)
