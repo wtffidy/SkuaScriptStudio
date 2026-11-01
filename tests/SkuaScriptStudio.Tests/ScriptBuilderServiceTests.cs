@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis.CSharp;
 using SkuaScriptStudio.Models;
 using SkuaScriptStudio.Services;
 using Xunit;
@@ -116,6 +117,23 @@ public sealed class ScriptBuilderServiceTests
 
         Assert.Contains("Core.Jump(\"Boss\", \"Left\");", result);
         Assert.Contains("Core.ConfigureAggro(false);", result);
+    }
+
+
+    [Fact]
+    public void GenerateScript_ProducesValidCSharpSyntax()
+    {
+        ScriptBuilderStep[] steps =
+        [
+            new() { Action = "Equip a class", ClassType = "Farm" },
+            new() { Action = "Wait for an item", Item = "Token", Quantity = 10 },
+            new() { Action = "Log a message", Value = "Finished \"safely\"" }
+        ];
+
+        string result = _service.GenerateScript(steps);
+        Microsoft.CodeAnalysis.SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(result);
+
+        Assert.Empty(syntaxTree.GetDiagnostics().Where(diagnostic => diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error));
     }
 
     [Fact]
