@@ -376,6 +376,9 @@ public partial class MainWindow : Window
 
     private void UpdateBuilderActionFields()
     {
+        if (BuilderMapField is null || BuilderTargetField is null || BuilderItemField is null || BuilderQuantityField is null || BuilderValueField is null || BuilderClassField is null || BuilderActionHelpText is null)
+            return;
+
         string action = (BuilderActionInput?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
         bool isHunt = action == "Hunt for an item";
         bool isQuest = action is "Accept a quest" or "Complete a quest";
