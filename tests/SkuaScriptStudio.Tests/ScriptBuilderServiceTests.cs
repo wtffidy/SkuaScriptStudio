@@ -163,7 +163,7 @@ public sealed class ScriptBuilderServiceTests
         ScriptBuilderStep[] steps =
         [
             new() { Action = "If item missing", Item = "Quest Token", Quantity = 10 },
-            new() { Action = "Repeat until item owned", Item = "Quest Token", Quantity = 10 },
+            new() { Action = "Repeat N times", Quantity = 10 },
             new() { Action = "Hunt for an item", Map = "battleundere", Target = "Treasure Pile", Item = "Quest Token", Quantity = 10 },
             new() { Action = "End repeat" },
             new() { Action = "End block" }
@@ -173,7 +173,7 @@ public sealed class ScriptBuilderServiceTests
         Microsoft.CodeAnalysis.SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(result);
 
         Assert.Contains("if (!Core.CheckInventory(\"Quest Token\", 10))", result);
-        Assert.Contains("while (!Bot.ShouldExit && !Core.CheckInventory(\"Quest Token\", 10))", result);
+        Assert.Contains("repeat1 < 10 && !Bot.ShouldExit", result);
         Assert.True(result.IndexOf("while (!Bot.ShouldExit", StringComparison.Ordinal) < result.IndexOf("Core.HuntMonster(", StringComparison.Ordinal));
         Assert.Empty(syntaxTree.GetDiagnostics().Where(diagnostic => diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error));
     }
@@ -189,7 +189,7 @@ public sealed class ScriptBuilderServiceTests
     [Fact]
     public void GenerateScript_RejectsUnclosedControlFlowBlocks()
     {
-        ScriptBuilderStep[] steps = [new() { Action = "Repeat until item owned", Item = "Token" }];
+        ScriptBuilderStep[] steps = [new() { Action = "Repeat N times", Quantity = 3 }];
 
         Assert.Throws<ArgumentException>(() => _service.GenerateScript(steps));
     }
