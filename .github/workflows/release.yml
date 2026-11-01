@@ -77,8 +77,6 @@ jobs:
           path: |
             SkuaScriptStudio
             SkuaScriptStudio-linux-x64.tar.gz
-            SkuaScriptStudio-osx-x64.tar.gz
-            SkuaScriptStudio-osx-arm64.tar.gz
           if-no-files-found: error
           retention-days: 7
 
@@ -142,3 +140,5 @@ jobs:
             SkuaScriptStudio
             SkuaScriptStudio-win-x64.zip
             SkuaScriptStudio-linux-x64.tar.gz
+            SkuaScriptStudio-osx-x64.tar.gz
+            SkuaScriptStudio-osx-arm64.tar.gz
