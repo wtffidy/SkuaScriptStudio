@@ -20,9 +20,9 @@ if ([version]($SdkVersion.Split('-')[0]) -lt [version]"10.0") {
 
 $RuntimeInfo = [System.Runtime.InteropServices.RuntimeInformation]
 $Architecture = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
-$IsWindowsHost = $RuntimeInfo]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)
-$IsMacHost = $RuntimeInfo]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)
-$IsLinuxHost = $RuntimeInfo]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Linux)
+$IsWindowsHost = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)
+$IsMacHost = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)
+$IsLinuxHost = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Linux)
 
 $RuntimeIdentifier = switch ($Architecture) {
     "X64" {
@@ -56,7 +56,7 @@ if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
 Write-Host "Build complete: $Output" -ForegroundColor Green
 
 if ($Run) {
-    $Executable = if ($IsWindows) { Join-Path $Output "SkuaScriptStudio.exe" } else { Join-Path $Output "SkuaScriptStudio" }
+    $Executable = if ($IsWindowsHost) { Join-Path $Output "SkuaScriptStudio.exe" } else { Join-Path $Output "SkuaScriptStudio" }
     if (-not (Test-Path $Executable)) { throw "Executable not found: $Executable" }
     & $Executable
 }
