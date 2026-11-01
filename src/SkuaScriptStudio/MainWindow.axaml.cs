@@ -386,14 +386,22 @@ public partial class MainWindow : Window
         bool isTravel = action == "Travel to a map";
         bool isInventory = action == "Check inventory";
         bool isLog = action == "Log a message";
-        bool isWait = action == "Wait";
+        bool isWait = action is "Wait" or "Wait for an item";
+        bool isCell = action == "Move to a cell";
+        bool isItemAction = action is "Wait for an item" or "Add drops" or "Remove drops" or "Bank items" or "Unbank items" or "Log farming progress";
+        bool isGear = action == "Equip gear";
+        bool isAggro = action == "Configure aggro";
 
         BuilderMapField.IsVisible = isHunt || isTravel;
         BuilderTargetField.IsVisible = isHunt;
-        BuilderItemField.IsVisible = isHunt || isInventory;
-        BuilderQuantityField.IsVisible = isHunt || isInventory || isWait;
-        BuilderValueField.IsVisible = isQuest || isLog;
+        BuilderItemField.IsVisible = isHunt || isInventory || isItemAction;
+        BuilderQuantityField.IsVisible = isHunt || isInventory || isWait || action == "Log farming progress";
+        BuilderValueField.IsVisible = isQuest || isLog || isGear;
+        BuilderValueLabel.Text = isGear ? "Gear item name(s), comma separated" : isQuest ? "Quest ID" : "Message";
+        BuilderValueInput.Watermark = isGear ? "e.g. Blade of Awe, Cape of Awe" : isQuest ? "e.g. 12345" : "Message to show in the bot log";
         BuilderClassField.IsVisible = isEquip;
+        BuilderCellFields.IsVisible = isCell;
+        BuilderEnabledInput.IsVisible = isAggro;
         BuilderActionHelpText.Text = action switch
         {
             "Hunt for an item" => "Tell us where to go, which monster to fight, and which item to collect.",
@@ -403,6 +411,16 @@ public partial class MainWindow : Window
             "Check inventory" => "Enter the item and minimum quantity the bot should check for.",
             "Log a message" => "Enter the message you want shown in the bot log.",
             "Wait" => "Choose how many seconds the bot should pause before the next step.",
+            "Wait for an item" => "The script safely waits until you own the requested amount, or until you stop the bot.",
+            "Equip gear" => "Enter one or more item names, separated by commas.",
+            "Move to a cell" => "Choose the room cell and pad to move to.",
+            "Add drops" => "Add an item to the drop list so the bot collects it.",
+            "Remove drops" => "Remove an item from the drop list.",
+            "Bank items" => "Move the named item from your inventory into the bank.",
+            "Unbank items" => "Retrieve the named item from your bank.",
+            "Log farming progress" => "Log the item name and target quantity using the farming logger.",
+            "Rest" => "Restore health and mana before the next action.",
+            "Configure aggro" => "Choose whether the script should handle monster aggro.",
             _ => "Choose an action to see exactly what information it needs."
         };
     }
@@ -416,6 +434,8 @@ public partial class MainWindow : Window
         string value = BuilderValueInput.Text?.Trim() ?? string.Empty;
         int quantity = decimal.ToInt32(BuilderQuantityInput.Value ?? 1);
         string classType = (BuilderClassInput.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Farm";
+        string cell = BuilderCellInput.Text?.Trim() ?? string.Empty;
+        string pad = BuilderPadInput.Text?.Trim() ?? string.Empty;
 
         ScriptBuilderStep step = new()
         {
@@ -425,7 +445,10 @@ public partial class MainWindow : Window
             Item = item,
             Value = value,
             Quantity = quantity,
-            ClassType = classType
+            ClassType = classType,
+            Cell = cell,
+            Pad = pad,
+            Enabled = BuilderEnabledInput.IsChecked ?? true
         };
 
         try
@@ -438,6 +461,8 @@ public partial class MainWindow : Window
             BuilderItemInput.Text = string.Empty;
             BuilderValueInput.Text = string.Empty;
             BuilderQuantityInput.Value = 1;
+            BuilderCellInput.Text = "Enter";
+            BuilderPadInput.Text = "Spawn";
             BuilderStatusText.Text = $"Added step {_builderSteps.Count}. Add more actions to build the full routine.";
         }
         catch (ArgumentException exception)
