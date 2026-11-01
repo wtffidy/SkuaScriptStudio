@@ -15,13 +15,16 @@ public sealed class ScriptBuilderStep
     public string Value { get; init; } = string.Empty;
     public string ClassType { get; init; } = "Farm";
     public bool Enabled { get; init; } = true;
+    public bool IsTemporary { get; init; } = true;
+    public string Hunts { get; init; } = string.Empty;
 
     /// <summary>
     /// Returns a plain-language summary for the builder's block list.
     /// </summary>
     public override string ToString() => Action switch
     {
-        "Hunt for an item" => $"⚔ Hunt {Target} in {Map} for {Item} × {Quantity}",
+        "Hunt for an item" => $"⚔ Hunt {Target} in {Map} for {Item} × {Quantity} ({(IsTemporary ? "Temp" : "Inventory")})",
+        "Generic farming preset" => $"🌾 Farm {Item} × {Quantity} · {Hunts.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Length} hunt(s)",
         "Accept a quest" => $"＋ Accept quest #{Value}",
         "Complete a quest" => $"✓ Complete quest #{Value}",
         "Equip a class" => $"◈ Equip {ClassType} class",
