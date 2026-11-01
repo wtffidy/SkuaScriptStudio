@@ -376,7 +376,7 @@ public partial class MainWindow : Window
 
     private void UpdateBuilderActionFields()
     {
-        if (BuilderMapField is null || BuilderTargetField is null || BuilderItemField is null || BuilderQuantityField is null || BuilderValueField is null || BuilderClassField is null || BuilderActionHelpText is null)
+        if (BuilderMapField is null || BuilderTargetField is null || BuilderItemField is null || BuilderQuantityField is null || BuilderValueField is null || BuilderClassField is null || BuilderActionHelpText is null || BuilderCellFields is null || BuilderEnabledInput is null || BuilderValueLabel is null || BuilderValueInput is null)
             return;
 
         string action = (BuilderActionInput?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
