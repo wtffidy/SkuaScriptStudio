@@ -467,7 +467,7 @@ public partial class MainWindow : Window
         BuilderActionHelpText.Text = action switch
         {
             "Generic farming preset" => "Check the item, return if already owned, log progress, register quests, then hunt until the target quantity is reached.",
-            "Simple farming preset" => "Same inventory-aware farming loop without requiring quest IDs. Add one hunt per line as map|monster.",
+            "Simple farming preset" => "Same inventory-aware farming loop without requiring quest IDs. Add one hunt per line as map|mob|item|quant|isTemp (isTemp optional).",
             "Hunt for an item" => "Tell us where to go, which monster to fight, and which item to collect.",
             "Accept a quest" or "Complete a quest" => "Enter the numeric quest ID. You do not need to write any code.",
             "Register quests" => "Register one or more quest IDs. Separate multiple IDs with commas.",
