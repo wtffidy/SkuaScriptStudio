@@ -211,7 +211,7 @@
                           <TextBox Name="BuilderItemInput" Watermark="e.g. Treasure Relic"/>
                         </StackPanel>
                         <StackPanel Name="BuilderQuantityField" Grid.Column="1" Spacing="4">
-                          <TextBlock Text="Quantity / seconds"/>
+                          <TextBlock Name="BuilderQuantityLabel" Text="Item quantity / seconds"/>
                           <NumericUpDown Name="BuilderQuantityInput" Minimum="1" Maximum="100000" Value="1"/>
                         </StackPanel>
                       </Grid>
