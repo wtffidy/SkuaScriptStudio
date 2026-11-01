@@ -67,7 +67,7 @@ public sealed class ScriptBuilderService
                 $"Core.EnsureComplete({completeQuestId});",
             "Equip a class" =>
                 $"Core.EquipClass(ClassType.{(step.ClassType is "Farm" or "Solo" or "Support" ? step.ClassType : "Farm")});",
-            "Equip gear" when !string.IsNullOrWhiteSpace(step.Value) =>
+            "Equip gear" when HasCsvValues(step.Value) =>
                 $"Core.Equip({FormatStringArguments(step.Value)});",
             "Travel to a map" when !string.IsNullOrWhiteSpace(step.Map) =>
                 $"Core.Join({map});",
