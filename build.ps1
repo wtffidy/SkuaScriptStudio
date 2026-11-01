@@ -1,6 +1,7 @@
 param(
-    [switch]$SkipTests,
-    [switch]$Run
+    [switch]$Test,
+    [switch]$Run,
+    [switch]$NoPull
 )
 
 $ErrorActionPreference = "Stop"
@@ -8,6 +9,11 @@ $Root = $PSScriptRoot
 $Solution = Join-Path $Root "SkuaScriptStudio.sln"
 $Project = Join-Path $Root "src/SkuaScriptStudio/SkuaScriptStudio.csproj"
 $Output = Join-Path $Root "artifacts/local"
+$Jobs = [Math]::Min(16, [Math]::Max(4, [Environment]::ProcessorCount))
+
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = "1"
+$env:DOTNET_NOLOGO = "1"
+$env:MSBUILDDISABLENODEREUSE = "0"
 
 if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
     throw ".NET 10 SDK was not found. Install it from https://dotnet.microsoft.com/download/dotnet/10.0"
@@ -16,6 +22,16 @@ if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
 $SdkVersion = (& dotnet --version).Trim()
 if ([version]($SdkVersion.Split('-')[0]) -lt [version]"10.0") {
     throw "Skua Script Studio requires the .NET 10 SDK. Found $SdkVersion."
+}
+
+if (-not $NoPull -and (Test-Path (Join-Path $Root ".git"))) {
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) { throw "Git is required to update the repository." }
+    $Changes = & git -C $Root status --porcelain
+    if ($LASTEXITCODE -ne 0) { throw "Unable to check Git working tree." }
+    if ($Changes) { throw "Local changes detected. Commit or stash them before building so the update cannot overwrite your work." }
+    Write-Host "Pulling latest main..." -ForegroundColor Cyan
+    & git -C $Root pull --ff-only origin main
+    if ($LASTEXITCODE -ne 0) { throw "Git pull failed. Resolve the repository state before building." }
 }
 
 $Architecture = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
@@ -38,18 +54,18 @@ $RuntimeIdentifier = switch ($Architecture) {
     default { throw "Unsupported architecture: $Architecture" }
 }
 
-Write-Host "Building Skua Script Studio for $RuntimeIdentifier..." -ForegroundColor Cyan
+Write-Host "Building $RuntimeIdentifier using $Jobs MSBuild workers..." -ForegroundColor Cyan
+Write-Host "Incremental build enabled; NuGet and intermediate outputs are reused." -ForegroundColor DarkGray
 
-if (-not $SkipTests) {
-    dotnet test $Solution --configuration Release
+if ($Test) {
+    dotnet test $Solution --configuration Release --no-restore --verbosity quiet -m:$Jobs
     if ($LASTEXITCODE -ne 0) { throw "Tests failed." }
 }
 
-if (Test-Path $Output) {
-    Remove-Item $Output -Recurse -Force
-}
+dotnet restore $Project --runtime $RuntimeIdentifier --verbosity quiet
+if ($LASTEXITCODE -ne 0) { throw "Restore failed." }
 
-dotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o $Output
+dotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true --no-restore --verbosity quiet -m:$Jobs -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o $Output
 if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
 
 Write-Host "Build complete: $Output" -ForegroundColor Green
