@@ -247,11 +247,12 @@
                       <Border Grid.Row="1" Background="{DynamicResource SurfaceInsetBrush}" CornerRadius="8" Padding="8" MinHeight="280">
                         <ListBox Name="BuilderStepsList" Background="Transparent"/>
                       </Border>
-                      <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
-                        <Button Content="↑ Move up" Click="MoveBuilderStepUpButton_OnClick"/>
-                        <Button Grid.Column="1" Content="↓ Move down" Click="MoveBuilderStepDownButton_OnClick"/>
-                        <Button Grid.Column="2" Content="Edit selected" Click="EditBuilderStepButton_OnClick"/>
-                        <Button Name="ClearBuilderButton" Grid.Column="3" Content="Clear all" Click="ClearBuilderButton_OnClick"/>
+                      <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="6">
+                        <Button Content="↑ Up" Click="MoveBuilderStepUpButton_OnClick"/>
+                        <Button Grid.Column="1" Content="↓ Down" Click="MoveBuilderStepDownButton_OnClick"/>
+                        <Button Grid.Column="2" Content="Edit" Click="EditBuilderStepButton_OnClick"/>
+                        <Button Grid.Column="3" Content="Remove" Click="RemoveBuilderStepButton_OnClick"/>
+                        <Button Name="ClearBuilderButton" Grid.Column="4" Content="Clear all" Click="ClearBuilderButton_OnClick"/>
                       </Grid>
                       <StackPanel Grid.Row="3" Spacing="8">
                         <TextBlock Name="BuilderStatusText" Text="Start by adding your first action. Your steps will run from top to bottom." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
