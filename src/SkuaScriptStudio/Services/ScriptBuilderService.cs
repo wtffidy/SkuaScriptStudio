@@ -6,23 +6,49 @@ namespace SkuaScriptStudio.Services;
 public sealed class ScriptBuilderService
 {
     /// <summary>
-    /// Generates a complete Skua script from the ordered actions configured in the visual builder.
+    /// Generates a complete Skua script from ordered visual blocks, including nested control flow.
     /// </summary>
     public string GenerateScript(IReadOnlyList<ScriptBuilderStep> steps)
     {
         ArgumentNullException.ThrowIfNull(steps);
         if (steps.Count == 0)
-            throw new ArgumentException("Add at least one step before building your script.", nameof(steps));
+            throw new ArgumentException("Add at least one block before building your script.", nameof(steps));
 
-        List<string> actions = [];
+        List<string> bodyLines = [];
+        Stack<string> openBlocks = new();
+        int indentation = 3;
+
         for (int index = 0; index < steps.Count; index++)
         {
-            ScriptBuilderStep step = steps[index];
-            ArgumentNullException.ThrowIfNull(step);
-            actions.Add($"// Step {index + 1}: {step.Action}{Environment.NewLine}{GenerateAction(step)}");
+            ScriptBuilderStep step = steps[index] ?? throw new ArgumentException($"Block {index + 1} is null.", nameof(steps));
+            string generated = GenerateAction(step);
+
+            if (step.Action is "End block" or "End repeat")
+            {
+                string expected = step.Action == "End block" ? "if" : "repeat";
+                if (openBlocks.Count == 0 || openBlocks.Peek() != expected)
+                    throw new ArgumentException($"Block {index + 1} closes an {expected.ToUpperInvariant()} block that is not open.");
+
+                indentation--;
+                openBlocks.Pop();
+                bodyLines.Add(Indent("}", indentation));
+                continue;
+            }
+
+            bodyLines.Add(Indent($"// Block {index + 1}: {step.Action}", indentation));
+            bodyLines.Add(Indent(generated, indentation));
+
+            if (step.Action is "If item missing" or "Repeat until item owned")
+            {
+                openBlocks.Push(step.Action == "If item missing" ? "if" : "repeat");
+                indentation++;
+            }
         }
 
-        string body = string.Join(Environment.NewLine + Environment.NewLine, actions);
+        if (openBlocks.Count > 0)
+            throw new ArgumentException($"Close the {openBlocks.Peek().ToUpperInvariant()} block before building the script.");
+
+        string body = string.Join(Environment.NewLine, bodyLines);
         return $$"""
             //cs_include Scripts/CoreBots.cs
             using Skua.Core.Interfaces;
@@ -37,7 +63,7 @@ public sealed class ScriptBuilderService
                     Core.SetOptions();
                     try
                     {
-            {{Indent(body, 3)}}
+            {{body}}
                     }
                     finally
                     {
@@ -76,6 +102,11 @@ public sealed class ScriptBuilderService
                 $"Core.Jump({cell}, {pad});",
             "Check inventory" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"if (!Core.CheckInventory({item}, {quantity}))\n    Core.Logger(\"Still need the required item quantity.\");",
+            "If item missing" when !string.IsNullOrWhiteSpace(step.Item) =>
+                $"if (!Core.CheckInventory({item}, {quantity}))",
+            "Repeat until item owned" when !string.IsNullOrWhiteSpace(step.Item) =>
+                $"while (!Bot.ShouldExit && !Core.CheckInventory({item}, {quantity}))",
+            "End block" or "End repeat" => string.Empty,
             "Wait for an item" when !string.IsNullOrWhiteSpace(step.Item) =>
                 $"while (!Bot.ShouldExit && !Core.CheckInventory({item}, {quantity}))\n    Core.Sleep();",
             "Add drops" when HasCsvValues(step.Item) =>
@@ -96,7 +127,7 @@ public sealed class ScriptBuilderService
                 $"Core.ConfigureAggro({step.Enabled.ToString().ToLowerInvariant()});",
             "Wait" =>
                 $"Core.Sleep({quantity * 1000});",
-            _ => throw new ArgumentException($"The step '{step.Action}' is missing information or has an invalid value.")
+            _ => throw new ArgumentException($"The block '{step.Action}' is missing information or has an invalid value.")
         };
     }
 
