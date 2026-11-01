@@ -176,6 +176,16 @@
                         <ComboBoxItem Content="Check inventory"/>
                         <ComboBoxItem Content="Log a message"/>
                         <ComboBoxItem Content="Wait"/>
+                        <ComboBoxItem Content="Wait for an item"/>
+                        <ComboBoxItem Content="Equip gear"/>
+                        <ComboBoxItem Content="Move to a cell"/>
+                        <ComboBoxItem Content="Add drops"/>
+                        <ComboBoxItem Content="Remove drops"/>
+                        <ComboBoxItem Content="Bank items"/>
+                        <ComboBoxItem Content="Unbank items"/>
+                        <ComboBoxItem Content="Log farming progress"/>
+                        <ComboBoxItem Content="Rest"/>
+                        <ComboBoxItem Content="Configure aggro"/>
                       </ComboBox>
                       <TextBlock Text="2. FILL IN THE DETAILS" Foreground="{DynamicResource AccentTextBrush}" FontSize="11" FontWeight="Bold" Margin="0,8,0,0"/>
                       <TextBlock Name="BuilderActionHelpText" Text="Choose an action to see exactly what information it needs." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap"/>
@@ -200,9 +210,20 @@
                         </StackPanel>
                       </Grid>
                       <StackPanel Name="BuilderValueField" Spacing="4">
-                        <TextBlock Text="Quest ID / message"/>
+                        <TextBlock Name="BuilderValueLabel" Text="Quest ID / message"/>
                         <TextBox Name="BuilderValueInput" Watermark="Quest number or text to log"/>
                       </StackPanel>
+                      <Grid Name="BuilderCellFields" ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <StackPanel Spacing="4">
+                          <TextBlock Text="Cell"/>
+                          <TextBox Name="BuilderCellInput" Text="Enter"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="4">
+                          <TextBlock Text="Pad"/>
+                          <TextBox Name="BuilderPadInput" Text="Spawn"/>
+                        </StackPanel>
+                      </Grid>
+                      <CheckBox Name="BuilderEnabledInput" Content="Enable aggro handling" IsChecked="True"/>
                       <StackPanel Name="BuilderClassField" Spacing="4">
                         <TextBlock Text="Class to equip"/>
                         <ComboBox Name="BuilderClassInput" SelectedIndex="0">
