@@ -219,8 +219,8 @@
                       </Grid>
                       <CheckBox Name="BuilderTemporaryInput" Content="Item is temporary (Temp Inventory)" IsChecked="True"/>
                       <StackPanel Name="BuilderHuntsField" Spacing="4">
-                        <TextBlock Text="Hunts (one per line: map|monster)"/>
-                        <TextBox Name="BuilderHuntsInput" AcceptsReturn="True" MinHeight="90" Watermark="battleundere|Treasure Pile&#10;battleundere|Draconocean"/>
+                        <TextBlock Text="Hunts (one per line: map|mob|item|quant|isTemp?)"/>
+                        <TextBox Name="BuilderHuntsInput" AcceptsReturn="True" MinHeight="90" Watermark="battleundere|Treasure Pile|Relic|25|true&#10;battleundere|Draconocean|Relic|25|true"/>
                       </StackPanel>
                       <StackPanel Name="BuilderValueField" Spacing="4">
                         <TextBlock Name="BuilderValueLabel" Text="Quest ID / message"/>
