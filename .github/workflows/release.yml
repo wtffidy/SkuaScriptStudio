@@ -77,12 +77,39 @@ jobs:
           path: |
             SkuaScriptStudio
             SkuaScriptStudio-linux-x64.tar.gz
+            SkuaScriptStudio-osx-x64.tar.gz
+            SkuaScriptStudio-osx-arm64.tar.gz
           if-no-files-found: error
           retention-days: 7
 
+  publish-macos:
+    name: Publish macOS (${{ matrix.rid }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rid: [osx-x64, osx-arm64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime ${{ matrix.rid }} --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/${{ matrix.rid }}
+      - name: Package
+        run: tar -czf SkuaScriptStudio-${{ matrix.rid }}.tar.gz -C artifacts/${{ matrix.rid }} .
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.rid }}
+          path: SkuaScriptStudio-${{ matrix.rid }}.tar.gz
+          if-no-files-found: error
+          retention-days: 7
   create-release:
     name: Create GitHub Release
-    needs: [publish-windows, publish-linux]
+    needs: [publish-windows, publish-linux, publish-macos]
     runs-on: ubuntu-latest
     steps:
       - name: Download Windows build
@@ -93,6 +120,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: linux-x64
+      - name: Download macOS Intel build
+        uses: actions/download-artifact@v4
+        with:
+          name: osx-x64
+      - name: Download macOS Apple Silicon build
+        uses: actions/download-artifact@v4
+        with:
+          name: osx-arm64
       - name: Create release and upload app packages
         uses: softprops/action-gh-release@v2
         with:
