@@ -15,7 +15,6 @@ function Format-Duration([TimeSpan]$Duration) { return ("{0:N3}s" -f $Duration.T
 
 function Add-Timing([string]$Name, [System.Diagnostics.Stopwatch]$Timer) {
     $Timer.Stop()
-    $Timings.Add([pscustomobject]@{ Name = $Name; Duration = $Timer.Elapsed })
     Write-Host ("  {0,-12} {1}" -f $Name, (Format-Duration $Timer.Elapsed)) -ForegroundColor DarkGray
 }
 
