@@ -168,6 +168,7 @@
                         <TextBlock Text="Build the bot flow" FontSize="19" FontWeight="SemiBold"/>
                       </StackPanel>
                       <ComboBox Name="BuilderActionInput" SelectedIndex="0" SelectionChanged="BuilderActionInput_OnSelectionChanged">
+                        <ComboBoxItem Content="Generic farming preset"/>
                         <ComboBoxItem Content="Hunt for an item"/>
                         <ComboBoxItem Content="Accept a quest"/>
                         <ComboBoxItem Content="Register quests"/>
@@ -215,6 +216,11 @@
                           <NumericUpDown Name="BuilderQuantityInput" Minimum="1" Maximum="100000" Value="1"/>
                         </StackPanel>
                       </Grid>
+                      <CheckBox Name="BuilderTemporaryInput" Content="Item is temporary (Temp Inventory)" IsChecked="True"/>
+                      <StackPanel Name="BuilderHuntsField" Spacing="4">
+                        <TextBlock Text="Hunts (one per line: map|monster)"/>
+                        <TextBox Name="BuilderHuntsInput" AcceptsReturn="True" MinHeight="90" Watermark="battleundere|Treasure Pile&#10;battleundere|Draconocean"/>
+                      </StackPanel>
                       <StackPanel Name="BuilderValueField" Spacing="4">
                         <TextBlock Name="BuilderValueLabel" Text="Quest ID / message"/>
                         <TextBox Name="BuilderValueInput" Watermark="Quest number or text to log"/>
