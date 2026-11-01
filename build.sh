@@ -5,6 +5,9 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOLUTION="$ROOT/SkuaScriptStudio.sln"
 PROJECT="$ROOT/src/SkuaScriptStudio/SkuaScriptStudio.csproj"
 OUTPUT="$ROOT/artifacts/local"
+now_ms() { perl -MTime::HiRes=time -e 'printf "%.0f", time() * 1000'; }
+format_ms() { local ms="$1"; printf "%d.%03ds" "$((ms / 1000))" "$((ms % 1000))"; }
+TOTAL_START="$(now_ms)"
 JOBS="$(getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 8)"
 (( JOBS > 16 )) && JOBS=16
 (( JOBS < 4 )) && JOBS=4
@@ -46,17 +49,27 @@ if [[ "$NO_PULL" -eq 0 && -d "$ROOT/.git" ]]; then
     command -v git >/dev/null 2>&1 || { echo "Git is required to update the repository." >&2; exit 1; }
     [[ -z "$(git -C "$ROOT" status --porcelain)" ]] || { echo "Local changes detected. Commit or stash them before building."; exit 1; }
     echo "Pulling latest main..."
+    STAGE_START="$(now_ms)"
     git -C "$ROOT" pull --ff-only origin main
+    echo "  Git pull     $(format_ms "$(( $(now_ms) - STAGE_START ))")"
 fi
 
 echo "Building $RID using $JOBS MSBuild workers (incremental)..."
 if [[ "$TEST" -eq 1 ]]; then
+    STAGE_START="$(now_ms)"
     dotnet test "$SOLUTION" --configuration Release --no-restore --verbosity quiet -m:"$JOBS"
+    echo "  Tests        $(format_ms "$(( $(now_ms) - STAGE_START ))")"
 fi
 
+STAGE_START="$(now_ms)"
 dotnet restore "$PROJECT" --runtime "$RID" --verbosity quiet
-dotnet publish "$PROJECT" --configuration Release --runtime "$RID" --self-contained true --no-restore --verbosity quiet -m:"$JOBS" -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o "$OUTPUT"
+echo "  Restore      $(format_ms "$(( $(now_ms) - STAGE_START ))")"
 
+STAGE_START="$(now_ms)"
+dotnet publish "$PROJECT" --configuration Release --runtime "$RID" --self-contained true --no-restore --verbosity quiet -m:"$JOBS" -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o "$OUTPUT"
+echo "  Publish      $(format_ms "$(( $(now_ms) - STAGE_START ))")"
+
+echo "  TOTAL        $(format_ms "$(( $(now_ms) - TOTAL_START ))")"
 echo "Build complete: $OUTPUT"
 if [[ "$RUN_APP" -eq 1 ]]; then
     if [[ "$RID" == win-* ]]; then "$OUTPUT/SkuaScriptStudio.exe"; else "$OUTPUT/SkuaScriptStudio"; fi
