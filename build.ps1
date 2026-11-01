@@ -11,12 +11,7 @@ $Project = Join-Path $Root "src/SkuaScriptStudio/SkuaScriptStudio.csproj"
 $Output = Join-Path $Root "artifacts/local"
 $Jobs = [Math]::Min(16, [Math]::Max(4, [Environment]::ProcessorCount))
 $TotalTimer = [System.Diagnostics.Stopwatch]::StartNew()
-$Timings = [System.Collections.Generic.List[object]]::new()
-
-function Format-Duration([TimeSpan]$Duration) {
-    if ($Duration.TotalMinutes -ge 1) { return $Duration.ToString("m\\:ss\\.fff") }
-    return $Duration.ToString("s\\.fff") + "s"
-}
+function Format-Duration([TimeSpan]$Duration) { return ("{0:N3}s" -f $Duration.TotalSeconds) }
 
 function Add-Timing([string]$Name, [System.Diagnostics.Stopwatch]$Timer) {
     $Timer.Stop()
@@ -43,8 +38,10 @@ if (-not $NoPull -and (Test-Path (Join-Path $Root ".git"))) {
     if ($LASTEXITCODE -ne 0) { throw "Unable to check Git working tree." }
     if ($Changes) { throw "Local changes detected. Commit or stash them before building so the update cannot overwrite your work." }
     Write-Host "Pulling latest main..." -ForegroundColor Cyan
+    $StageTimer = [System.Diagnostics.Stopwatch]::StartNew()
     & git -C $Root pull --ff-only origin main
     if ($LASTEXITCODE -ne 0) { throw "Git pull failed. Resolve the repository state before building." }
+    Add-Timing "Git pull" $StageTimer
 }
 
 $Architecture = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
@@ -71,8 +68,10 @@ Write-Host "Building $RuntimeIdentifier using $Jobs MSBuild workers..." -Foregro
 Write-Host "Incremental build enabled; NuGet and intermediate outputs are reused." -ForegroundColor DarkGray
 
 if ($Test) {
+    $StageTimer = [System.Diagnostics.Stopwatch]::StartNew()
     dotnet test $Solution --configuration Release --no-restore --verbosity quiet -m:$Jobs
     if ($LASTEXITCODE -ne 0) { throw "Tests failed." }
+    Add-Timing "Tests" $StageTimer
 }
 
 dotnet restore $Project --runtime $RuntimeIdentifier --verbosity quiet
@@ -80,7 +79,9 @@ if ($LASTEXITCODE -ne 0) { throw "Restore failed." }
 
 $StageTimer = [System.Diagnostics.Stopwatch]::StartNew()\ndotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true --no-restore --verbosity quiet -m:$Jobs -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o $Output
 if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
-
+Add-Timing "Publish" $StageTimer
+$TotalTimer.Stop()
+Write-Host ("  TOTAL        {0}" -f (Format-Duration $TotalTimer.Elapsed)) -ForegroundColor Green
 Write-Host "Build complete: $Output" -ForegroundColor Green
 
 if ($Run) {
