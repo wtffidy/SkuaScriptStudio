@@ -49,6 +49,19 @@ public partial class MainWindow : Window
         _ = LoadLibraryAsync();
     }
 
+    private void TitleBar_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            BeginMoveDrag(e);
+    }
+
+    private void MinimizeWindow_OnClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    private void ToggleMaximizeWindow_OnClick(object? sender, RoutedEventArgs e) =>
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+
+    private void CloseWindow_OnClick(object? sender, RoutedEventArgs e) => Close();
+
     private async void UpdateButton_OnClick(object? sender, RoutedEventArgs e)
     {
         UpdateButton.IsEnabled = false;
