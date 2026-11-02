@@ -16,7 +16,7 @@ public sealed class ScriptBuilderService
 
         List<string> bodyLines = [];
         Stack<string> openBlocks = new();
-        int indentation = 3;
+        int indentation = 2;
 
         for (int index = 0; index < steps.Count; index++)
         {
@@ -61,9 +61,8 @@ public sealed class ScriptBuilderService
             */
             //cs_include Scripts/CoreBots.cs
             //cs_include Scripts/CoreFarms.cs
-            //cs_include Scripts/CoreStory.cs
-            //cs_include Scripts/CoreArmyLite.cs
-            //cs_include Scripts/SevenCircles.cs
+            //cs_include Scripts/CoreDailies.cs
+            //cs_include Scripts/CoreAdvanced.cs
             using Skua.Core.Interfaces;
             using Skua.Core.Models.Items;
             using Skua.Core.Options;
@@ -79,14 +78,13 @@ public sealed class ScriptBuilderService
                 public void ScriptMain(IScriptInterface bot)
                 {
                     Core.SetOptions();
-                    try
-                    {
+                    ExecuteScript();
+                    Core.SetOptions(false);
+                }
+
+                private void ExecuteScript()
+                {
             {{body}}
-                    }
-                    finally
-                    {
-                        Core.SetOptions(false);
-                    }
                 }
             }
             """;
