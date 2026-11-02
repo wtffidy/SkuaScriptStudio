@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0build.ps1" %*
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0build.ps1" %* -Run
 set "BUILD_EXIT=%ERRORLEVEL%"
 
 if not "%BUILD_EXIT%"=="0" (
