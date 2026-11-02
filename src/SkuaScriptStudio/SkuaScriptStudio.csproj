@@ -13,6 +13,7 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\skua-script-studio.ico" />
     <AvaloniaResource Include="Assets\potato-artwork-assets\*.jpg" />
+    <AvaloniaResource Include="Assets\potato-artwork-assets\*.png" />
     <PackageReference Include="Avalonia" Version="11.3.10" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10" />
