@@ -32,6 +32,17 @@ if ([version]($SdkVersion.Split('-')[0]) -lt [version]"10.0") {
 }
 
 if (-not $NoPull -and (Test-Path (Join-Path $Root ".git"))) {
+    # Close running Studio instances before updating files they may have loaded.
+    $RunningInstances = @(Get-Process -Name "SkuaScriptStudio" -ErrorAction SilentlyContinue)
+    if ($RunningInstances.Count -gt 0) {
+        Write-Host "Closing running Skua Script Studio instances..."
+        foreach ($Instance in $RunningInstances) {
+            Stop-Process -Id $Instance.Id -Force -ErrorAction SilentlyContinue
+        }
+
+        $RunningInstances | Wait-Process -Timeout 10 -ErrorAction SilentlyContinue
+    }
+
     if (-not (Get-Command git -ErrorAction SilentlyContinue)) { throw "Git is required to update the repository." }
     $Changes = & git -C $Root status --porcelain
     if ($LASTEXITCODE -ne 0) { throw "Unable to check Git working tree." }
