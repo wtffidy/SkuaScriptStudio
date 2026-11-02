@@ -45,27 +45,23 @@
 
     <Grid Grid.Row="2" ColumnDefinitions="220,*">
       <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0" Padding="14">
-        <DockPanel LastChildFill="True">
-          <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Spacing="5">
-              <TextBlock Text="WORKSPACE" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" FontWeight="Bold" Margin="10,8,0,8"/>
-              <Button Classes="nav" Content="⌂   Home" Click="HomeNav_OnClick"/>
-              <Button Classes="nav" Content="⌨   Editor" Click="EditorNav_OnClick"/>
-              <Button Classes="nav" Content="✣   Visual Builder" Click="BuilderNav_OnClick"/>
-              <Button Classes="nav" Content="▤   Script Library" Click="LibraryNav_OnClick"/>
-              <Button Classes="nav" Content="⌁   Diagnostics" Click="DiagnosticsNav_OnClick"/>
-              <TextBlock Text="TOOLS" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" FontWeight="Bold" Margin="10,24,0,8"/>
-              <Button Classes="nav" Content="◇   Snippets" Click="SnippetsNav_OnClick"/>
-              <Button Name="UpdateButton" Classes="nav" Content="↻   Check for updates" Click="UpdateButton_OnClick"/>
-              <TextBlock Text="APPEARANCE" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" FontWeight="Bold" Margin="10,18,0,4"/>
-              <ComboBox Name="ThemeSelector" SelectionChanged="ThemeSelector_OnSelectionChanged" MinHeight="38" HorizontalAlignment="Stretch">
-                <ComboBoxItem Content="Potato Purple"/>
-                <ComboBoxItem Content="Midnight Potato"/>
-                <ComboBoxItem Content="Golden Potato"/>
-              </ComboBox>
-            </StackPanel>
-          </ScrollViewer>
-          <StackPanel DockPanel.Dock="Bottom" Spacing="5">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <StackPanel Spacing="5">
+            <TextBlock Text="WORKSPACE" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" FontWeight="Bold" Margin="10,8,0,8"/>
+            <Button Classes="nav" Content="⌂   Home" Click="HomeNav_OnClick"/>
+            <Button Classes="nav" Content="⌨   Editor" Click="EditorNav_OnClick"/>
+            <Button Classes="nav" Content="✣   Visual Builder" Click="BuilderNav_OnClick"/>
+            <Button Classes="nav" Content="▤   Script Library" Click="LibraryNav_OnClick"/>
+            <Button Classes="nav" Content="⌁   Diagnostics" Click="DiagnosticsNav_OnClick"/>
+            <TextBlock Text="TOOLS" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" FontWeight="Bold" Margin="10,24,0,8"/>
+            <Button Classes="nav" Content="◇   Snippets" Click="SnippetsNav_OnClick"/>
+            <Button Name="UpdateButton" Classes="nav" Content="↻   Check for updates" Click="UpdateButton_OnClick"/>
+            <TextBlock Text="APPEARANCE" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" FontWeight="Bold" Margin="10,18,0,4"/>
+            <ComboBox Name="ThemeSelector" SelectionChanged="ThemeSelector_OnSelectionChanged" MinHeight="38" HorizontalAlignment="Stretch">
+              <ComboBoxItem Content="Potato Purple"/>
+              <ComboBoxItem Content="Midnight Potato"/>
+              <ComboBoxItem Content="Golden Potato"/>
+            </ComboBox>
             <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,10"/>
             <TextBlock Text="SKUA SCRIPT STUDIO" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" Margin="10,5,0,0"/>
             <TextBlock Text="Foundation build · 0.1.0" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" Margin="10,0,0,5"/>
@@ -79,7 +75,7 @@
               </Grid>
             </Border>
           </StackPanel>
-        </DockPanel>
+        </ScrollViewer>
       </Border>
 
       <Grid Grid.Column="1" Margin="28">
