@@ -30,9 +30,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install .NET 10
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
       - name: Publish
@@ -44,7 +44,7 @@ jobs:
           Copy-Item build/win-x64/SkuaScriptStudio.exe SkuaScriptStudio.exe
           Compress-Archive -Path build/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
       - name: Upload build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-x64
           path: |
@@ -55,12 +55,12 @@ jobs:
 
   publish-linux:
     name: Publish Linux x64
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install .NET 10
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
       - name: Publish
@@ -68,7 +68,7 @@ jobs:
       - name: Package
         run: tar -czf SkuaScriptStudio-linux-x64.tar.gz -C build/linux-x64 .
       - name: Upload build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-x64
           path: SkuaScriptStudio-linux-x64.tar.gz
@@ -84,9 +84,9 @@ jobs:
         rid: [osx-x64, osx-arm64]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install .NET 10
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
       - name: Publish
@@ -94,7 +94,7 @@ jobs:
       - name: Package
         run: tar -czf SkuaScriptStudio-${{ matrix.rid }}.tar.gz -C build/${{ matrix.rid }} .
       - name: Upload build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.rid }}
           path: SkuaScriptStudio-${{ matrix.rid }}.tar.gz
@@ -103,22 +103,22 @@ jobs:
   create-release:
     name: Create GitHub Release
     needs: [publish-windows, publish-linux, publish-macos]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Download Windows build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: windows-x64
       - name: Download Linux build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: linux-x64
       - name: Download macOS Intel build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: osx-x64
       - name: Download macOS Apple Silicon build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: osx-arm64
       - name: Create release and upload app packages
