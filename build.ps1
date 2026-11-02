@@ -8,7 +8,7 @@ $ErrorActionPreference = "Stop"
 $Root = $PSScriptRoot
 $Solution = Join-Path $Root "SkuaScriptStudio.sln"
 $Project = Join-Path $Root "src/SkuaScriptStudio/SkuaScriptStudio.csproj"
-$Output = Join-Path $Root "artifacts/local"
+$Output = Join-Path $Root "build/local"
 $Jobs = [Math]::Min(16, [Math]::Max(4, [Environment]::ProcessorCount))
 $TotalTimer = [System.Diagnostics.Stopwatch]::StartNew()
 function Format-Duration([TimeSpan]$Duration) { return ("{0:N3}s" -f $Duration.TotalSeconds) }
