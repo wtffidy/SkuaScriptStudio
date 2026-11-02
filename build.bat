@@ -11,7 +11,4 @@ if not "%BUILD_EXIT%"=="0" (
     exit /b %BUILD_EXIT%
 )
 
-echo.
-echo Build completed successfully.
-pause
 exit /b 0
