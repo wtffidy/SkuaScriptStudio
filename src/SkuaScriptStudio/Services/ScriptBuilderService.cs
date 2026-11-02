@@ -164,7 +164,7 @@ public sealed class ScriptBuilderService
             $"if (Core.CheckInventory({item}, {quantity}))",
             "    return;",
             $"Core.FarmingLogger({item}, {quantity});",
-            $"while (!Bot.ShouldExit & !Core.CheckInventory({item}, {quantity}))",
+            $"while (!Bot.ShouldExit && !Core.CheckInventory({item}, {quantity}))",
             "{"
         ];
 
