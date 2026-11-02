@@ -2,6 +2,15 @@
 
 A cross-platform desktop workspace for creating, editing, and organizing Skua C# scripts. Built with .NET 10 and Avalonia.
 
+## Repository layout
+
+- `src/` — application source code and bundled assets.
+- `tests/` — automated tests.
+- `docs/` — project documentation and user guide.
+- `build/` — generated local and CI publish output. This folder is ignored by Git and is created automatically by build scripts.
+
+Runtime settings and the script library are stored in the operating system's application-data directory, not in the repository.
+
 ## Documentation
 
 - **[User Guide](docs/USER_GUIDE.md)** — installation from source, editor workflow, Visual Builder, Script Library, diagnostics, snippets, shortcuts, and troubleshooting.
@@ -19,7 +28,7 @@ A cross-platform desktop workspace for creating, editing, and organizing Skua C#
 - Warn before closing or replacing a document with unsaved changes, with Save, Discard, and Cancel choices.
 - Use `Ctrl+O` to open, `Ctrl+S` to save, and `Ctrl+F5` to analyze the current script.
 - Track unsaved editor changes and prevent stale asynchronous loads from replacing the active document.
-- Windows and Linux CI build/test workflow targeting .NET 10.
+- Windows, Linux, and macOS CI build/test workflow targeting .NET 10.
 
 ## Getting started
 
@@ -38,7 +47,7 @@ dotnet run --project src/SkuaScriptStudio/SkuaScriptStudio.csproj
 
 ### Build locally
 
-The local build scripts pull the latest `main` (when the working tree is clean), detect the current OS/architecture, reuse incremental build outputs, and publish a self-contained single-file app to `artifacts/local`. They use parallel MSBuild workers, skip tests by default for faster iteration, and print per-stage plus total elapsed build times.
+The local build scripts pull the latest `main` (when the working tree is clean), detect the current OS/architecture, reuse incremental build outputs, and publish a self-contained single-file app to `build/local`. They use parallel MSBuild workers, skip tests by default for faster iteration, and print per-stage plus total elapsed build times.
 
 **Windows (PowerShell):**
 
@@ -68,11 +77,11 @@ Releases are created manually from GitHub Actions:
 
 1. Open **[Release Skua Script Studio](https://github.com/wtffidy/SkuaScriptStudio/actions/workflows/release.yml)**.
 2. Select **Run workflow**.
-3. Enter the version without a `v` prefix (for example, `1.0.1`). Use an incrementing version for each release (for example, 1.0.1, then 1.0.2).
-4. Optionally mark the release as a prerelease and provide release notes.
-5. Run the workflow. It builds Windows x64 and Linux x64 packages, then publishes both ZIP/TAR.GZ files to a versioned GitHub Release.
+3. Enter the version without a `v` prefix (for example, `1.0.1`). Use an incrementing version for each release.
+4. Optionally mark this release as a prerelease and provide release notes.
+5. Run the workflow. It builds Windows x64, Linux x64, macOS Intel, and macOS Apple Silicon packages, then publishes them to a versioned GitHub Release.
 
-The desktop app's **Check for updates** button checks the latest non-prerelease GitHub Release. On Windows and Linux, it can download and apply the matching package, then restart the application. Close the app during installation; the update helper waits for the current process to exit before replacing application files. Keep the application in a folder your user account can write to. Android releases are not part of this workflow yet.
+The desktop app's **Check for updates** button checks the latest non-prerelease GitHub Release. On Windows and Linux, it can download and apply the matching package, then restart the application. Close the app during installation; the update helper waits for the current process to exit before replacing application files. Keep the application in a folder your user account can write to.
 
 ## Local data
 
