@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOLUTION="$ROOT/SkuaScriptStudio.sln"
 PROJECT="$ROOT/src/SkuaScriptStudio/SkuaScriptStudio.csproj"
-OUTPUT="$ROOT/artifacts/local"
+OUTPUT="$ROOT/build/local"
 now_ms() { perl -MTime::HiRes=time -e 'printf "%.0f", time() * 1000'; }
 format_ms() { local ms="$1"; printf "%d.%03ds" "$((ms / 1000))" "$((ms % 1000))"; }
 TOTAL_START="$(now_ms)"
