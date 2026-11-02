@@ -21,6 +21,7 @@ public partial class MainWindow : Window
     private int _builderDragSourceIndex = -1;
     private Point _builderDragStart;
     private ScriptDocument _document = new();
+    private string _savedSource = string.Empty;
     private bool _isUpdatingEditor;
     private long _documentLoadVersion;
     private long _documentEditVersion;
@@ -39,6 +40,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        _savedSource = _document.Source;
         UpdateBuilderActionFields();
         SnippetCoreFilter.ItemsSource = _snippetService.GetCores();
         SnippetCoreFilter.SelectedIndex = 0;
@@ -219,6 +221,7 @@ public partial class MainWindow : Window
                 return;
 
             _document = document;
+            _savedSource = document.Source;
             SetEditorSource(document.Source);
             DocumentNameText.Text = document.Name;
             EditorStatusText.Text = $"Opened · {path}";
@@ -266,7 +269,11 @@ public partial class MainWindow : Window
             if (string.IsNullOrWhiteSpace(path))
                 return false;
 
+            string sourceSnapshot = document.Source;
             await _fileService.SaveAsync(document, path);
+            if (ReferenceEquals(_document, document))
+                _savedSource = sourceSnapshot;
+
             if (_isClosing || !ReferenceEquals(_document, document))
                 return !document.IsDirty;
 
@@ -685,6 +692,7 @@ public partial class MainWindow : Window
                 Source = generated,
                 IsDirty = true
             };
+            _savedSource = string.Empty;
 
             SetEditorSource(generated);
             DocumentNameText.Text = _document.Name + " *";
@@ -928,7 +936,7 @@ public partial class MainWindow : Window
         int newCaretIndex = insertionIndex + insertedCode.Length;
 
         _document.Source = updatedSource;
-        _document.IsDirty = true;
+        _document.IsDirty = !string.Equals(updatedSource, _savedSource, StringComparison.Ordinal);
         SetEditorSource(updatedSource);
         EditorTextBox.CaretIndex = Math.Min(newCaretIndex, updatedSource.Length);
         DocumentNameText.Text = _document.Name + " *";
@@ -967,11 +975,11 @@ public partial class MainWindow : Window
             return;
 
         _document.Source = EditorTextBox.Text ?? string.Empty;
-        _document.IsDirty = true;
+        _document.IsDirty = !string.Equals(_document.Source, _savedSource, StringComparison.Ordinal);
         _documentEditVersion++;
         InvalidateDiagnostics();
         DocumentNameText.Text = _document.Name + " *";
-        EditorStatusText.Text = "Unsaved changes";
+        EditorStatusText.Text = _document.IsDirty ? "Unsaved changes" : "All changes saved";
     }
 
     private void SetEditorSource(string source)
