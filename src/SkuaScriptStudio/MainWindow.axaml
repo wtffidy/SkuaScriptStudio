@@ -8,14 +8,20 @@
         Closing="MainWindow_OnClosing"
         KeyDown="MainWindow_OnKeyDown">
   <Grid RowDefinitions="38,142,*,42">
-  <Grid Grid.Row="0" Background="#28172F" PointerPressed="TitleBar_OnPointerPressed" ClipToBounds="True">
-    <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-pattern-corner.jpg" Stretch="UniformToFill" Opacity="0.95"/>
+  <Grid Grid.Row="0" PointerPressed="TitleBar_OnPointerPressed" ClipToBounds="True">
+    <Grid.Background>
+      <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#542B68" Offset="0"/>
+        <GradientStop Color="#321B40" Offset="0.62"/>
+        <GradientStop Color="#24132F" Offset="1"/>
+      </LinearGradientBrush>
+    </Grid.Background>
     <Grid ColumnDefinitions="*,Auto">
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0" Spacing="8">
         <Image Source="avares://SkuaScriptStudio/Assets/skua-script-studio.ico" Width="20" Height="20"/>
         <TextBlock Text="Skua Script Studio" Foreground="#FFF0C9" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
       </StackPanel>
-      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0" Background="#28172F">
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0">
         <Button Classes="window-chrome" Content="—" Click="MinimizeWindow_OnClick"/>
         <Button Classes="window-chrome" Content="□" Click="ToggleMaximizeWindow_OnClick"/>
         <Button Classes="window-chrome window-close" Content="×" Click="CloseWindow_OnClick"/>
@@ -393,10 +399,10 @@
       <Grid ColumnDefinitions="Auto,*,Auto,*,Auto">
         <StackPanel Orientation="Horizontal" Spacing="9" VerticalAlignment="Center">
           <TextBlock Text="🥔" FontSize="22"/>
-          <TextBlock Text="Ready!" FontSize="15" FontWeight="Bold" Foreground="#3A2433" VerticalAlignment="Center"/>
+          <TextBlock Text="Ready!" FontSize="15" FontWeight="Bold" Foreground="#FFF0D2" VerticalAlignment="Center"/>
         </StackPanel>
-        <TextBlock Grid.Column="2" Text="Skua Script Studio · Potato Edition" Foreground="#4B3040" FontWeight="SemiBold" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="4" Text="Made with ♥ and Potatoes" FontSize="15" FontStyle="Italic" Foreground="#4B3040" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="2" Text="Skua Script Studio · Potato Edition" Foreground="#F2DFF5" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="4" Text="Made with ♥ and Potatoes" FontSize="15" FontStyle="Italic" Foreground="#F2DFF5" VerticalAlignment="Center"/>
       </Grid>
     </Border>
   </Grid>
