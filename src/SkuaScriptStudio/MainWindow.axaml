@@ -16,7 +16,7 @@
         </LinearGradientBrush>
       </Border.Background>
       <Grid ClipToBounds="True">
-        
+        <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-pattern-corner.jpg" Width="334" Height="142" HorizontalAlignment="Right" VerticalAlignment="Top" Stretch="UniformToFill"/>
         <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
           <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
             <Border Width="104" Height="104" CornerRadius="30" Background="#6D3D79" BorderBrush="#F4C66D" BorderThickness="2" Padding="0">
@@ -78,7 +78,7 @@
       <Grid Grid.Column="1" Margin="28">
         <Border Background="{DynamicResource AppBackgroundBrush}" CornerRadius="14" IsHitTestVisible="False">
           <Grid ClipToBounds="True">
-            <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-pattern-corner.jpg" Stretch="UniformToFill" Opacity="0.20"/>
+            
             <Ellipse Width="300" Height="300" Fill="#251735" Opacity="0.28" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-130,-100,0"/>
             <Ellipse Width="220" Height="220" Fill="#392047" Opacity="0.18" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-100,0,0,-90"/>
           </Grid>
