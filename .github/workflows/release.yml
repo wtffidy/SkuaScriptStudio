@@ -37,10 +37,10 @@ jobs:
           dotnet-version: 10.0.x
       - name: Publish
         shell: pwsh
-        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/win-x64
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o build/win-x64
       - name: Prepare executable
         shell: pwsh
-        run: Copy-Item artifacts/win-x64/SkuaScriptStudio.exe SkuaScriptStudio.exe
+        run: Copy-Item build/win-x64/SkuaScriptStudio.exe SkuaScriptStudio.exe
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
@@ -60,10 +60,9 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - name: Publish
-        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime linux-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/linux-x64
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime linux-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o build/linux-x64
       - name: Package
-        run: |
-          tar -czf SkuaScriptStudio-linux-x64.tar.gz -C artifacts/linux-x64 .
+        run: tar -czf SkuaScriptStudio-linux-x64.tar.gz -C build/linux-x64 .
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
@@ -87,9 +86,9 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - name: Publish
-        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime ${{ matrix.rid }} --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/${{ matrix.rid }}
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime ${{ matrix.rid }} --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o build/${{ matrix.rid }}
       - name: Package
-        run: tar -czf SkuaScriptStudio-${{ matrix.rid }}.tar.gz -C artifacts/${{ matrix.rid }} .
+        run: tar -czf SkuaScriptStudio-${{ matrix.rid }}.tar.gz -C build/${{ matrix.rid }} .
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
