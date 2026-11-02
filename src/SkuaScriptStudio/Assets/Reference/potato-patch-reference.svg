@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 170">
+<title>Potato Patch — crowned potato family</title>
+<defs><linearGradient id="gold" x2="0" y2="1"><stop stop-color="#F5C982"/><stop offset="1" stop-color="#D99A4F"/></linearGradient></defs>
+<path d="M0 139Q90 110 180 139T420 135V170H0Z" fill="#3E654A"/>
+<g fill="url(#gold)" stroke="#8B573A" stroke-width="3"><ellipse cx="131" cy="99" rx="42" ry="36"/><ellipse cx="234" cy="85" rx="54" ry="47"/><ellipse cx="324" cy="104" rx="33" ry="28"/></g>
+<path d="M190 38l-7-21 22 12 14-24 15 23 23-13-7 27z" fill="#F5C85F" stroke="#9B652F" stroke-width="2"/>
+<g fill="#382238"><circle cx="119" cy="95" r="4"/><circle cx="147" cy="95" r="4"/><circle cx="218" cy="81" r="5"/><circle cx="254" cy="81" r="5"/></g>
+<g fill="none" stroke="#633A35" stroke-width="3" stroke-linecap="round"><path d="M124 106q8 9 16 0M225 95q12 13 24 0"/></g>
+<g fill="none" stroke="#86B878" stroke-width="5" stroke-linecap="round"><path d="M40 145q0-33 0-45m0 19q-18-17-25-7m25 12q17-21 26-12M368 145v-45m0 19q-18-17-25-7m25 12q17-21 26-12"/></g>
+<g fill="#FFE29A"><path d="M14 55l4 11 11 4-11 4-4 11-4-11-10-4 10-4z"/><path d="M395 36l4 11 11 4-11 4-4 11-4-11-11-4 11-4z"/></g>
+</svg>
