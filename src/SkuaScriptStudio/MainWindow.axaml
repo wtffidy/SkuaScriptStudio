@@ -38,7 +38,7 @@
         </LinearGradientBrush>
       </Border.Background>
       <Grid ClipToBounds="True">
-        <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-banner.png" Stretch="UniformToFill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="1"/>
+        <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-banner-purple.png" Stretch="UniformToFill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="1"/>
         <Border Background="#330F0A16" IsHitTestVisible="False"/>
         <Grid VerticalAlignment="Center">
           <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="2" Margin="12,0,6,0">
