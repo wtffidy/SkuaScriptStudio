@@ -939,8 +939,8 @@ public partial class MainWindow : Window
         _document.IsDirty = !string.Equals(updatedSource, _savedSource, StringComparison.Ordinal);
         SetEditorSource(updatedSource);
         EditorTextBox.CaretIndex = Math.Min(newCaretIndex, updatedSource.Length);
-        DocumentNameText.Text = _document.Name + " *";
-        EditorStatusText.Text = $"Inserted {snippet.Core} snippet · {snippet.Name}";
+        DocumentNameText.Text = _document.Name + (_document.IsDirty ? " *" : string.Empty);
+        EditorStatusText.Text = _document.IsDirty ? $"Inserted {snippet.Core} snippet · {snippet.Name}" : "All changes saved";
         SelectTab(1);
     }
 
@@ -978,7 +978,7 @@ public partial class MainWindow : Window
         _document.IsDirty = !string.Equals(_document.Source, _savedSource, StringComparison.Ordinal);
         _documentEditVersion++;
         InvalidateDiagnostics();
-        DocumentNameText.Text = _document.Name + " *";
+        DocumentNameText.Text = _document.Name + (_document.IsDirty ? " *" : string.Empty);
         EditorStatusText.Text = _document.IsDirty ? "Unsaved changes" : "All changes saved";
     }
 
