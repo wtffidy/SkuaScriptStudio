@@ -1,19 +1,20 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <!-- Semantic palette: swap these values to retheme the entire workspace. -->
-  <SolidColorBrush x:Key="AppBackgroundBrush" Color="#111018" />
-  <SolidColorBrush x:Key="SurfaceBrush" Color="#1B1824" />
-  <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="#24202F" />
-  <SolidColorBrush x:Key="SurfaceInsetBrush" Color="#17141F" />
-  <SolidColorBrush x:Key="EditorBackgroundBrush" Color="#12111A" />
-  <SolidColorBrush x:Key="BorderBrush" Color="#393044" />
-  <SolidColorBrush x:Key="AccentBorderBrush" Color="#70478C" />
-  <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F1ECF5" />
-  <SolidColorBrush x:Key="TextSecondaryBrush" Color="#BDB2C9" />
-  <SolidColorBrush x:Key="TextMutedBrush" Color="#988BA6" />
-  <SolidColorBrush x:Key="TextSubtleBrush" Color="#796E87" />
-  <SolidColorBrush x:Key="EditorTextBrush" Color="#E5DDED" />
-  <SolidColorBrush x:Key="AccentBrush" Color="#A66BDB" />
-  <SolidColorBrush x:Key="AccentTextBrush" Color="#D6B4F4" />
-  <SolidColorBrush x:Key="AccentHoverBrush" Color="#B77CE8" />
-  <SolidColorBrush x:Key="PotatoGoldBrush" Color="#D7A85D" />
+  <!-- Potato Studio palette: aubergine plum, warm gold, toasted potato and cream. -->
+  <SolidColorBrush x:Key="AppBackgroundBrush" Color="#21152B" />
+  <SolidColorBrush x:Key="SurfaceBrush" Color="#38233F" />
+  <SolidColorBrush x:Key="SurfaceRaisedBrush" Color="#49304F" />
+  <SolidColorBrush x:Key="SurfaceInsetBrush" Color="#261B2D" />
+  <SolidColorBrush x:Key="EditorBackgroundBrush" Color="#17131F" />
+  <SolidColorBrush x:Key="BorderBrush" Color="#79516F" />
+  <SolidColorBrush x:Key="AccentBorderBrush" Color="#D59A61" />
+  <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FFF3DC" />
+  <SolidColorBrush x:Key="TextSecondaryBrush" Color="#E2C9D8" />
+  <SolidColorBrush x:Key="TextMutedBrush" Color="#C2A5BE" />
+  <SolidColorBrush x:Key="TextSubtleBrush" Color="#A889A4" />
+  <SolidColorBrush x:Key="EditorTextBrush" Color="#F5E8F2" />
+  <SolidColorBrush x:Key="AccentBrush" Color="#A45CC7" />
+  <SolidColorBrush x:Key="AccentTextBrush" Color="#FFD58A" />
+  <SolidColorBrush x:Key="AccentHoverBrush" Color="#C47BDD" />
+  <SolidColorBrush x:Key="PotatoGoldBrush" Color="#F0BD69" />
+  <SolidColorBrush x:Key="FooterBrush" Color="#E9B875" />
 </ResourceDictionary>
