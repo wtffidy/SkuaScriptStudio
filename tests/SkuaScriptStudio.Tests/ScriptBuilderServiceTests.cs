@@ -52,7 +52,7 @@ public sealed class ScriptBuilderServiceTests
         Assert.Contains("Core.SetOptions(false);", result);
         Assert.Contains("ExecuteScript();", result);
         Assert.Contains("private void ExecuteScript()", result);
-        Assert.True(result.IndexOf("Core.SetOptions();", StringComparison.Ordinal) < result.IndexOf("ExecuteScript();", StringComparison.Ordinal));
+        Assert.True(result.IndexOf("Core.SetOptions(disableClassSwap: true);", StringComparison.Ordinal) < result.IndexOf("ExecuteScript();", StringComparison.Ordinal));
         Assert.True(result.IndexOf("ExecuteScript();", StringComparison.Ordinal) < result.IndexOf("Core.SetOptions(false);", StringComparison.Ordinal));
         Assert.DoesNotContain("try", result);
         Assert.DoesNotContain("finally", result);
