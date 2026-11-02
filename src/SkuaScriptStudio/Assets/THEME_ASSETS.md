@@ -1,22 +1,29 @@
-# Potato Studio theme assets
+# Tatotastic™ theme assets
 
-The Potato Studio identity is built from editable Avalonia vector controls. The client does not use flattened screenshots for its theme.
+The live client uses the original potato artwork crops committed under
+`potato-artwork-assets/`. They are embedded as Avalonia resources, so the
+images ship inside the application on Windows, Linux and macOS.
 
 ## Live artwork
 
-- `PotatoMascotArtwork.axaml` and code-behind: reusable crowned potato mascot with facial expressions, blush, limbs, freckles, highlights and sparkles. Uses a Viewbox so it scales cleanly in different panels.
-- `PotatoPatchArtwork.axaml` and code-behind: a small family of potatoes growing in a storybook patch, used on the Home workspace.
-- `PotatoTitleBarArtwork.axaml`: layered decorative banner and mascot illustrations.
-- `PotatoBackgroundArtwork.axaml`: subdued mascot illustrations, ambient glows, garden tones and sparkles behind the workspace.
-- `../MainWindow.axaml`: uses the art in the title identity, Home welcome panel, Potato Patch feature panel, sidebar and workspace.
-- `../ThemeResources.axaml`: central plum, aubergine, toasted-gold, potato-cream and editor palette.
+- `potato-title-banner.jpg` — wide illustrated title/header artwork.
+- `potato-hero.jpg` — primary crowned potato artwork used in the app identity and Home welcome panel.
+- `potato-sidebar.jpg` — compact sidebar Potato Patch artwork.
+- `potato-pattern-corner.jpg` — low-opacity decorative workspace background.
+- `potato-happy-scripting.jpg` — Home page Potato Patch feature banner.
 
-## Reference backups
+`../MainWindow.axaml` references these resources directly with Avalonia resource URIs.
+`../SkuaScriptStudio.csproj` embeds the JPG files in the application package.
 
-- `Reference/potato-mascot-reference.svg`: editable master mascot vector.
-- `Reference/potato-patch-reference.svg`: editable potato family and patch vector.
-- `Reference/README.md`: source-reference maintenance notes.
-- `Backgrounds/`: reserved for optional full-resolution raster background references (1920×1080 or larger, WebP/PNG).
-- `TitleBars/`: reserved for optional wide banner references (1920×180 PNG/WebP).
+## Editable reference backups
 
-Keep artwork decorative rather than embedding UI text into images. The app must remain readable when decorative artwork is disabled or unavailable. Keep vector source editable and scalable across Windows, Linux and macOS. New artwork should have both a live Avalonia implementation and an editable reference backup.
+The original vector implementations remain in this folder:
+
+- `PotatoMascotArtwork.axaml` and code-behind.
+- `PotatoPatchArtwork.axaml` and code-behind.
+- `PotatoTitleBarArtwork.axaml` and code-behind.
+- `PotatoBackgroundArtwork.axaml` and code-behind.
+- `Reference/` contains editable SVG reference assets.
+
+These are retained as editable fallbacks/reference material; the live window now
+uses the original supplied artwork rather than the simplified vector mascot.
