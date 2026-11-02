@@ -13,7 +13,7 @@ public static class ThemeManager
         SettingsDirectory,
         SettingsFileName);
 
-    private static readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Palettes =
+    private static readonly Dictionary<string, IReadOnlyDictionary<string, string>> Palettes =
         new Dictionary<string, IReadOnlyDictionary<string, string>>(StringComparer.OrdinalIgnoreCase)
         {
             ["Potato Purple"] = new Dictionary<string, string>
