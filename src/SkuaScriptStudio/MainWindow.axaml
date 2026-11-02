@@ -20,11 +20,8 @@
         <art:PotatoTitleBarArtwork Opacity="1"/>
         <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
           <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
-            <Border Width="76" Height="76" CornerRadius="24" Background="#6D3D79" BorderBrush="#F4C66D" BorderThickness="2">
-              <Grid>
-                <TextBlock Text="👑" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-5,0,0"/>
-                <TextBlock Text="🥔" FontSize="54" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
-              </Grid>
+            <Border Width="104" Height="104" CornerRadius="30" Background="#6D3D79" BorderBrush="#F4C66D" BorderThickness="2" Padding="0">
+              <art:PotatoMascotArtwork Width="100" Height="96"/>
             </Border>
             <StackPanel Spacing="0" VerticalAlignment="Center">
               <TextBlock Text="Skua" FontSize="34" FontWeight="Black" Foreground="#FFF0C9"/>
@@ -66,6 +63,15 @@
             <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,10"/>
             <TextBlock Text="SKUA SCRIPT STUDIO" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" Margin="10,5,0,0"/>
             <TextBlock Text="Foundation build · 0.1.0" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" Margin="10,0,0,5"/>
+            <Border Background="#30203B" BorderBrush="#8B5A78" BorderThickness="1" CornerRadius="14" Margin="0,8,0,0" Padding="4">
+              <Grid ColumnDefinitions="76,*">
+                <art:PotatoMascotArtwork Width="76" Height="68"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                  <TextBlock Text="THE POTATO PATCH" FontSize="10" FontWeight="Bold" Foreground="#F5C875"/>
+                  <TextBlock Text="Where great scripts grow." FontSize="10" Foreground="#E6D0E3" TextWrapping="Wrap"/>
+                </StackPanel>
+              </Grid>
+            </Border>
           </StackPanel>
         </DockPanel>
       </Border>
@@ -97,11 +103,8 @@
                       <TextBlock Text="Write, build and manage your Skua scripts — all in one place." Foreground="{DynamicResource TextSecondaryBrush}" FontSize="14" TextWrapping="Wrap"/>
                       <TextBlock Text="Potatoes. Power. Productivity." Foreground="{DynamicResource PotatoGoldBrush}" FontSize="12" FontStyle="Italic" Margin="0,5,0,0"/>
                     </StackPanel>
-                    <Border Grid.Column="1" Width="116" Height="116" CornerRadius="58" Background="#352344" BorderBrush="#8155A3" BorderThickness="1" VerticalAlignment="Center">
-                      <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="0">
-                        <TextBlock Text="👑" FontSize="25" HorizontalAlignment="Center"/>
-                        <TextBlock Text="🥔" FontSize="62" HorizontalAlignment="Center"/>
-                      </StackPanel>
+                    <Border Grid.Column="1" Width="190" Height="150" CornerRadius="26" Background="#352344" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="1" VerticalAlignment="Center" Padding="0">
+                      <art:PotatoMascotArtwork Width="180" Height="150"/>
                     </Border>
                   </Grid>
                 </Border>
