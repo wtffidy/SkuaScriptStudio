@@ -41,6 +41,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         _savedSource = _document.Source;
+        ThemeSelector.SelectedIndex = Array.IndexOf(ThemeManager.AvailableThemes, ThemeManager.CurrentTheme);
         UpdateBuilderActionFields();
         SnippetCoreFilter.ItemsSource = _snippetService.GetCores();
         SnippetCoreFilter.SelectedIndex = 0;
@@ -58,6 +59,12 @@ public partial class MainWindow : Window
 
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             BeginMoveDrag(e);
+    }
+
+    private void ThemeSelector_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (ThemeSelector.SelectedItem is ComboBoxItem item && item.Content is string theme)
+            ThemeManager.Apply(theme);
     }
 
     private void MinimizeWindow_OnClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
