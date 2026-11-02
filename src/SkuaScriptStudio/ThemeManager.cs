@@ -48,6 +48,32 @@ public static class ThemeManager
             }
         };
 
+    static ThemeManager()
+    {
+        Palettes["Russet Roast"] = CreateVariant("Golden Potato", "#301812", "#48251B", "#5B3022", "#1F100D", "#170B09", "#9B5940", "#E18A65", "#FFF0E8", "#E8C6B8", "#C69A8A", "#A87A6C", "#FFF0E8", "#B94E35", "#FFC0A2", "#D66A4D", "#E7A66D", "#51291E", "#8B4935", "#613021", "#3C1B15", "#FFF0E8");
+        Palettes["Yukon Gold"] = CreateVariant("Golden Potato", "#211B0D", "#332A13", "#463719", "#191407", "#120F06", "#8C7130", "#E2BD55", "#FFF8DC", "#E9DDAF", "#C7B77D", "#A59662", "#FFF6D7", "#B58A20", "#FFE28A", "#D4A832", "#FFE28A", "#3A3017", "#806526", "#59451B", "#33270F", "#FFF6D7");
+        Palettes["Purple Majesty"] = CreateVariant("Potato Purple", "#160D22", "#251333", "#351C49", "#190F27", "#100A19", "#65418A", "#B58BEA", "#F8F0FF", "#DDC8F2", "#B59ACF", "#9276AD", "#F8F0FF", "#7440B8", "#D0A7FF", "#9860D5", "#E0B9FF", "#2D1940", "#9A73C6", "#68468B", "#321C49", "#F5E9FF");
+        Palettes["Sweet Potato"] = CreateVariant("Golden Potato", "#25131C", "#38202B", "#4B2937", "#1D1018", "#160B12", "#8A465B", "#D77A91", "#FFF1F3", "#E9CBD1", "#C9A1AC", "#A77E89", "#FFF1F3", "#A94368", "#F3A8B9", "#C85D7C", "#F6C2A0", "#402331", "#9B5369", "#6C394B", "#3D1E2A", "#FFF1F3");
+        Palettes["Red Bliss"] = CreateVariant("Golden Potato", "#211214", "#321A1D", "#452326", "#190D10", "#12080A", "#87424A", "#D66B72", "#FFF0EB", "#E8C6C1", "#C69B98", "#A67B79", "#FFF0EB", "#A63842", "#F29A91", "#C94D55", "#FFD18A", "#3A1B20", "#994C51", "#653137", "#35171B", "#FFF0EB");
+        Palettes["Tater Tot"] = CreateVariant("Golden Potato", "#1D1710", "#302316", "#46321D", "#181109", "#110C07", "#8B633B", "#D7A45D", "#FFF5E5", "#E8D5B7", "#C6AC86", "#A58A66", "#FFF5E5", "#A66B24", "#F5C875", "#C58A3A", "#FFD27A", "#352515", "#956A3E", "#624526", "#382515", "#FFF5E5");
+    }
+
+    private static IReadOnlyDictionary<string, string> CreateVariant(string baseTheme, string appBackground, string surface, string surfaceRaised, string surfaceInset, string editorBackground, string border, string accentBorder, string textPrimary, string textSecondary, string textMuted, string textSubtle, string editorText, string accent, string accentText, string accentHover, string potatoGold, string footer, string titleStart, string titleMiddle, string titleEnd, string chromeForeground)
+    {
+        Dictionary<string, string> palette = new(Palettes[baseTheme], StringComparer.OrdinalIgnoreCase)
+        {
+            ["AppBackgroundBrush"] = appBackground, ["SurfaceBrush"] = surface, ["SurfaceRaisedBrush"] = surfaceRaised,
+            ["SurfaceInsetBrush"] = surfaceInset, ["EditorBackgroundBrush"] = editorBackground, ["BorderBrush"] = border,
+            ["AccentBorderBrush"] = accentBorder, ["TextPrimaryBrush"] = textPrimary, ["TextSecondaryBrush"] = textSecondary,
+            ["TextMutedBrush"] = textMuted, ["TextSubtleBrush"] = textSubtle, ["EditorTextBrush"] = editorText,
+            ["AccentBrush"] = accent, ["AccentTextBrush"] = accentText, ["AccentHoverBrush"] = accentHover,
+            ["PotatoGoldBrush"] = potatoGold, ["FooterBrush"] = footer, ["TitleBarStartColor"] = titleStart,
+            ["TitleBarMiddleColor"] = titleMiddle, ["TitleBarEndColor"] = titleEnd, ["ChromeForegroundBrush"] = chromeForeground
+        };
+
+        return palette;
+    }
+
     public static string[] AvailableThemes => Palettes.Keys.ToArray();
 
     public static string CurrentTheme { get; private set; } = "Potato Purple";
