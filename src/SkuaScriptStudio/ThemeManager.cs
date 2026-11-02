@@ -23,8 +23,8 @@ public static class ThemeManager
                 ["AccentBorderBrush"] = "#D75BEA", ["TextPrimaryBrush"] = "#FFF4FF", ["TextSecondaryBrush"] = "#E2CBEA",
                 ["TextMutedBrush"] = "#B99AC8", ["TextSubtleBrush"] = "#9574A8", ["EditorTextBrush"] = "#F9EDFF",
                 ["AccentBrush"] = "#9828D8", ["AccentTextBrush"] = "#F2A5FF", ["AccentHoverBrush"] = "#C34BEE",
-                ["PotatoGoldBrush"] = "#FFC45E", ["FooterBrush"] = "#2A1638", ["TitleBarStartBrush"] = "#542B68",
-                ["TitleBarMiddleBrush"] = "#321B40", ["TitleBarEndBrush"] = "#24132F", ["ChromeForegroundBrush"] = "#FFF0C9"
+                ["PotatoGoldBrush"] = "#FFC45E", ["FooterBrush"] = "#2A1638", ["TitleBarStartColor"] = "#542B68",
+                ["TitleBarMiddleColor"] = "#321B40", ["TitleBarEndColor"] = "#24132F", ["ChromeForegroundBrush"] = "#FFF0C9"
             },
             ["Midnight Potato"] = new Dictionary<string, string>
             {
@@ -33,8 +33,8 @@ public static class ThemeManager
                 ["AccentBorderBrush"] = "#9674B8", ["TextPrimaryBrush"] = "#F4F0FA", ["TextSecondaryBrush"] = "#C9BED8",
                 ["TextMutedBrush"] = "#9B8DAF", ["TextSubtleBrush"] = "#766987", ["EditorTextBrush"] = "#F4F0FA",
                 ["AccentBrush"] = "#69459A", ["AccentTextBrush"] = "#C7A7F0", ["AccentHoverBrush"] = "#8964B8",
-                ["PotatoGoldBrush"] = "#D9B66F", ["FooterBrush"] = "#171321", ["TitleBarStartBrush"] = "#292036",
-                ["TitleBarMiddleBrush"] = "#171321", ["TitleBarEndBrush"] = "#0D0B13", ["ChromeForegroundBrush"] = "#F4E8D0"
+                ["PotatoGoldBrush"] = "#D9B66F", ["FooterBrush"] = "#171321", ["TitleBarStartColor"] = "#292036",
+                ["TitleBarMiddleColor"] = "#171321", ["TitleBarEndColor"] = "#0D0B13", ["ChromeForegroundBrush"] = "#F4E8D0"
             },
             ["Golden Potato"] = new Dictionary<string, string>
             {
@@ -43,8 +43,8 @@ public static class ThemeManager
                 ["AccentBorderBrush"] = "#D6A34F", ["TextPrimaryBrush"] = "#FFF4DE", ["TextSecondaryBrush"] = "#E8D2A9",
                 ["TextMutedBrush"] = "#C4A879", ["TextSubtleBrush"] = "#A18458", ["EditorTextBrush"] = "#FFF2D5",
                 ["AccentBrush"] = "#A66B24", ["AccentTextBrush"] = "#FFD27A", ["AccentHoverBrush"] = "#C48735",
-                ["PotatoGoldBrush"] = "#FFD27A", ["FooterBrush"] = "#352515", ["TitleBarStartBrush"] = "#76502A",
-                ["TitleBarMiddleBrush"] = "#49301B", ["TitleBarEndBrush"] = "#2B1C11", ["ChromeForegroundBrush"] = "#FFF2D5"
+                ["PotatoGoldBrush"] = "#FFD27A", ["FooterBrush"] = "#352515", ["TitleBarStartColor"] = "#76502A",
+                ["TitleBarMiddleColor"] = "#49301B", ["TitleBarEndColor"] = "#2B1C11", ["ChromeForegroundBrush"] = "#FFF2D5"
             }
         };
 
@@ -81,7 +81,9 @@ public static class ThemeManager
             return;
 
         foreach (KeyValuePair<string, string> entry in palette)
-            application.Resources[entry.Key] = new SolidColorBrush(Color.Parse(entry.Value));
+            application.Resources[entry.Key] = entry.Key.EndsWith("Color", StringComparison.Ordinal)
+                ? Color.Parse(entry.Value)
+                : new SolidColorBrush(Color.Parse(entry.Value));
 
         CurrentTheme = theme;
         if (!save)
