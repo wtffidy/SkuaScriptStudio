@@ -31,7 +31,7 @@
     <!-- Crown -->
     <Path Data="M 66,34 L 60,9 L 82,23 L 96,2 L 110,23 L 132,9 L 125,38 Z" Fill="#F5C85F" Stroke="#9B652F" StrokeThickness="2" StrokeLineJoin="Round"/>
     <Path Data="M 67,34 L 125,34 L 122,43 L 70,43 Z" Fill="#D9943D" Stroke="#9B652F" StrokeThickness="2"/>
-    <Circle xmlns="https://github.com/avaloniaui" Canvas.Left="92" Canvas.Top="10" Width="8" Height="8" Fill="#F8E9C5"/>
+    <Ellipse Canvas.Left="92" Canvas.Top="10" Width="8" Height="8" Fill="#F8E9C5"/>
     <!-- Sparkles -->
     <Path Data="M 25,39 L 29,49 L 39,53 L 29,57 L 25,67 L 21,57 L 11,53 L 21,49 Z" Fill="#FFE29A"/>
     <Path Data="M 157,46 L 160,54 L 168,57 L 160,60 L 157,68 L 154,60 L 146,57 L 154,54 Z" Fill="#FFE29A"/>
