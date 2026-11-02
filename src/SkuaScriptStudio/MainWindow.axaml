@@ -7,36 +7,44 @@
         Icon="/Assets/skua-script-studio.ico"
         Closing="MainWindow_OnClosing"
         KeyDown="MainWindow_OnKeyDown">
-  <Grid RowDefinitions="82,*">
-    <Border Grid.Row="0" BorderBrush="{DynamicResource AccentBorderBrush}" BorderThickness="0,0,0,1" Padding="22,0">
+  <Grid RowDefinitions="142,*,42">
+    <Border Grid.Row="0" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="0,0,0,3" Padding="18,8">
       <Border.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-          <GradientStop Color="#30183F" Offset="0"/>
-          <GradientStop Color="#1C1427" Offset="0.55"/>
-          <GradientStop Color="#382044" Offset="1"/>
+          <GradientStop Color="#542B68" Offset="0"/>
+          <GradientStop Color="#28172F" Offset="0.48"/>
+          <GradientStop Color="#6B365B" Offset="1"/>
         </LinearGradientBrush>
       </Border.Background>
-      <Grid>
-        <art:PotatoTitleBarArtwork Opacity="0.32"/>
+      <Grid ClipToBounds="True">
+        <art:PotatoTitleBarArtwork Opacity="1"/>
         <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-          <Border Width="44" Height="44" CornerRadius="14" Background="#49265F" BorderBrush="#B77CE8" BorderThickness="1">
-            <TextBlock Text="🥔" FontSize="27" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-          </Border>
-          <StackPanel Spacing="1">
-            <TextBlock Text="SKUA SCRIPT STUDIO" FontWeight="Bold" FontSize="15" LetterSpacing="1"/>
-            <TextBlock Text="POTATO POWERED DEVELOPMENT" FontSize="9" Foreground="{DynamicResource TextMutedBrush}" LetterSpacing="1"/>
+          <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+            <Border Width="76" Height="76" CornerRadius="24" Background="#6D3D79" BorderBrush="#F4C66D" BorderThickness="2">
+              <Grid>
+                <TextBlock Text="👑" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,-5,0,0"/>
+                <TextBlock Text="🥔" FontSize="54" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,-5"/>
+              </Grid>
+            </Border>
+            <StackPanel Spacing="0" VerticalAlignment="Center">
+              <TextBlock Text="Skua" FontSize="34" FontWeight="Black" Foreground="#FFF0C9"/>
+              <TextBlock Text="Script Studio" FontSize="27" FontWeight="Bold" Foreground="#FFD47C" Margin="0,-8,0,0"/>
+              <TextBlock Text="POTATO POWERED DEVELOPMENT" FontSize="9" Foreground="#E8C6F2" LetterSpacing="2"/>
+            </StackPanel>
           </StackPanel>
-        </StackPanel>
-        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="2">
-          <TextBlock Text="Write  •  Build  •  Script" Foreground="{DynamicResource AccentTextBrush}" FontSize="17" FontStyle="Italic" HorizontalAlignment="Center"/>
-          <TextBlock Text="YOUR SKUA WORKSPACE" Foreground="{DynamicResource TextMutedBrush}" FontSize="9" HorizontalAlignment="Center" LetterSpacing="2"/>
-        </StackPanel>
-        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
-          <Button Name="OpenButton" Content="Open" Click="OpenButton_OnClick"/>
-          <Button Name="UpdateButton" Content="Check for updates" Click="UpdateButton_OnClick"/>
-          <Button Name="SaveButton" Content="Save" Click="SaveButton_OnClick" Background="{DynamicResource AccentBrush}"/>
-        </StackPanel>
+          <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="9">
+            <Button Content="📂&#10;Open" Click="OpenButton_OnClick" MinWidth="76" Padding="13,9"/>
+            <Button Content="💾&#10;Save" Click="SaveButton_OnClick" MinWidth="76" Padding="13,9"/>
+            <Button Content="⌨&#10;Editor" Click="EditorNav_OnClick" MinWidth="76" Padding="13,9"/>
+            <Button Content="🧩&#10;Builder" Click="BuilderNav_OnClick" MinWidth="76" Padding="13,9"/>
+            <Button Content="📚&#10;Library" Click="LibraryNav_OnClick" MinWidth="76" Padding="13,9"/>
+            <Button Name="UpdateButton" Content="↻&#10;Updates" Click="UpdateButton_OnClick" MinWidth="76" Padding="13,9"/>
+          </StackPanel>
+          <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="2" Margin="12,0,6,0">
+            <TextBlock Text="Potatoes." FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
+            <TextBlock Text="Scripts." FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
+            <TextBlock Text="Good Times. ✦" FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
+          </StackPanel>
         </Grid>
       </Grid>
     </Border>
@@ -354,5 +362,15 @@
         </TabControl>
       </Grid>
     </Grid>
+    <Border Grid.Row="2" Background="{DynamicResource FooterBrush}" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="1,2,1,0" Padding="18,4">
+      <Grid ColumnDefinitions="Auto,*,Auto,*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="9" VerticalAlignment="Center">
+          <TextBlock Text="🥔" FontSize="22"/>
+          <TextBlock Text="Ready!" FontSize="15" FontWeight="Bold" Foreground="#3A2433" VerticalAlignment="Center"/>
+        </StackPanel>
+        <TextBlock Grid.Column="2" Text="Skua Script Studio · Potato Edition" Foreground="#4B3040" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="4" Text="Made with ♥ and Potatoes" FontSize="15" FontStyle="Italic" Foreground="#4B3040" VerticalAlignment="Center"/>
+      </Grid>
+    </Border>
   </Grid>
 </Window>
