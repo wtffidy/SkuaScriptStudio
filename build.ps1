@@ -79,7 +79,9 @@ if ($LASTEXITCODE -ne 0) { throw "Restore failed." }
 Add-Timing "Restore" $StageTimer
 
 $StageTimer = [System.Diagnostics.Stopwatch]::StartNew()
-dotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true --no-restore --verbosity quiet -m:$Jobs -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o $Output
+if (Test-Path $Output) { Remove-Item $Output -Recurse -Force }
+New-Item -ItemType Directory -Path $Output -Force | Out-Null
+dotnet publish $Project --configuration Release --runtime $RuntimeIdentifier --self-contained true --no-restore --verbosity quiet -p:BuildInParallel=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o $Output
 if ($LASTEXITCODE -ne 0) { throw "Publish failed." }
 Add-Timing "Publish" $StageTimer
 $TotalTimer.Stop()
