@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="SkuaScriptStudio.Assets.PotatoPatchArtwork" Width="420" Height="170" IsHitTestVisible="False">
+  <Viewbox Stretch="Uniform"><Canvas Width="420" Height="170">
+    <Ellipse Canvas.Left="10" Canvas.Top="12" Width="400" Height="150" Fill="#F1C16D" Opacity="0.08"/>
+    <Path Data="M 0,139 Q 90,110 180,139 T 420,135 L 420,170 L 0,170 Z" Fill="#3E654A" Opacity="0.55"/>
+    <Path Data="M 24,145 Q 40,120 57,145 M 40,145 Q 40,112 40,100 M 40,119 Q 22,102 15,112 M 40,124 Q 57,103 66,112" Stroke="#86B878" StrokeThickness="5" StrokeLineCap="Round" Fill="Transparent"/>
+    <Path Data="M 352,145 Q 368,120 385,145 M 368,145 Q 368,112 368,100 M 368,119 Q 350,102 343,112 M 368,124 Q 385,103 394,112" Stroke="#86B878" StrokeThickness="5" StrokeLineCap="Round" Fill="Transparent"/>
+    <Ellipse Canvas.Left="89" Canvas.Top="63" Width="84" Height="72" Fill="#D99A4F" Stroke="#8B573A" StrokeThickness="3"/>
+    <Ellipse Canvas.Left="180" Canvas.Top="38" Width="108" Height="94" Fill="#D99A4F" Stroke="#8B573A" StrokeThickness="3"/>
+    <Ellipse Canvas.Left="291" Canvas.Top="75" Width="66" Height="57" Fill="#D99A4F" Stroke="#8B573A" StrokeThickness="3"/>
+    <Path Data="M 104,83 Q 120,67 141,76 M 198,61 Q 219,43 244,54 M 303,91 Q 316,80 333,87" Stroke="#F5C982" StrokeThickness="6" StrokeLineCap="Round" Fill="Transparent"/>
+    <Ellipse Canvas.Left="116" Canvas.Top="91" Width="7" Height="9" Fill="#382238"/><Ellipse Canvas.Left="144" Canvas.Top="91" Width="7" Height="9" Fill="#382238"/><Path Data="M 124,106 Q 132,115 140,106" Stroke="#633A35" StrokeThickness="3" Fill="Transparent"/>
+    <Ellipse Canvas.Left="214" Canvas.Top="75" Width="9" Height="12" Fill="#382238"/><Ellipse Canvas.Left="250" Canvas.Top="75" Width="9" Height="12" Fill="#382238"/><Path Data="M 225,95 Q 237,108 249,95" Stroke="#633A35" StrokeThickness="3" Fill="Transparent"/>
+    <Ellipse Canvas.Left="309" Canvas.Top="99" Width="6" Height="8" Fill="#382238"/><Ellipse Canvas.Left="334" Canvas.Top="99" Width="6" Height="8" Fill="#382238"/>
+    <Path Data="M 190,38 L 183,17 L 205,29 L 219,5 L 234,28 L 257,15 L 250,42 Z" Fill="#F5C85F" Stroke="#9B652F" StrokeThickness="2"/>
+    <Path Data="M 14,55 L 18,66 L 29,70 L 18,74 L 14,85 L 10,74 L 0,70 L 10,66 Z M 395,36 L 399,47 L 410,51 L 399,55 L 395,66 L 391,55 L 380,51 L 391,47 Z" Fill="#FFE29A"/>
+    <Path Data="M 70,145 L 77,130 L 84,145 M 270,145 L 277,130 L 284,145" Stroke="#86B878" StrokeThickness="4" Fill="Transparent"/>
+  </Canvas></Viewbox>
+</UserControl>
