@@ -7,7 +7,7 @@
         Icon="/Assets/skua-script-studio.ico"
         Closing="MainWindow_OnClosing"
         KeyDown="MainWindow_OnKeyDown">
-  <Grid RowDefinitions="38,142,*,42">
+  <Grid RowDefinitions="38,188,*,42">
   <Grid Grid.Row="0" PointerPressed="TitleBar_OnPointerPressed" ClipToBounds="True">
     <Grid.Background>
       <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -29,7 +29,7 @@
     </Grid>
   </Grid>
 
-    <Border Grid.Row="1" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="0,0,0,3" Padding="18,8">
+    <Border Grid.Row="1" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="0,0,0,3" Padding="0">
       <Border.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
           <GradientStop Color="#542B68" Offset="0"/>
@@ -38,8 +38,8 @@
         </LinearGradientBrush>
       </Border.Background>
       <Grid ClipToBounds="True">
-        <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-banner.png" Stretch="UniformToFill" Opacity="0.88"/>
-        <Border Background="#880F0A16" IsHitTestVisible="False"/>
+        <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-banner.png" Stretch="UniformToFill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="1"/>
+        <Border Background="#330F0A16" IsHitTestVisible="False"/>
         <Grid VerticalAlignment="Center">
           <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="2" Margin="12,0,6,0">
             <TextBlock Text="Potatoes." FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
