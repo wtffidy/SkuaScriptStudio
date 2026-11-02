@@ -45,7 +45,7 @@ public sealed class UpdateService
         if (!isWindows && !isLinux)
             throw new PlatformNotSupportedException("Automatic updates are currently supported on Windows and Linux.");
 
-        string assetName = isWindows ? "SkuaScriptStudio-win-x64.zip" : "SkuaScriptStudio-linux-x64.tar.gz";
+        string assetName = isWindows ? "SkuaScriptStudio.exe" : "SkuaScriptStudio-linux-x64.tar.gz";
         GitHubReleaseAsset? asset = update.Assets.FirstOrDefault(item =>
             string.Equals(item.Name, assetName, StringComparison.OrdinalIgnoreCase));
         if (asset is null || string.IsNullOrWhiteSpace(asset.BrowserDownloadUrl))
@@ -92,15 +92,12 @@ public sealed class UpdateService
         return $$"""
             $ErrorActionPreference = 'Stop'
             $appProcessId = {{processId}}
-            $installPath = '{{EscapePowerShell(applicationDirectory)}}'
-            $archivePath = '{{EscapePowerShell(archivePath)}}'
-            $workPath = '{{EscapePowerShell(updateDirectory)}}'
+            $newExePath = '{{EscapePowerShell(archivePath)}}'
             $exePath = '{{EscapePowerShell(executablePath)}}'
+            $workPath = '{{EscapePowerShell(updateDirectory)}}'
             try {
                 Wait-Process -Id $appProcessId -ErrorAction SilentlyContinue
-                $extractPath = Join-Path $workPath 'extracted'
-                Expand-Archive -LiteralPath $archivePath -DestinationPath $extractPath -Force
-                Copy-Item -Path (Join-Path $extractPath '*') -Destination $installPath -Recurse -Force
+                Copy-Item -LiteralPath $newExePath -Destination $exePath -Force
                 Start-Process -FilePath $exePath
             }
             catch {
