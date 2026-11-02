@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SkuaScriptStudio.Assets.PotatoMascotArtwork"
+             Width="190" Height="160"
+             IsHitTestVisible="False">
+  <Canvas Width="190" Height="160">
+    <!-- Soft halo -->
+    <Ellipse Canvas.Left="22" Canvas.Top="20" Width="146" Height="128" Fill="#F5C76E" Opacity="0.13"/>
+    <!-- Feet and arms -->
+    <Path Data="M 61,119 C 47,129 42,138 35,140" Stroke="#A96D42" StrokeThickness="7" StrokeLineCap="Round"/>
+    <Path Data="M 130,117 C 145,125 150,135 157,137" Stroke="#A96D42" StrokeThickness="7" StrokeLineCap="Round"/>
+    <Ellipse Canvas.Left="48" Canvas.Top="134" Width="29" Height="12" Fill="#8C5738"/>
+    <Ellipse Canvas.Left="124" Canvas.Top="132" Width="29" Height="12" Fill="#8C5738"/>
+    <!-- Potato body -->
+    <Path Data="M 34,83 C 25,57 42,35 67,30 C 86,18 119,25 137,43 C 157,58 159,91 143,112 C 129,132 93,137 66,126 C 44,119 30,104 34,83 Z" Fill="#D99A4F" Stroke="#8B573A" StrokeThickness="3"/>
+    <Path Data="M 42,72 C 49,48 72,38 95,39" Stroke="#F5C982" StrokeThickness="7" StrokeLineCap="Round" Opacity="0.75"/>
+    <!-- Potato freckles -->
+    <Ellipse Canvas.Left="51" Canvas.Top="87" Width="5" Height="4" Fill="#A96C3C" Opacity="0.7"/>
+    <Ellipse Canvas.Left="130" Canvas.Top="88" Width="5" Height="4" Fill="#A96C3C" Opacity="0.7"/>
+    <Ellipse Canvas.Left="66" Canvas.Top="108" Width="4" Height="4" Fill="#A96C3C" Opacity="0.55"/>
+    <!-- Eyes -->
+    <Ellipse Canvas.Left="70" Canvas.Top="75" Width="10" Height="13" Fill="#382238"/>
+    <Ellipse Canvas.Left="111" Canvas.Top="75" Width="10" Height="13" Fill="#382238"/>
+    <Ellipse Canvas.Left="73" Canvas.Top="77" Width="3" Height="4" Fill="#FFF4D9"/>
+    <Ellipse Canvas.Left="114" Canvas.Top="77" Width="3" Height="4" Fill="#FFF4D9"/>
+    <!-- Blush -->
+    <Ellipse Canvas.Left="53" Canvas.Top="91" Width="17" Height="9" Fill="#D96E77" Opacity="0.65"/>
+    <Ellipse Canvas.Left="120" Canvas.Top="91" Width="17" Height="9" Fill="#D96E77" Opacity="0.65"/>
+    <!-- Smile -->
+    <Path Data="M 84,96 Q 95,109 107,96" Stroke="#633A35" StrokeThickness="3" StrokeLineCap="Round" Fill="Transparent"/>
+    <!-- Crown -->
+    <Path Data="M 66,34 L 60,9 L 82,23 L 96,2 L 110,23 L 132,9 L 125,38 Z" Fill="#F5C85F" Stroke="#9B652F" StrokeThickness="2" StrokeLineJoin="Round"/>
+    <Path Data="M 67,34 L 125,34 L 122,43 L 70,43 Z" Fill="#D9943D" Stroke="#9B652F" StrokeThickness="2"/>
+    <Circle xmlns="https://github.com/avaloniaui" Canvas.Left="92" Canvas.Top="10" Width="8" Height="8" Fill="#F8E9C5"/>
+    <!-- Sparkles -->
+    <Path Data="M 25,39 L 29,49 L 39,53 L 29,57 L 25,67 L 21,57 L 11,53 L 21,49 Z" Fill="#FFE29A"/>
+    <Path Data="M 157,46 L 160,54 L 168,57 L 160,60 L 157,68 L 154,60 L 146,57 L 154,54 Z" Fill="#FFE29A"/>
+  </Canvas>
+</UserControl>
