@@ -2,9 +2,55 @@ namespace SkuaScriptStudio.Models;
 
 public sealed class ScriptDocument
 {
-    public string Name { get; set; } = "Untitled.cs";
+    public string Name { get; set; } = "DefaultTemplate.cs";
     public string? FilePath { get; set; }
-    public string Source { get; set; } = string.Empty;
+
+    public string Source { get; set; } = """
+        /*
+        name: null
+        description: null
+        tags: null
+        */
+        //cs_include Scripts/CoreBots.cs
+        //cs_include Scripts/CoreStory.cs
+        //cs_include Scripts/CoreAdvanced.cs
+        //cs_include Scripts/CoreFarms.cs
+        //cs_include Scripts/CoreDailies.cs
+        using Skua.Core.Interfaces;
+        using Skua.Core.Models.Items;
+        using Skua.Core.Models.Monsters;
+        using Skua.Core.Models.Quests;
+
+        public class DefaultTemplate
+        {
+            private IScriptInterface Bot => IScriptInterface.Instance;
+            private CoreBots Core => CoreBots.Instance;
+            private static CoreAdvanced Adv { get => _Adv ??= new CoreAdvanced(); set => _Adv = value; }
+            private static CoreAdvanced _Adv;
+            private static CoreFarms Farm { get => _Farm ??= new CoreFarms(); set => _Farm = value; }
+            private static CoreFarms _Farm;
+            private static CoreStory Story { get => _Story ??= new CoreStory(); set => _Story = value; }
+            private static CoreDailies Daily { get => _Daily ??= new CoreDailies(); set => _Daily = value; }
+
+            public void ScriptMain(IScriptInterface Bot)
+            {
+                // Core.BankingBlackList.AddRange(new[] { "item1", "Item2", "Etc" });
+                Core.SetOptions(disableClassSwap: true);
+
+                Example();
+
+                Core.SetOptions(false);
+            }
+
+            void Example()
+            {
+
+            }
+
+
+        }
+        """;
+
     public DateTime LastModifiedUtc { get; set; } = DateTime.UtcNow;
     public bool IsDirty { get; set; }
 }
