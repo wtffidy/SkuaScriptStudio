@@ -6,7 +6,8 @@ images ship inside the application on Windows, Linux and macOS.
 
 ## Live artwork
 
-- `potato-title-banner.jpg` — wide illustrated title/header artwork.
+- `potato-banner.png` — current wide illustrated title/header background used behind the Studio header controls.
+- `potato-title-banner.jpg` — retained legacy header artwork/reference.
 - `potato-hero.jpg` — primary crowned potato artwork used in the app identity and Home welcome panel.
 - `potato-sidebar.jpg` — compact sidebar Potato Patch artwork.
 - `potato-pattern-corner.jpg` — low-opacity decorative workspace background.
