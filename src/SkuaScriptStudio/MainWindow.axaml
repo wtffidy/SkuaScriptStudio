@@ -61,6 +61,12 @@
               <ComboBoxItem Content="Potato Purple"/>
               <ComboBoxItem Content="Midnight Potato"/>
               <ComboBoxItem Content="Golden Potato"/>
+              <ComboBoxItem Content="Russet Roast"/>
+              <ComboBoxItem Content="Yukon Gold"/>
+              <ComboBoxItem Content="Purple Majesty"/>
+              <ComboBoxItem Content="Sweet Potato"/>
+              <ComboBoxItem Content="Red Bliss"/>
+              <ComboBoxItem Content="Tater Tot"/>
             </ComboBox>
             <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,10"/>
             <TextBlock Text="SKUA SCRIPT STUDIO" Foreground="{DynamicResource TextSubtleBrush}" FontSize="10" Margin="10,5,0,0"/>
