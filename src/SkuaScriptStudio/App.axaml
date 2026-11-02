@@ -31,6 +31,24 @@
     <Style Selector="Button:pressed">
       <Setter Property="Background" Value="#392343" />
     </Style>
+    <Style Selector="Button.window-chrome">
+      <Setter Property="MinWidth" Value="46" />
+      <Setter Property="Width" Value="46" />
+      <Setter Property="Height" Value="38" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Background" Value="#28172F" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Foreground" Value="#FFF0C9" />
+      <Setter Property="FontSize" Value="14" />
+    </Style>
+    <Style Selector="Button.window-chrome:pointerover">
+      <Setter Property="Background" Value="#654078" />
+    </Style>
+    <Style Selector="Button.window-close:pointerover">
+      <Setter Property="Background" Value="#C7435A" />
+      <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
     <Style Selector="Button.nav">
       <Setter Property="HorizontalContentAlignment" Value="Left" />
       <Setter Property="Padding" Value="14,12" />
