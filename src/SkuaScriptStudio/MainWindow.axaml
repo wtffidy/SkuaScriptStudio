@@ -7,7 +7,8 @@
         Icon="/Assets/skua-script-studio.ico"
         Closing="MainWindow_OnClosing"
         KeyDown="MainWindow_OnKeyDown">
-  <Grid RowDefinitions="38,142,*,42">\n  <Grid Grid.Row="0" Background="#28172F" PointerPressed="TitleBar_OnPointerPressed" ClipToBounds="True">
+  <Grid RowDefinitions="38,142,*,42">
+  <Grid Grid.Row="0" Background="#28172F" PointerPressed="TitleBar_OnPointerPressed" ClipToBounds="True">
     <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-pattern-corner.jpg" Stretch="UniformToFill" Opacity="0.95"/>
     <Grid ColumnDefinitions="*,Auto">
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0" Spacing="8">
@@ -31,7 +32,6 @@
         </LinearGradientBrush>
       </Border.Background>
       <Grid ClipToBounds="True">
-        <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-pattern-corner.jpg" Width="334" Height="142" HorizontalAlignment="Right" VerticalAlignment="Top" Stretch="UniformToFill"/>
         <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
           <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
             <Border Width="104" Height="104" CornerRadius="30" Background="#6D3D79" BorderBrush="#F4C66D" BorderThickness="2" Padding="0">
