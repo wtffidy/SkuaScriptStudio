@@ -38,14 +38,18 @@ jobs:
       - name: Publish
         shell: pwsh
         run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o build/win-x64
-      - name: Prepare executable
+      - name: Package Windows build
         shell: pwsh
-        run: Copy-Item build/win-x64/SkuaScriptStudio.exe SkuaScriptStudio.exe
+        run: |
+          Copy-Item build/win-x64/SkuaScriptStudio.exe SkuaScriptStudio.exe
+          Compress-Archive -Path build/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
           name: windows-x64
-          path: SkuaScriptStudio.exe
+          path: |
+            SkuaScriptStudio.exe
+            SkuaScriptStudio-win-x64.zip
           if-no-files-found: error
           retention-days: 7
 
@@ -128,6 +132,7 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             SkuaScriptStudio.exe
+            SkuaScriptStudio-win-x64.zip
             SkuaScriptStudio-linux-x64.tar.gz
             SkuaScriptStudio-osx-x64.tar.gz
             SkuaScriptStudio-osx-arm64.tar.gz
