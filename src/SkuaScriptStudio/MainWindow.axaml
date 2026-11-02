@@ -41,17 +41,7 @@
         <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-banner.png" Stretch="UniformToFill" Opacity="0.88"/>
         <Border Background="#880F0A16" IsHitTestVisible="False"/>
         <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-          <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
-            <Border Width="104" Height="104" CornerRadius="30" Background="#6D3D79" BorderBrush="#F4C66D" BorderThickness="2" Padding="0">
-              <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-hero.jpg" Stretch="UniformToFill"/>
-            </Border>
-            <StackPanel Spacing="0" VerticalAlignment="Center">
-              <TextBlock Text="Skua" FontSize="34" FontWeight="Black" Foreground="#FFF0C9"/>
-              <TextBlock Text="Script Studio" FontSize="27" FontWeight="Bold" Foreground="#FFD47C" Margin="0,-8,0,0"/>
-              <TextBlock Text="POTATO POWERED DEVELOPMENT" FontSize="9" Foreground="#E8C6F2" LetterSpacing="2"/>
-            </StackPanel>
-          </StackPanel>
-          <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="9">
+          <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="9">
             <Button Content="📂&#10;Open" Click="OpenButton_OnClick" MinWidth="76" Padding="13,9"/>
             <Button Content="💾&#10;Save" Click="SaveButton_OnClick" MinWidth="76" Padding="13,9"/>
             <Button Content="⌨&#10;Editor" Click="EditorNav_OnClick" MinWidth="76" Padding="13,9"/>
@@ -59,7 +49,7 @@
             <Button Content="📚&#10;Library" Click="LibraryNav_OnClick" MinWidth="76" Padding="13,9"/>
             <Button Name="UpdateButton" Content="↻&#10;Updates" Click="UpdateButton_OnClick" MinWidth="76" Padding="13,9"/>
           </StackPanel>
-          <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="2" Margin="12,0,6,0">
+          <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2" Margin="12,0,6,0">
             <TextBlock Text="Potatoes." FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
             <TextBlock Text="Scripts." FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
             <TextBlock Text="Good Times. ✦" FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
