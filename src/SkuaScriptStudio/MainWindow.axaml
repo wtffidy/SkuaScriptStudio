@@ -2,12 +2,27 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="SkuaScriptStudio.MainWindow"
         Width="1440" Height="900" MinWidth="1100" MinHeight="700"
+        SystemDecorations="None"
         Title="Skua Script Studio"
         Icon="/Assets/skua-script-studio.ico"
         Closing="MainWindow_OnClosing"
         KeyDown="MainWindow_OnKeyDown">
-  <Grid RowDefinitions="142,*,42">
-    <Border Grid.Row="0" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="0,0,0,3" Padding="18,8">
+  <Grid RowDefinitions="38,142,*,42">\n  <Grid Grid.Row="0" Background="#28172F" PointerPressed="TitleBar_OnPointerPressed" ClipToBounds="True">
+    <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-pattern-corner.jpg" Stretch="UniformToFill" Opacity="0.95"/>
+    <Grid ColumnDefinitions="*,Auto">
+      <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0" Spacing="8">
+        <Image Source="avares://SkuaScriptStudio/Assets/skua-script-studio.ico" Width="20" Height="20"/>
+        <TextBlock Text="Skua Script Studio" Foreground="#FFF0C9" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="0" Background="#28172F">
+        <Button Classes="window-chrome" Content="—" Click="MinimizeWindow_OnClick"/>
+        <Button Classes="window-chrome" Content="□" Click="ToggleMaximizeWindow_OnClick"/>
+        <Button Classes="window-chrome window-close" Content="×" Click="CloseWindow_OnClick"/>
+      </StackPanel>
+    </Grid>
+  </Grid>
+
+    <Border Grid.Row="1" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="0,0,0,3" Padding="18,8">
       <Border.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
           <GradientStop Color="#542B68" Offset="0"/>
@@ -45,7 +60,7 @@
       </Grid>
     </Border>
 
-    <Grid Grid.Row="1" ColumnDefinitions="220,*">
+    <Grid Grid.Row="2" ColumnDefinitions="220,*">
       <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0" Padding="14">
         <DockPanel LastChildFill="True">
           <StackPanel DockPanel.Dock="Top" Spacing="5">
@@ -374,7 +389,7 @@
         </TabControl>
       </Grid>
     </Grid>
-    <Border Grid.Row="2" Background="{DynamicResource FooterBrush}" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="1,2,1,0" Padding="18,4">
+    <Border Grid.Row="3" Background="{DynamicResource FooterBrush}" BorderBrush="{DynamicResource PotatoGoldBrush}" BorderThickness="1,2,1,0" Padding="18,4">
       <Grid ColumnDefinitions="Auto,*,Auto,*,Auto">
         <StackPanel Orientation="Horizontal" Spacing="9" VerticalAlignment="Center">
           <TextBlock Text="🥔" FontSize="22"/>
