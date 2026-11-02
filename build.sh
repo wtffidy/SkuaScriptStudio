@@ -66,7 +66,9 @@ dotnet restore "$PROJECT" --runtime "$RID" --verbosity quiet
 echo "  Restore      $(format_ms "$(( $(now_ms) - STAGE_START ))")"
 
 STAGE_START="$(now_ms)"
-dotnet publish "$PROJECT" --configuration Release --runtime "$RID" --self-contained true --no-restore --verbosity quiet -m:"$JOBS" -p:BuildInParallel=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o "$OUTPUT"
+rm -rf "$OUTPUT"
+mkdir -p "$OUTPUT"
+dotnet publish "$PROJECT" --configuration Release --runtime "$RID" --self-contained true --no-restore --verbosity quiet -p:BuildInParallel=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false -o "$OUTPUT"
 echo "  Publish      $(format_ms "$(( $(now_ms) - STAGE_START ))")"
 
 echo "  TOTAL        $(format_ms "$(( $(now_ms) - TOTAL_START ))")"
