@@ -4,12 +4,17 @@
              IsHitTestVisible="False">
   <Grid ClipToBounds="True">
     <Canvas>
-      <Ellipse Canvas.Left="360" Canvas.Top="-74" Width="170" Height="170" Fill="#A66BDB" Opacity="0.13"/>
-      <Ellipse Canvas.Left="700" Canvas.Top="-94" Width="210" Height="210" Fill="#D7A85D" Opacity="0.10"/>
-      <Ellipse Canvas.Left="1050" Canvas.Top="-72" Width="180" Height="180" Fill="#A66BDB" Opacity="0.12"/>
-      <TextBlock Canvas.Left="430" Canvas.Top="-8" Text="🥔" FontSize="74" Opacity="0.58"/>
-      <TextBlock Canvas.Left="1100" Canvas.Top="-24" Text="👑" FontSize="35" Opacity="0.60"/>
-      <TextBlock Canvas.Left="1240" Canvas.Top="12" Text="✦  ✧  ✦" FontSize="22" Foreground="#D7A85D" Opacity="0.45"/>
+      <Ellipse Canvas.Left="250" Canvas.Top="-145" Width="330" Height="330" Fill="#D17BCA" Opacity="0.16"/>
+      <Ellipse Canvas.Left="640" Canvas.Top="-190" Width="370" Height="370" Fill="#F5C46F" Opacity="0.15"/>
+      <Ellipse Canvas.Left="1110" Canvas.Top="-150" Width="320" Height="320" Fill="#B86DD0" Opacity="0.18"/>
+      <Ellipse Canvas.Left="20" Canvas.Top="64" Width="120" Height="120" Fill="#E6A95B" Opacity="0.14"/>
+      <TextBlock Canvas.Left="6" Canvas.Top="10" Text="✦  ✧" FontSize="28" Foreground="#FFE5A1" Opacity="0.9"/>
+      <TextBlock Canvas.Left="300" Canvas.Top="0" Text="✦" FontSize="35" Foreground="#FFE5A1"/>
+      <TextBlock Canvas.Left="420" Canvas.Top="65" Text="🥔" FontSize="55" Opacity="0.92"/>
+      <TextBlock Canvas.Left="760" Canvas.Top="-14" Text="✧  ✦  ✧" FontSize="28" Foreground="#FFE5A1" Opacity="0.9"/>
+      <TextBlock Canvas.Left="1060" Canvas.Top="28" Text="🥔" FontSize="62" Opacity="0.95"/>
+      <TextBlock Canvas.Left="1170" Canvas.Top="-8" Text="👑" FontSize="35" Opacity="0.95"/>
+      <TextBlock Canvas.Left="1320" Canvas.Top="65" Text="✦  ✧" FontSize="28" Foreground="#FFE5A1"/>
     </Canvas>
   </Grid>
 </UserControl>
