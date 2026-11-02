@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:art="using:SkuaScriptStudio.Assets"
              x:Class="SkuaScriptStudio.Assets.PotatoBackgroundArtwork"
              IsHitTestVisible="False">
   <Grid ClipToBounds="True">
@@ -19,8 +20,9 @@
       <TextBlock Canvas.Left="30" Canvas.Top="25" Text="✦" FontSize="30" Foreground="#F7C86F" Opacity="0.55"/>
       <TextBlock Canvas.Left="390" Canvas.Top="90" Text="✧" FontSize="24" Foreground="#E9A7D5" Opacity="0.5"/>
       <TextBlock Canvas.Left="760" Canvas.Top="40" Text="✦" FontSize="32" Foreground="#F7C86F" Opacity="0.45"/>
-      <TextBlock Canvas.Left="920" Canvas.Top="210" Text="🥔" FontSize="88" Opacity="0.12"/>
-      <TextBlock Canvas.Left="120" Canvas.Top="440" Text="🥔" FontSize="70" Opacity="0.09"/>
+      <art:PotatoMascotArtwork Canvas.Left="880" Canvas.Top="185" Width="150" Height="130" Opacity="0.15"/>
+      <art:PotatoMascotArtwork Canvas.Left="80" Canvas.Top="390" Width="120" Height="105" Opacity="0.12"/>
+      <art:PotatoMascotArtwork Canvas.Left="630" Canvas.Top="480" Width="105" Height="92" Opacity="0.1"/>
       <TextBlock Canvas.Left="650" Canvas.Top="500" Text="✧  ✦" FontSize="26" Foreground="#F7C86F" Opacity="0.42"/>
       <TextBlock Canvas.Left="1110" Canvas.Top="70" Text="✦" FontSize="25" Foreground="#F7C86F" Opacity="0.5"/>
     </Canvas>
