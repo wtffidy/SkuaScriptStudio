@@ -25,9 +25,11 @@ public sealed class ScriptBuilderServiceTests
         Assert.Contains("description: Generated Skua script.", result);
         Assert.Contains("//cs_include Scripts/CoreBots.cs", result);
         Assert.Contains("//cs_include Scripts/CoreFarms.cs", result);
-        Assert.Contains("//cs_include Scripts/CoreStory.cs", result);
-        Assert.Contains("//cs_include Scripts/CoreArmyLite.cs", result);
-        Assert.Contains("//cs_include Scripts/SevenCircles.cs", result);
+        Assert.Contains("//cs_include Scripts/CoreDailies.cs", result);
+        Assert.Contains("//cs_include Scripts/CoreAdvanced.cs", result);
+        Assert.DoesNotContain("CoreStory", result);
+        Assert.DoesNotContain("CoreArmyLite", result);
+        Assert.DoesNotContain("SevenCircles", result);
         Assert.Contains("using Skua.Core.Interfaces;", result);
         Assert.Contains("using Skua.Core.Models.Items;", result);
         Assert.Contains("using Skua.Core.Options;", result);
@@ -37,6 +39,12 @@ public sealed class ScriptBuilderServiceTests
         Assert.Contains("public string[] MultiOptions", result);
         Assert.Contains("public void ScriptMain(IScriptInterface bot)", result);
         Assert.Contains("Core.SetOptions(false);", result);
+        Assert.Contains("ExecuteScript();", result);
+        Assert.Contains("private void ExecuteScript()", result);
+        Assert.True(result.IndexOf("Core.SetOptions();", StringComparison.Ordinal) < result.IndexOf("ExecuteScript();", StringComparison.Ordinal));
+        Assert.True(result.IndexOf("ExecuteScript();", StringComparison.Ordinal) < result.IndexOf("Core.SetOptions(false);", StringComparison.Ordinal));
+        Assert.DoesNotContain("try", result);
+        Assert.DoesNotContain("finally", result);
         Assert.Contains("// Block 1: Equip a class", result);
         Assert.Contains("// Block 2: Hunt for an item", result);
         Assert.Contains("// Block 3: Complete a quest", result);
@@ -173,7 +181,7 @@ public sealed class ScriptBuilderServiceTests
         Assert.Contains("if (Core.CheckInventory(\"Relic\", 25))", result);
         Assert.Contains("Core.FarmingLogger(\"Relic\", 25);", result);
         Assert.Contains("Core.RegisterQuests(1234, 5678);", result);
-        Assert.Contains("while (!Bot.ShouldExit & !Core.CheckInventory(\"Relic\", 25))", result);
+        Assert.Contains("while (!Bot.ShouldExit && !Core.CheckInventory(\"Relic\", 25))", result);
         Assert.Contains("Core.HuntMonster(\"battleundere\", \"Treasure Pile\", \"Relic\", 25, isTemp: true);", result);
         Assert.Contains("Core.HuntMonster(\"battleundere\", \"Draconocean\", \"Relic\", 10, isTemp: false);", result);
         Assert.Empty(syntaxTree.GetDiagnostics().Where(diagnostic => diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error));
