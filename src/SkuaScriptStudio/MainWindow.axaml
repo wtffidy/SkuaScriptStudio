@@ -11,9 +11,9 @@
   <Grid Grid.Row="0" PointerPressed="TitleBar_OnPointerPressed" ClipToBounds="True">
     <Grid.Background>
       <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="{DynamicResource TitleBarStartBrush}" Offset="0"/>
-        <GradientStop Color="{DynamicResource TitleBarMiddleBrush}" Offset="0.62"/>
-        <GradientStop Color="{DynamicResource TitleBarEndBrush}" Offset="1"/>
+        <GradientStop Color="{DynamicResource TitleBarStartColor}" Offset="0"/>
+        <GradientStop Color="{DynamicResource TitleBarMiddleColor}" Offset="0.62"/>
+        <GradientStop Color="{DynamicResource TitleBarEndColor}" Offset="1"/>
       </LinearGradientBrush>
     </Grid.Background>
     <Grid ColumnDefinitions="*,Auto">
