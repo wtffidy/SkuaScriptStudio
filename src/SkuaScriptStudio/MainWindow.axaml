@@ -16,7 +16,7 @@
         </LinearGradientBrush>
       </Border.Background>
       <Grid ClipToBounds="True">
-        <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-title-banner.jpg" Stretch="UniformToFill" Opacity="0.88"/>
+        
         <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
           <StackPanel Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
             <Border Width="104" Height="104" CornerRadius="30" Background="#6D3D79" BorderBrush="#F4C66D" BorderThickness="2" Padding="0">
