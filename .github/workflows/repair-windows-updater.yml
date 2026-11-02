@@ -1,0 +1,38 @@
+name: Repair Windows Updater Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Existing release version without the v prefix"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  repair-windows:
+    name: Build and attach Windows updater package
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Publish
+        shell: pwsh
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:Version=${{ inputs.version }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o build/win-x64
+      - name: Package
+        shell: pwsh
+        run: Compress-Archive -Path build/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
+      - name: Attach package to existing release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          files: SkuaScriptStudio-win-x64.zip
+          fail_on_unmatched_files: true
