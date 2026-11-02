@@ -80,13 +80,14 @@
 
       <Grid Grid.Column="1" Margin="28">
         <Border Background="{DynamicResource AppBackgroundBrush}" CornerRadius="14" IsHitTestVisible="False">
-          <Grid ClipToBounds="True">
-            
-            <Ellipse Width="300" Height="300" Fill="#251735" Opacity="0.28" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-130,-100,0"/>
-            <Ellipse Width="220" Height="220" Fill="#392047" Opacity="0.18" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-100,0,0,-90"/>
-          </Grid>
+          <Grid ClipToBounds="True"/>
         </Border>
         <TabControl Name="WorkspaceTabs" Background="Transparent" BorderThickness="0">
+          <TabControl.Styles>
+            <Style Selector="TabControl /template/ ItemsPresenter#PART_ItemsPresenter">
+              <Setter Property="IsVisible" Value="False"/>
+            </Style>
+          </TabControl.Styles>
           <TabItem Header="Home">
             <ScrollViewer>
               <StackPanel Spacing="18" Margin="4,18">
