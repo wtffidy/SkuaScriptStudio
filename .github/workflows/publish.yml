@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - mobile
   workflow_dispatch:
 
 permissions:
@@ -28,10 +27,10 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Publish
-        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/win-x64
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o build/win-x64
 
       - name: Package
-        run: Compress-Archive -Path artifacts/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
+        run: Compress-Archive -Path build/win-x64/* -DestinationPath SkuaScriptStudio-win-x64.zip
 
       - name: Upload Windows build
         uses: actions/upload-artifact@v4
@@ -54,10 +53,10 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Publish
-        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime linux-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/linux-x64
+        run: dotnet publish src/SkuaScriptStudio/SkuaScriptStudio.csproj --configuration Release --runtime linux-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o build/linux-x64
 
       - name: Package
-        run: tar -czf SkuaScriptStudio-linux-x64.tar.gz -C artifacts/linux-x64 .
+        run: tar -czf SkuaScriptStudio-linux-x64.tar.gz -C build/linux-x64 .
 
       - name: Upload Linux build
         uses: actions/upload-artifact@v4
