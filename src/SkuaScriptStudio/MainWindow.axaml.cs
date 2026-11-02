@@ -51,6 +51,9 @@ public partial class MainWindow : Window
 
     private void TitleBar_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        if (e.Source is Button)
+            return;
+
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             BeginMoveDrag(e);
     }
