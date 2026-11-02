@@ -40,16 +40,8 @@
       <Grid ClipToBounds="True">
         <Image Source="avares://SkuaScriptStudio/Assets/potato-artwork-assets/potato-banner.png" Stretch="UniformToFill" Opacity="0.88"/>
         <Border Background="#880F0A16" IsHitTestVisible="False"/>
-        <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-          <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="9">
-            <Button Content="📂&#10;Open" Click="OpenButton_OnClick" MinWidth="76" Padding="13,9"/>
-            <Button Content="💾&#10;Save" Click="SaveButton_OnClick" MinWidth="76" Padding="13,9"/>
-            <Button Content="⌨&#10;Editor" Click="EditorNav_OnClick" MinWidth="76" Padding="13,9"/>
-            <Button Content="🧩&#10;Builder" Click="BuilderNav_OnClick" MinWidth="76" Padding="13,9"/>
-            <Button Content="📚&#10;Library" Click="LibraryNav_OnClick" MinWidth="76" Padding="13,9"/>
-            <Button Name="UpdateButton" Content="↻&#10;Updates" Click="UpdateButton_OnClick" MinWidth="76" Padding="13,9"/>
-          </StackPanel>
-          <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2" Margin="12,0,6,0">
+        <Grid VerticalAlignment="Center">
+          <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="2" Margin="12,0,6,0">
             <TextBlock Text="Potatoes." FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
             <TextBlock Text="Scripts." FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
             <TextBlock Text="Good Times. ✦" FontSize="20" FontStyle="Italic" Foreground="#FFE39B"/>
